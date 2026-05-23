@@ -3,7 +3,7 @@
 // =============================================
 
 // ⚠️ UPDATE THIS URL AFTER DEPLOYMENT TO RENDER
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'https://school-ai-agent-eynr.onrender.com';
 
 const chatMessages = document.getElementById('chatMessages');
 const chatForm = document.getElementById('chatForm');

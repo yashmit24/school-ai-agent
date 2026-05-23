@@ -3,7 +3,7 @@
 // =============================================
 
 // ⚠️ UPDATE THIS AFTER RENDER DEPLOYMENT
-const API_BASE = 'http://localhost:3000';
+const API_BASE = 'https://school-ai-agent-eynr.onrender.com';
 const ADMIN_KEY = 'school-admin-super-secret-key-123';
 
 const headers = {
