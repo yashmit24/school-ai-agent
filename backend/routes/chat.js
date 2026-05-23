@@ -17,30 +17,27 @@ router.post('/', async (req, res) => {
     const intent = detectIntent(message);
     let contextData = null;
 
-    // Fetch relevant data from database based on intent
+    // Fetch relevant data from database in parallel to provide full context
     try {
-      if (intent === 'exam') {
-        const { data } = await supabase.from('exams').select('*').order('date', { ascending: true }).limit(20);
-        contextData = data;
-      } else if (intent === 'fees') {
-        const { data } = await supabase.from('fees').select('*, students(*)').limit(50);
-        contextData = data;
-      } else if (intent === 'staff') {
-        const { data } = await supabase.from('staff').select('*').limit(50);
-        contextData = data;
-      } else if (intent === 'transport') {
-        const { data } = await supabase.from('transport').select('*').limit(20);
-        contextData = data;
-      } else if (intent === 'attendance') {
-        const { data } = await supabase.from('attendance').select('*, students(*)').limit(50);
-        contextData = data;
-      } else if (intent === 'timetable') {
-        const { data } = await supabase.from('timetable').select('*').limit(50);
-        contextData = data;
-      } else if (intent === 'students') {
-        const { data } = await supabase.from('students').select('*').limit(50);
-        contextData = data;
-      }
+      const [studentsRes, feesRes, attendanceRes, examsRes, staffRes, transportRes, timetableRes] = await Promise.all([
+        supabase.from('students').select('*').limit(50),
+        supabase.from('fees').select('*, students(*)').limit(50),
+        supabase.from('attendance').select('*, students(*)').limit(50),
+        supabase.from('exams').select('*').order('date', { ascending: true }).limit(50),
+        supabase.from('staff').select('*').limit(50),
+        supabase.from('transport').select('*').limit(50),
+        supabase.from('timetable').select('*').limit(50)
+      ]);
+
+      contextData = {
+        students: studentsRes.data || [],
+        fees: feesRes.data || [],
+        attendance: attendanceRes.data || [],
+        exams: examsRes.data || [],
+        staff: staffRes.data || [],
+        transport: transportRes.data || [],
+        timetable: timetableRes.data || []
+      };
     } catch (dbError) {
       // DB not configured yet — continue without context
       console.log('DB context fetch skipped:', dbError.message);
