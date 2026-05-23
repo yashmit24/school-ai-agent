@@ -1,6 +1,8 @@
 const { model } = require('../config/gemini');
-const supabase = require('../config/supabase');
 
+// ─────────────────────────────────────────
+// SYSTEM PROMPT
+// ─────────────────────────────────────────
 const schoolSystemPrompt = `
 You are an intelligent AI assistant for ${process.env.SCHOOL_NAME || 'Sunshine Public School'}.
 You help students, parents, and staff with school-related queries.
@@ -23,72 +25,98 @@ You can help with:
 8. Admission information
 9. General school information
 
-Rules:
-- Always be polite, helpful, and professional.
-- CRITICAL: You DO have direct access to the school's live, real-time database, which is attached to your prompt context under "Relevant school data" for relevant queries (containing students, fees, attendance, exams, staff, transport, and timetable).
-- NEVER say "I do not have access to private databases or specific institutional records". You have full authority to read and answer using the provided database records!
-- Always search the provided database context to find the student by Name or Roll Number (e.g., Roll Number "01" or "02") and answer confidently with specific details (amount, due date, payment status, exam room, bus stop, driver contact, etc.).
-- If the specific student, roll number, or record is not present in the provided database context, politely state that the record for that roll number or name was not found in the school records.
-- Keep responses concise, clear, and extremely accurate based ONLY on the provided database context.
+CRITICAL RULES — FOLLOW THESE STRICTLY:
+- You have DIRECT ACCESS to the school's live database. The full database is provided in each message under "SCHOOL DATABASE".
+- NEVER say "I don't have access to records" or "I cannot look up specific data" — you DO have the data!
+- ALWAYS read the SCHOOL DATABASE section carefully and answer with SPECIFIC details: names, amounts, dates, room numbers, phone numbers, bus routes.
+- If a student name or roll number is not found in the database, say "Record not found for that name/roll number in our system."
+- Keep answers concise and accurate. Use ONLY the database — do NOT make up or guess any information.
+- Be polite and friendly.
 `;
 
-// Language-specific instructions for the AI
+// ─────────────────────────────────────────
+// LANGUAGE INSTRUCTIONS
+// ─────────────────────────────────────────
 const LANG_INSTRUCTIONS = {
-  en: 'IMPORTANT: You MUST respond ONLY in clear, fluent English regardless of the language the user writes in.',
-  hi: 'महत्वपूर्ण: आप केवल शुद्ध और स्पष्ट हिंदी में उत्तर दें, चाहे उपयोगकर्ता किसी भी भाषा में लिखे। Roman script का उपयोग न करें।',
-  hinglish: 'IMPORTANT: You MUST respond in fun, natural Hinglish (a friendly mix of Hindi words written in Roman/English script with English). Example style: "Aapki fees ki baat karein toh..." or "School ka time subah 8 baje se shuru hota hai!" Keep it warm and conversational.'
+  en: 'Respond in clear, fluent English.',
+  hi: 'केवल शुद्ध हिंदी में उत्तर दें। Roman script का उपयोग न करें।',
+  hinglish: 'Respond in friendly Hinglish (Roman script Hindi mixed with English). Example: "Aapki fees 5000 rupaye hai aur due date 31 March hai!"'
 };
 
+// ─────────────────────────────────────────
+// CONVERSATION HISTORY (stores clean Q&A only)
+// ─────────────────────────────────────────
 const conversationHistory = {};
 
+// ─────────────────────────────────────────
+// MAIN: Generate AI Response
+// ─────────────────────────────────────────
 async function generateResponse(userMessage, userId = 'default', contextData = null, language = 'en') {
   try {
     if (!conversationHistory[userId]) {
       conversationHistory[userId] = [];
     }
 
-    let contextString = '';
+    // Build database context string from live Supabase data
+    let dbContext = '';
     if (contextData) {
-      contextString = `\n\nRelevant school data for this query:\n${JSON.stringify(contextData, null, 2)}`;
+      dbContext = `\n\n===== SCHOOL DATABASE (Read this carefully to answer) =====\n${JSON.stringify(contextData, null, 2)}\n===== END OF DATABASE =====`;
     }
 
     // Get language instruction
     const langInstruction = LANG_INSTRUCTIONS[language] || LANG_INSTRUCTIONS['en'];
 
-    const fullPrompt = `${schoolSystemPrompt}\n\n🌐 LANGUAGE INSTRUCTION: ${langInstruction}${contextString}\n\nUser Message: ${userMessage}`;
+    // ✅ FIX: Build the COMPLETE message that includes system prompt + DB data + user question
+    // This is what actually gets sent to Gemini each time
+    const fullMessage = `${schoolSystemPrompt}
 
-    conversationHistory[userId].push({
-      role: 'user',
-      parts: [{ text: fullPrompt }]
-    });
+LANGUAGE RULE: ${langInstruction}
+${dbContext}
 
-    // Keep only last 10 messages to avoid token limit
-    if (conversationHistory[userId].length > 10) {
-      conversationHistory[userId] = conversationHistory[userId].slice(-10);
-    }
+Student/Parent Question: ${userMessage}
+
+Your answer (use the database above to give specific, accurate details):`;
+
+    // Use last 3 exchanges as conversation history context (6 entries: 3 user + 3 model)
+    const historyForChat = conversationHistory[userId].slice(-6);
 
     const chat = model.startChat({
-      history: conversationHistory[userId].slice(0, -1)
+      history: historyForChat
     });
 
-    const result = await chat.sendMessage(userMessage);
+    // ✅ Send the FULL message to Gemini (includes DB + instructions every time)
+    const result = await chat.sendMessage(fullMessage);
     const response = result.response.text();
 
+    // Store only the clean user Q and AI answer in history (not the giant prompt)
+    conversationHistory[userId].push({
+      role: 'user',
+      parts: [{ text: userMessage }]
+    });
     conversationHistory[userId].push({
       role: 'model',
       parts: [{ text: response }]
     });
 
+    // Keep max 20 history entries (10 exchanges)
+    if (conversationHistory[userId].length > 20) {
+      conversationHistory[userId] = conversationHistory[userId].slice(-20);
+    }
+
     return response;
+
   } catch (error) {
     console.error('Gemini Error:', error.message);
     if (error.message.includes('API_KEY')) {
-      return '⚠️ AI service is not configured yet. Please contact the school office directly.';
+      return '⚠️ AI service is not configured. Please contact the school office directly.';
     }
-    return '🙏 Sorry, I am having trouble responding right now. Please try again in a moment.';
+    return '🙏 Sorry, having trouble right now. Please try again in a moment.';
   }
 }
 
+// ─────────────────────────────────────────
+// Clear conversation history for a user
+// ─────────────────────────────────────────
 function clearHistory(userId) {
   delete conversationHistory[userId];
 }
