@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sunshine Public School — AI Assistant</title>
+  <meta name="description" content="Sunshine Public School's 24x7 AI-powered school assistant. Get instant answers about timetables, exams, fees, attendance, transport and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <span class="logo-icon">🏫</span>
+        <span class="logo-text">Sunshine Public School</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="chatbot.html" class="nav-btn">💬 Chat Now</a></li>
+        <li><a href="admin.html" class="nav-btn-outline">⚙️ Admin</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">☰</button>
+    </div>
+    <ul class="mobile-menu" id="mobileMenu">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="chatbot.html">💬 Chat Now</a></li>
+      <li><a href="admin.html">⚙️ Admin</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-badge">✨ AI-Powered • Available 24×7</div>
+      <h1 class="hero-title">Your School, <br/><span class="gradient-text">Smarter & Faster</span></h1>
+      <p class="hero-subtitle">Get instant answers about timetables, exam dates, fee status, attendance, bus routes, and much more — powered by Google Gemini AI.</p>
+      <div class="hero-actions">
+        <a href="chatbot.html" class="btn-primary" id="chatNowBtn">
+          💬 Chat with AI Now
+        </a>
+        <a href="#features" class="btn-secondary">Explore Features →</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">24×7</span><span class="stat-label">Available</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">AI</span><span class="stat-label">Powered</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">Free</span><span class="stat-label">To Use</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="chat-preview-card">
+        <div class="chat-preview-header">
+          <span class="dot green"></span><span class="dot yellow"></span><span class="dot red"></span>
+          <span class="preview-title">AI School Assistant</span>
+        </div>
+        <div class="chat-preview-body">
+          <div class="preview-msg user">What's my exam schedule? 📚</div>
+          <div class="preview-msg bot">📝 Your upcoming exams:<br/>• <b>Mathematics</b> — June 15, 9:00 AM, Room 102<br/>• <b>Science</b> — June 17, 9:00 AM, Room 104<br/><br/>Good luck! 🌟</div>
+          <div class="preview-msg user">Are my fees paid?</div>
+          <div class="preview-msg bot">💰 Checking your fee status...<br/>Term 2 fees of <b>₹5,000</b> are due by <b>June 1, 2026</b>. Please contact the school office to pay.</div>
+        </div>
+        <div class="chat-preview-input">
+          <input type="text" placeholder="Ask anything about school..." readonly />
+          <button>→</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Everything You Need, <span class="gradient-text">Instantly</span></h2>
+        <p>Our AI assistant handles all your school queries in seconds</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📅</div>
+          <h3>Timetable Support</h3>
+          <p>Get your class timetable for any day, instantly. Never miss a period again.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>Exam Reminders</h3>
+          <p>Auto-receive exam date alerts on Telegram. Always prepared, never surprised.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <h3>Fee Reminders</h3>
+          <p>Automatic fee due date alerts sent directly to parents via Telegram.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Attendance Updates</h3>
+          <p>Check your child's attendance percentage. Get alerted when it drops below 75%.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚌</div>
+          <h3>Transport Info</h3>
+          <p>Get bus route details, driver contacts, and stop timings instantly.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📞</div>
+          <h3>Staff Contacts</h3>
+          <p>Instantly find teacher and staff contact information without calling the office.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤝</div>
+          <h3>PTM Reminders</h3>
+          <p>Never miss a Parent-Teacher Meeting with automatic Telegram reminders.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <h3>AI Chatbot</h3>
+          <p>Powered by Google Gemini — smart, context-aware answers available 24×7.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT / CHANNELS SECTION -->
+  <section class="channels" id="about">
+    <div class="container">
+      <div class="section-header">
+        <h2>Access From <span class="gradient-text">Anywhere</span></h2>
+        <p>Use the AI assistant from your browser or Telegram</p>
+      </div>
+      <div class="channels-grid">
+        <div class="channel-card">
+          <div class="channel-icon web-icon">🌐</div>
+          <h3>Website Chatbot</h3>
+          <p>Chat directly from this website. Open on mobile or desktop — works everywhere.</p>
+          <a href="chatbot.html" class="channel-btn">Open Chatbot →</a>
+        </div>
+        <div class="channel-card highlight-card">
+          <div class="channel-icon tg-icon">✈️</div>
+          <h3>Telegram Bot</h3>
+          <p>Chat on Telegram for instant access. Get automatic reminders delivered directly to your phone.</p>
+          <a href="https://t.me/YourBotUsername" target="_blank" class="channel-btn">Open Telegram →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="logo-icon">🏫</span>
+          <span class="logo-text">Sunshine Public School</span>
+        </div>
+        <div class="footer-links">
+          <a href="chatbot.html">AI Chatbot</a>
+          <a href="admin.html">Admin Panel</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Sunshine Public School. AI-powered by Google Gemini.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

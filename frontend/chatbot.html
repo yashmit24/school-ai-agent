@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Chat — Sunshine Public School</title>
+  <meta name="description" content="Chat with the Sunshine Public School AI assistant — get instant answers about exams, fees, attendance, transport and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/chatbot.css" />
+</head>
+<body class="chatbot-page">
+
+  <!-- TOP BAR -->
+  <header class="chat-header">
+    <a href="index.html" class="chat-back-btn" title="Back to Home">← Back</a>
+    <div class="chat-header-info">
+      <div class="bot-avatar">🤖</div>
+      <div>
+        <div class="bot-name">School AI Assistant</div>
+        <div class="bot-status"><span class="status-dot"></span> Online 24×7</div>
+      </div>
+    </div>
+    <button class="clear-chat-btn" id="clearChatBtn" title="Clear conversation">🗑️ Clear</button>
+  </header>
+
+  <!-- CHAT WINDOW -->
+  <main class="chat-main">
+    <div class="chat-messages" id="chatMessages">
+      <!-- Welcome message injected by JS -->
+    </div>
+  </main>
+
+  <!-- QUICK SUGGESTIONS -->
+  <div class="suggestions-bar" id="suggestionsBar">
+    <button class="suggestion-chip" data-msg="What are the school timings?">⏰ School Timings</button>
+    <button class="suggestion-chip" data-msg="Show upcoming exam dates">📝 Exam Dates</button>
+    <button class="suggestion-chip" data-msg="What are the fee details?">💰 Fee Info</button>
+    <button class="suggestion-chip" data-msg="Show transport routes">🚌 Bus Routes</button>
+    <button class="suggestion-chip" data-msg="Give me staff contacts">📞 Staff Contacts</button>
+    <button class="suggestion-chip" data-msg="What is my attendance?">📊 Attendance</button>
+  </div>
+
+  <!-- INPUT BAR -->
+  <footer class="chat-input-bar">
+    <form class="chat-form" id="chatForm">
+      <textarea
+        id="userInput"
+        class="chat-textarea"
+        placeholder="Ask anything about school..."
+        rows="1"
+        maxlength="500"
+        autocomplete="off"
+      ></textarea>
+      <button type="submit" class="send-btn" id="sendBtn" aria-label="Send message">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </form>
+    <p class="chat-disclaimer">AI answers may sometimes be inaccurate. Always confirm with school for critical info.</p>
+  </footer>
+
+  <script src="js/chatbot.js"></script>
+</body>
+</html>
