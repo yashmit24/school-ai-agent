@@ -23,6 +23,8 @@ function detectIntent(message) {
     return 'timing';
   if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey') || msg.includes('good morning') || msg.includes('good evening'))
     return 'greeting';
+  if (msg.includes('student') || msg.includes('roll') || msg.includes('class list') || msg.includes('students'))
+    return 'students';
 
   return 'general';
 }

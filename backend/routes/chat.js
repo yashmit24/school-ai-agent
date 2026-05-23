@@ -20,19 +20,25 @@ router.post('/', async (req, res) => {
     // Fetch relevant data from database based on intent
     try {
       if (intent === 'exam') {
-        const { data } = await supabase.from('exams').select('*').order('date', { ascending: true }).limit(10);
+        const { data } = await supabase.from('exams').select('*').order('date', { ascending: true }).limit(20);
         contextData = data;
       } else if (intent === 'fees') {
-        const { data } = await supabase.from('fees').select('*').limit(10);
+        const { data } = await supabase.from('fees').select('*, students(*)').limit(50);
         contextData = data;
       } else if (intent === 'staff') {
-        const { data } = await supabase.from('staff').select('*').limit(20);
+        const { data } = await supabase.from('staff').select('*').limit(50);
         contextData = data;
       } else if (intent === 'transport') {
-        const { data } = await supabase.from('transport').select('*').limit(10);
+        const { data } = await supabase.from('transport').select('*').limit(20);
         contextData = data;
       } else if (intent === 'attendance') {
-        const { data } = await supabase.from('attendance').select('*').limit(10);
+        const { data } = await supabase.from('attendance').select('*, students(*)').limit(50);
+        contextData = data;
+      } else if (intent === 'timetable') {
+        const { data } = await supabase.from('timetable').select('*').limit(50);
+        contextData = data;
+      } else if (intent === 'students') {
+        const { data } = await supabase.from('students').select('*').limit(50);
         contextData = data;
       }
     } catch (dbError) {
