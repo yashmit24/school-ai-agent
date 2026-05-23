@@ -30,12 +30,18 @@ Rules:
 - Always search the provided database context to find the student by Name or Roll Number (e.g., Roll Number "01" or "02") and answer confidently with specific details (amount, due date, payment status, exam room, bus stop, driver contact, etc.).
 - If the specific student, roll number, or record is not present in the provided database context, politely state that the record for that roll number or name was not found in the school records.
 - Keep responses concise, clear, and extremely accurate based ONLY on the provided database context.
-- Always respond in the exact same language/Hinglish style the user writes in.
 `;
+
+// Language-specific instructions for the AI
+const LANG_INSTRUCTIONS = {
+  en: 'IMPORTANT: You MUST respond ONLY in clear, fluent English regardless of the language the user writes in.',
+  hi: 'महत्वपूर्ण: आप केवल शुद्ध और स्पष्ट हिंदी में उत्तर दें, चाहे उपयोगकर्ता किसी भी भाषा में लिखे। Roman script का उपयोग न करें।',
+  hinglish: 'IMPORTANT: You MUST respond in fun, natural Hinglish (a friendly mix of Hindi words written in Roman/English script with English). Example style: "Aapki fees ki baat karein toh..." or "School ka time subah 8 baje se shuru hota hai!" Keep it warm and conversational.'
+};
 
 const conversationHistory = {};
 
-async function generateResponse(userMessage, userId = 'default', contextData = null) {
+async function generateResponse(userMessage, userId = 'default', contextData = null, language = 'en') {
   try {
     if (!conversationHistory[userId]) {
       conversationHistory[userId] = [];
@@ -46,7 +52,10 @@ async function generateResponse(userMessage, userId = 'default', contextData = n
       contextString = `\n\nRelevant school data for this query:\n${JSON.stringify(contextData, null, 2)}`;
     }
 
-    const fullPrompt = `${schoolSystemPrompt}${contextString}\n\nUser Message: ${userMessage}`;
+    // Get language instruction
+    const langInstruction = LANG_INSTRUCTIONS[language] || LANG_INSTRUCTIONS['en'];
+
+    const fullPrompt = `${schoolSystemPrompt}\n\n🌐 LANGUAGE INSTRUCTION: ${langInstruction}${contextString}\n\nUser Message: ${userMessage}`;
 
     conversationHistory[userId].push({
       role: 'user',

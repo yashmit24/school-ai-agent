@@ -7,7 +7,7 @@ const supabase = require('../config/supabase');
 // POST /api/chat — main chatbot endpoint
 router.post('/', async (req, res) => {
   try {
-    const { message, userId } = req.body;
+    const { message, userId, language } = req.body;
 
     if (!message || message.trim() === '') {
       return res.status(400).json({ success: false, error: 'Message cannot be empty' });
@@ -43,7 +43,8 @@ router.post('/', async (req, res) => {
       console.log('DB context fetch skipped:', dbError.message);
     }
 
-    const aiResponse = await generateResponse(message, userId || 'web-user', contextData);
+    // Pass language preference to AI (en / hi / hinglish)
+    const aiResponse = await generateResponse(message, userId || 'web-user', contextData, language || 'en');
 
     res.json({
       success: true,

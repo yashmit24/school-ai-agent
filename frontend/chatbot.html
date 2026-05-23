@@ -14,15 +14,21 @@
 
   <!-- TOP BAR -->
   <header class="chat-header">
-    <a href="index.html" class="chat-back-btn" title="Back to Home">← Back</a>
+    <a href="index.html" class="chat-back-btn" title="Back to Home" id="backBtn">← Back</a>
     <div class="chat-header-info">
       <div class="bot-avatar">🤖</div>
       <div>
-        <div class="bot-name">School AI Assistant</div>
-        <div class="bot-status"><span class="status-dot"></span> Online 24×7</div>
+        <div class="bot-name" id="botName">School AI Assistant</div>
+        <div class="bot-status"><span class="status-dot"></span> <span id="botStatusText">Online 24×7</span></div>
       </div>
     </div>
-    <button class="clear-chat-btn" id="clearChatBtn" title="Clear conversation">🗑️ Clear</button>
+    <!-- LANGUAGE SWITCHER -->
+    <div class="lang-switcher" id="langSwitcher">
+      <button class="lang-btn active" id="langEn" data-lang="en">EN</button>
+      <button class="lang-btn" id="langHi" data-lang="hi">हि</button>
+      <button class="lang-btn" id="langHinglish" data-lang="hinglish">HG</button>
+    </div>
+    <button class="clear-chat-btn" id="clearChatBtn" title="Clear conversation">🗑️ <span id="clearBtnText">Clear</span></button>
   </header>
 
   <!-- CHAT WINDOW -->
@@ -34,12 +40,12 @@
 
   <!-- QUICK SUGGESTIONS -->
   <div class="suggestions-bar" id="suggestionsBar">
-    <button class="suggestion-chip" data-msg="What are the school timings?">⏰ School Timings</button>
-    <button class="suggestion-chip" data-msg="Show upcoming exam dates">📝 Exam Dates</button>
-    <button class="suggestion-chip" data-msg="What are the fee details?">💰 Fee Info</button>
-    <button class="suggestion-chip" data-msg="Show transport routes">🚌 Bus Routes</button>
-    <button class="suggestion-chip" data-msg="Give me staff contacts">📞 Staff Contacts</button>
-    <button class="suggestion-chip" data-msg="What is my attendance?">📊 Attendance</button>
+    <button class="suggestion-chip" id="chip_timings" data-msg="What are the school timings?">⏰ School Timings</button>
+    <button class="suggestion-chip" id="chip_exams" data-msg="Show upcoming exam dates">📝 Exam Dates</button>
+    <button class="suggestion-chip" id="chip_fees" data-msg="What are the fee details?">💰 Fee Info</button>
+    <button class="suggestion-chip" id="chip_transport" data-msg="Show transport routes">🚌 Bus Routes</button>
+    <button class="suggestion-chip" id="chip_staff" data-msg="Give me staff contacts">📞 Staff Contacts</button>
+    <button class="suggestion-chip" id="chip_attendance" data-msg="What is my attendance?">📊 Attendance</button>
   </div>
 
   <!-- INPUT BAR -->
@@ -60,6 +66,7 @@
     <p class="chat-disclaimer">AI answers may sometimes be inaccurate. Always confirm with school for critical info.</p>
   </footer>
 
+  <script src="js/i18n.js"></script>
   <script src="js/chatbot.js"></script>
 </body>
 </html>

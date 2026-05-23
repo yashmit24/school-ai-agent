@@ -19,30 +19,30 @@
     </div>
     <nav class="sidebar-nav">
       <a href="#" class="sidebar-link active" data-tab="dashboard" id="tab-dashboard">
-        <span>📊</span> Dashboard
+        <span>📊</span> <span data-i18n="nav_dashboard">Dashboard</span>
       </a>
       <a href="#" class="sidebar-link" data-tab="students" id="tab-students">
-        <span>👨‍🎓</span> Students
+        <span>👨‍🎓</span> <span data-i18n="nav_students">Students</span>
       </a>
       <a href="#" class="sidebar-link" data-tab="exams" id="tab-exams">
-        <span>📝</span> Exams
+        <span>📝</span> <span data-i18n="nav_exams">Exams</span>
       </a>
       <a href="#" class="sidebar-link" data-tab="fees" id="tab-fees">
-        <span>💰</span> Fees
+        <span>💰</span> <span data-i18n="nav_fees">Fees</span>
       </a>
       <a href="#" class="sidebar-link" data-tab="staff" id="tab-staff">
-        <span>👩‍🏫</span> Staff
+        <span>👩‍🏫</span> <span data-i18n="nav_staff">Staff</span>
       </a>
       <a href="#" class="sidebar-link" data-tab="attendance" id="tab-attendance">
-        <span>📋</span> Attendance
+        <span>📋</span> <span data-i18n="nav_attendance">Attendance</span>
       </a>
     </nav>
     <div class="sidebar-bottom">
       <a href="index.html" class="sidebar-link">
-        <span>🌐</span> View Website
+        <span>🌐</span> <span data-i18n="nav_view_website">View Website</span>
       </a>
       <a href="chatbot.html" class="sidebar-link">
-        <span>💬</span> Open Chatbot
+        <span>💬</span> <span data-i18n="nav_open_chatbot">Open Chatbot</span>
       </a>
     </div>
   </aside>
@@ -53,9 +53,14 @@
     <!-- TOP BAR -->
     <header class="admin-topbar">
       <button class="menu-toggle" id="menuToggle">☰</button>
-      <h1 class="admin-page-title" id="pageTitle">Dashboard</h1>
+      <h1 class="admin-page-title" id="pageTitle" data-i18n="nav_dashboard">Dashboard</h1>
       <div class="admin-topbar-right">
-        <span class="server-status" id="serverStatus">⏳ Connecting...</span>
+        <div class="lang-switcher" id="langSwitcher">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="hi">हि</button>
+          <button class="lang-btn" data-lang="hinglish">HG</button>
+        </div>
+        <span class="server-status" id="serverStatus">⏳ <span data-i18n="connecting">Connecting...</span></span>
         <span class="admin-time" id="adminTime"></span>
       </div>
     </header>
@@ -66,57 +71,57 @@
         <div class="stat-card loading">
           <div class="stat-card-icon">👨‍🎓</div>
           <div class="stat-card-value" id="statStudents">--</div>
-          <div class="stat-card-label">Total Students</div>
+          <div class="stat-card-label" data-i18n="stat_students">Total Students</div>
         </div>
         <div class="stat-card loading">
           <div class="stat-card-icon">💰</div>
           <div class="stat-card-value" id="statUnpaidFees">--</div>
-          <div class="stat-card-label">Unpaid Fees</div>
+          <div class="stat-card-label" data-i18n="stat_unpaid_fees">Unpaid Fees</div>
         </div>
         <div class="stat-card loading">
           <div class="stat-card-icon">📝</div>
           <div class="stat-card-value" id="statExams">--</div>
-          <div class="stat-card-label">Total Exams</div>
+          <div class="stat-card-label" data-i18n="stat_exams">Total Exams</div>
         </div>
         <div class="stat-card loading">
           <div class="stat-card-icon">👩‍🏫</div>
           <div class="stat-card-value" id="statStaff">--</div>
-          <div class="stat-card-label">Staff Members</div>
+          <div class="stat-card-label" data-i18n="stat_staff">Staff Members</div>
         </div>
       </div>
 
       <div class="admin-cards-row">
         <div class="admin-card">
           <div class="admin-card-header">
-            <h3>📅 Quick Links</h3>
+            <h3>📅 <span data-i18n="quick_links">Quick Links</span></h3>
           </div>
           <div class="quick-links">
-            <a href="chatbot.html" class="quick-link-btn">💬 Open AI Chatbot</a>
-            <a href="index.html" class="quick-link-btn">🌐 View Homepage</a>
+            <a href="chatbot.html" class="quick-link-btn">💬 <span data-i18n="open_chatbot">Open AI Chatbot</span></a>
+            <a href="index.html" class="quick-link-btn">🌐 <span data-i18n="view_homepage">View Homepage</span></a>
             <a href="https://supabase.com/dashboard" target="_blank" class="quick-link-btn">🗄️ Supabase DB</a>
             <a href="https://t.me/" target="_blank" class="quick-link-btn">✈️ Telegram Bot</a>
           </div>
         </div>
         <div class="admin-card">
           <div class="admin-card-header">
-            <h3>🕐 System Status</h3>
+            <h3>🕐 <span data-i18n="system_status">System Status</span></h3>
           </div>
           <div class="status-list">
             <div class="status-item">
               <span>🤖 Gemini AI</span>
-              <span class="badge badge-green">Active</span>
+              <span class="badge badge-green" data-i18n="status_active">Active</span>
             </div>
             <div class="status-item">
               <span>🗄️ Supabase DB</span>
-              <span class="badge badge-green" id="dbStatusBadge">Checking...</span>
+              <span class="badge badge-green" id="dbStatusBadge" data-i18n="status_checking">Checking...</span>
             </div>
             <div class="status-item">
               <span>✈️ Telegram Bot</span>
-              <span class="badge badge-green">Active</span>
+              <span class="badge badge-green" data-i18n="status_active">Active</span>
             </div>
             <div class="status-item">
-              <span>⏰ Cron Jobs</span>
-              <span class="badge badge-green">Running</span>
+              <span>⏰ <span data-i18n="cron_jobs">Cron Jobs</span></span>
+              <span class="badge badge-green" data-i18n="status_running">Running</span>
             </div>
           </div>
         </div>
@@ -127,18 +132,18 @@
     <section class="tab-content" id="students">
       <div class="admin-card">
         <div class="admin-card-header">
-          <h3>👨‍🎓 All Students</h3>
-          <button class="admin-btn" onclick="loadStudents()">🔄 Refresh</button>
+          <h3>👨‍🎓 <span data-i18n="all_students">All Students</span></h3>
+          <button class="admin-btn" onclick="loadStudents()">🔄 <span data-i18n="refresh">Refresh</span></button>
         </div>
         <div class="table-wrap">
           <table class="admin-table" id="studentsTable">
             <thead>
               <tr>
-                <th>Name</th><th>Class</th><th>Roll No</th><th>Parent</th><th>Phone</th>
+                <th data-i18n="th_name">Name</th><th data-i18n="th_class">Class</th><th data-i18n="th_roll">Roll No</th><th data-i18n="th_parent">Parent</th><th data-i18n="th_phone">Phone</th>
               </tr>
             </thead>
             <tbody id="studentsBody">
-              <tr><td colspan="5" class="loading-row">Loading...</td></tr>
+              <tr><td colspan="5" class="loading-row" data-i18n="loading">Loading...</td></tr>
             </tbody>
           </table>
         </div>
@@ -149,18 +154,18 @@
     <section class="tab-content" id="exams">
       <div class="admin-card">
         <div class="admin-card-header">
-          <h3>📝 Exam Schedule</h3>
-          <button class="admin-btn" onclick="loadExams()">🔄 Refresh</button>
+          <h3>📝 <span data-i18n="exam_schedule">Exam Schedule</span></h3>
+          <button class="admin-btn" onclick="loadExams()">🔄 <span data-i18n="refresh">Refresh</span></button>
         </div>
         <div class="table-wrap">
           <table class="admin-table">
             <thead>
               <tr>
-                <th>Exam Name</th><th>Subject</th><th>Class</th><th>Date</th><th>Time</th><th>Room</th>
+                <th data-i18n="th_exam_name">Exam Name</th><th data-i18n="th_subject">Subject</th><th data-i18n="th_class">Class</th><th data-i18n="th_date">Date</th><th data-i18n="th_time">Time</th><th data-i18n="th_room">Room</th>
               </tr>
             </thead>
             <tbody id="examsBody">
-              <tr><td colspan="6" class="loading-row">Loading...</td></tr>
+              <tr><td colspan="6" class="loading-row" data-i18n="loading">Loading...</td></tr>
             </tbody>
           </table>
         </div>
@@ -171,18 +176,18 @@
     <section class="tab-content" id="fees">
       <div class="admin-card">
         <div class="admin-card-header">
-          <h3>💰 Fee Records</h3>
-          <button class="admin-btn" onclick="loadFees()">🔄 Refresh</button>
+          <h3>💰 <span data-i18n="fee_records">Fee Records</span></h3>
+          <button class="admin-btn" onclick="loadFees()">🔄 <span data-i18n="refresh">Refresh</span></button>
         </div>
         <div class="table-wrap">
           <table class="admin-table">
             <thead>
               <tr>
-                <th>Student</th><th>Amount</th><th>Due Date</th><th>Status</th>
+                <th data-i18n="th_student">Student</th><th data-i18n="th_amount">Amount</th><th data-i18n="th_due_date">Due Date</th><th data-i18n="th_status">Status</th>
               </tr>
             </thead>
             <tbody id="feesBody">
-              <tr><td colspan="4" class="loading-row">Loading...</td></tr>
+              <tr><td colspan="4" class="loading-row" data-i18n="loading">Loading...</td></tr>
             </tbody>
           </table>
         </div>
@@ -193,18 +198,18 @@
     <section class="tab-content" id="staff">
       <div class="admin-card">
         <div class="admin-card-header">
-          <h3>👩‍🏫 Staff Directory</h3>
-          <button class="admin-btn" onclick="loadStaff()">🔄 Refresh</button>
+          <h3>👩‍🏫 <span data-i18n="staff_directory">Staff Directory</span></h3>
+          <button class="admin-btn" onclick="loadStaff()">🔄 <span data-i18n="refresh">Refresh</span></button>
         </div>
         <div class="table-wrap">
           <table class="admin-table">
             <thead>
               <tr>
-                <th>Name</th><th>Role</th><th>Subject</th><th>Phone</th><th>Email</th>
+                <th data-i18n="th_name">Name</th><th data-i18n="th_role">Role</th><th data-i18n="th_subject">Subject</th><th data-i18n="th_phone">Phone</th><th data-i18n="th_email">Email</th>
               </tr>
             </thead>
             <tbody id="staffBody">
-              <tr><td colspan="5" class="loading-row">Loading...</td></tr>
+              <tr><td colspan="5" class="loading-row" data-i18n="loading">Loading...</td></tr>
             </tbody>
           </table>
         </div>
@@ -215,18 +220,18 @@
     <section class="tab-content" id="attendance">
       <div class="admin-card">
         <div class="admin-card-header">
-          <h3>📋 Attendance Records</h3>
-          <button class="admin-btn" onclick="loadAttendance()">🔄 Refresh</button>
+          <h3>📋 <span data-i18n="attendance_records">Attendance Records</span></h3>
+          <button class="admin-btn" onclick="loadAttendance()">🔄 <span data-i18n="refresh">Refresh</span></button>
         </div>
         <div class="table-wrap">
           <table class="admin-table">
             <thead>
               <tr>
-                <th>Student</th><th>Date</th><th>Status</th>
+                <th data-i18n="th_student">Student</th><th data-i18n="th_date">Date</th><th data-i18n="th_status">Status</th>
               </tr>
             </thead>
             <tbody id="attendanceBody">
-              <tr><td colspan="3" class="loading-row">Loading...</td></tr>
+              <tr><td colspan="3" class="loading-row" data-i18n="loading">Loading...</td></tr>
             </tbody>
           </table>
         </div>
@@ -235,6 +240,7 @@
 
   </div><!-- end admin-main -->
 
+  <script src="js/i18n.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>

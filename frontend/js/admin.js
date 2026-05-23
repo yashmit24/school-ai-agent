@@ -1,8 +1,7 @@
 // =============================================
-// ADMIN DASHBOARD JAVASCRIPT
+// ADMIN DASHBOARD JAVASCRIPT (with Language Switcher)
 // =============================================
 
-// ⚠️ UPDATE THIS AFTER RENDER DEPLOYMENT
 const API_BASE = 'https://school-ai-agent-eynr.onrender.com';
 const ADMIN_KEY = 'school-admin-super-secret-key-123';
 
@@ -10,6 +9,22 @@ const headers = {
   'Content-Type': 'application/json',
   'X-Admin-Key': ADMIN_KEY
 };
+
+// ─────────────────────────────────────────
+// OVERRIDE setLang for admin-specific UI updates
+// ─────────────────────────────────────────
+function setLang(lang) {
+  localStorage.setItem('schoolLang', lang);
+  applyTranslations(lang);
+  updateLangButtons(lang);
+  // Update dynamic server status text if already loaded
+  const ss = document.getElementById('serverStatus');
+  if (ss && ss.dataset.online === 'true') {
+    const onlineSpan = ss.querySelector('[data-i18n="status_online"]') || ss;
+    if (onlineSpan) onlineSpan.textContent = t('status_online');
+  }
+}
+
 
 // ─────────────────────────────────────────
 // LIVE CLOCK
@@ -36,16 +51,22 @@ async function loadDashboard() {
       document.getElementById('statUnpaidFees').textContent = data.data.unpaidFees;
       document.getElementById('statExams').textContent = data.data.totalExams;
       document.getElementById('statStaff').textContent = data.data.totalStaff;
-      document.getElementById('serverStatus').textContent = '✅ Server Online';
-      document.getElementById('dbStatusBadge').textContent = 'Connected';
-      document.getElementById('dbStatusBadge').className = 'badge badge-green';
+      const ss = document.getElementById('serverStatus');
+      ss.textContent = t('status_online');
+      ss.dataset.online = 'true';
+      const dbBadge = document.getElementById('dbStatusBadge');
+      dbBadge.textContent = t('status_connected');
+      dbBadge.className = 'badge badge-green';
       document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('loading'));
     }
   } catch (err) {
-    document.getElementById('serverStatus').textContent = '❌ Server Offline';
-    document.getElementById('serverStatus').style.color = '#e74c3c';
-    document.getElementById('dbStatusBadge').textContent = 'Disconnected';
-    document.getElementById('dbStatusBadge').className = 'badge badge-red';
+    const ss = document.getElementById('serverStatus');
+    ss.textContent = t('status_offline');
+    ss.style.color = '#e74c3c';
+    ss.dataset.online = 'false';
+    const dbBadge = document.getElementById('dbStatusBadge');
+    dbBadge.textContent = t('status_disconnected');
+    dbBadge.className = 'badge badge-red';
     console.error('Dashboard error:', err);
   }
 }
@@ -223,5 +244,6 @@ document.getElementById('menuToggle')?.addEventListener('click', () => {
 // ─────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────
+initLangSwitcher();  // from i18n.js — applies saved language on page load
 startClock();
 loadDashboard();
