@@ -19,14 +19,15 @@ router.post('/', async (req, res) => {
 
     // Fetch relevant data from database in parallel to provide full context
     try {
-      const [studentsRes, feesRes, attendanceRes, examsRes, staffRes, transportRes, timetableRes] = await Promise.all([
+      const [studentsRes, feesRes, attendanceRes, examsRes, staffRes, transportRes, timetableRes, scoresRes] = await Promise.all([
         supabase.from('students').select('*').limit(50),
         supabase.from('fees').select('*, students(*)').limit(50),
         supabase.from('attendance').select('*, students(*)').limit(50),
         supabase.from('exams').select('*').order('date', { ascending: true }).limit(50),
         supabase.from('staff').select('*').limit(50),
         supabase.from('transport').select('*').limit(50),
-        supabase.from('timetable').select('*').limit(50)
+        supabase.from('timetable').select('*').limit(50),
+        supabase.from('scores').select('*, students(name, class, roll_no)').limit(100)
       ]);
 
       contextData = {
@@ -36,7 +37,8 @@ router.post('/', async (req, res) => {
         exams: examsRes.data || [],
         staff: staffRes.data || [],
         transport: transportRes.data || [],
-        timetable: timetableRes.data || []
+        timetable: timetableRes.data || [],
+        scores: scoresRes.data || []
       };
     } catch (dbError) {
       // DB not configured yet — continue without context
