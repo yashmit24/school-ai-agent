@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scoreboard — School Mitra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #0d0d1a; color: #e0e0f0; min-height: 100vh; }
+
+    /* ── HEADER ── */
+    .sb-header {
+      background: rgba(13,13,26,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(108,99,255,0.2);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .sb-header-left { display: flex; align-items: center; gap: 14px; }
+    .sb-logo { font-size: 1.8rem; }
+    .sb-title { font-size: 1.2rem; font-weight: 800; }
+    .sb-subtitle { font-size: 0.78rem; color: #9d95ff; margin-top: 2px; }
+    .sb-back { color: #9d95ff; font-size: 0.85rem; font-weight: 500; padding: 8px 16px; border: 1px solid rgba(108,99,255,0.3); border-radius: 50px; transition: all 0.2s; text-decoration: none; }
+    .sb-back:hover { border-color: #6c63ff; color: #fff; background: rgba(108,99,255,0.15); }
+
+    /* ── CONTROLS ── */
+    .sb-controls {
+      max-width: 1000px; margin: 28px auto 0; padding: 0 20px;
+      display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+    }
+    .sb-select {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(108,99,255,0.3);
+      color: #e0e0f0; padding: 10px 18px; border-radius: 50px;
+      font-family: 'Inter', sans-serif; font-size: 0.88rem; cursor: pointer; outline: none;
+    }
+    .sb-select:focus { border-color: #6c63ff; }
+
+    /* Period tabs */
+    .period-tabs { display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(108,99,255,0.2); border-radius: 50px; padding: 3px; gap: 2px; }
+    .period-tab { padding: 8px 18px; border-radius: 50px; border: none; background: none; color: #9d95ff; font-size: 0.83rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+    .period-tab.active { background: linear-gradient(135deg, #6c63ff, #48cfad); color: #fff; box-shadow: 0 2px 10px rgba(108,99,255,0.4); }
+
+    /* ── PODIUM ── */
+    .sb-podium-wrap { max-width: 1000px; margin: 28px auto 0; padding: 0 20px; }
+    .sb-section-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #9d95ff; margin-bottom: 16px; }
+    .podium {
+      display: flex; align-items: flex-end; justify-content: center; gap: 12px;
+      padding: 24px 0 0;
+    }
+    .podium-item { text-align: center; flex: 1; max-width: 200px; }
+    .podium-avatar {
+      width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.6rem;
+      border: 3px solid transparent;
+    }
+    .podium-item.rank-1 .podium-avatar { border-color: #f7c948; background: rgba(247,201,72,0.15); }
+    .podium-item.rank-2 .podium-avatar { border-color: #c0c0c0; background: rgba(192,192,192,0.1); }
+    .podium-item.rank-3 .podium-avatar { border-color: #cd7f32; background: rgba(205,127,50,0.1); }
+    .podium-name { font-size: 0.9rem; font-weight: 700; margin-bottom: 3px; }
+    .podium-class { font-size: 0.72rem; color: #9d95ff; margin-bottom: 6px; }
+    .podium-pct { font-size: 1.1rem; font-weight: 800; margin-bottom: 10px; }
+    .podium-item.rank-1 .podium-pct { color: #f7c948; }
+    .podium-item.rank-2 .podium-pct { color: #c0c0c0; }
+    .podium-item.rank-3 .podium-pct { color: #cd7f32; }
+    .podium-base {
+      border-radius: 12px 12px 0 0; padding: 12px 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: 900;
+    }
+    .podium-item.rank-1 .podium-base { height: 90px; background: linear-gradient(180deg, rgba(247,201,72,0.3), rgba(247,201,72,0.1)); border: 1px solid rgba(247,201,72,0.4); }
+    .podium-item.rank-2 .podium-base { height: 66px; background: linear-gradient(180deg, rgba(192,192,192,0.2), rgba(192,192,192,0.05)); border: 1px solid rgba(192,192,192,0.3); }
+    .podium-item.rank-3 .podium-base { height: 50px; background: linear-gradient(180deg, rgba(205,127,50,0.2), rgba(205,127,50,0.05)); border: 1px solid rgba(205,127,50,0.3); }
+
+    /* ── LEADERBOARD TABLE ── */
+    .sb-table-wrap { max-width: 1000px; margin: 28px auto 40px; padding: 0 20px; }
+    .sb-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(108,99,255,0.15); border-radius: 16px; overflow: hidden; }
+    .sb-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .sb-table thead th { text-align: left; padding: 14px 20px; background: rgba(108,99,255,0.1); color: #9d95ff; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid rgba(108,99,255,0.15); }
+    .sb-table tbody td { padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .sb-table tbody tr:last-child td { border-bottom: none; }
+    .sb-table tbody tr:hover { background: rgba(108,99,255,0.06); }
+
+    /* Rank badge */
+    .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; font-weight: 800; font-size: 0.85rem; }
+    .rank-1-b { background: rgba(247,201,72,0.2); color: #f7c948; border: 1px solid rgba(247,201,72,0.5); }
+    .rank-2-b { background: rgba(192,192,192,0.15); color: #c0c0c0; border: 1px solid rgba(192,192,192,0.4); }
+    .rank-3-b { background: rgba(205,127,50,0.15); color: #cd7f32; border: 1px solid rgba(205,127,50,0.4); }
+    .rank-other { background: rgba(255,255,255,0.06); color: #9d95ff; }
+
+    /* Progress bar */
+    .progress-wrap { display: flex; align-items: center; gap: 10px; }
+    .progress-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 50px; overflow: hidden; max-width: 120px; }
+    .progress-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, #6c63ff, #48cfad); transition: width 0.6s ease; }
+    .progress-pct { font-weight: 700; font-size: 0.9rem; min-width: 48px; }
+
+    /* Grade badge */
+    .grade { padding: 3px 10px; border-radius: 50px; font-size: 0.72rem; font-weight: 700; }
+    .grade-a { background: rgba(46,204,113,0.15); color: #2ecc71; }
+    .grade-b { background: rgba(52,152,219,0.15); color: #3498db; }
+    .grade-c { background: rgba(247,201,72,0.15); color: #f7c948; }
+    .grade-d { background: rgba(231,76,60,0.15); color: #e74c3c; }
+
+    /* Add Score form */
+    .sb-add-wrap { max-width: 1000px; margin: 0 auto 28px; padding: 0 20px; }
+    .sb-add-card { background: rgba(108,99,255,0.07); border: 1px solid rgba(108,99,255,0.2); border-radius: 16px; padding: 22px; }
+    .sb-add-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 16px; }
+    .sb-form { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .sb-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(108,99,255,0.25); border-radius: 10px; padding: 10px 14px; color: #e0e0f0; font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none; width: 100%; }
+    .sb-input:focus { border-color: #6c63ff; }
+    .sb-submit { grid-column: 1 / -1; padding: 11px 24px; background: linear-gradient(135deg, #6c63ff, #48cfad); border: none; border-radius: 10px; color: #fff; font-weight: 700; font-size: 0.9rem; cursor: pointer; font-family: 'Inter', sans-serif; transition: opacity 0.2s; }
+    .sb-submit:hover { opacity: 0.88; }
+
+    .empty-state { text-align: center; padding: 40px; color: #9d95ff; font-size: 0.9rem; }
+
+    @media (max-width: 600px) {
+      .podium { gap: 8px; }
+      .podium-name { font-size: 0.78rem; }
+      .sb-form { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="sb-header">
+    <div class="sb-header-left">
+      <div class="sb-logo">🏆</div>
+      <div>
+        <div class="sb-title">Scoreboard</div>
+        <div class="sb-subtitle">School Mitra — Student Rankings</div>
+      </div>
+    </div>
+    <a href="admin.html" class="sb-back">← Admin</a>
+  </header>
+
+  <!-- CONTROLS -->
+  <div class="sb-controls">
+    <div class="period-tabs">
+      <button class="period-tab active" data-period="monthly" id="tab-monthly">📅 Monthly</button>
+      <button class="period-tab" data-period="weekly" id="tab-weekly">📆 Weekly</button>
+      <button class="period-tab" data-period="annual" id="tab-annual">🗓️ Annual</button>
+    </div>
+    <select class="sb-select" id="classFilter">
+      <option value="">All Classes</option>
+      <option>6-A</option><option>6-B</option>
+      <option>7-A</option><option>7-B</option>
+      <option>8-A</option><option>8-B</option>
+      <option>9-A</option><option>9-B</option>
+      <option>10-A</option><option>10-B</option>
+      <option>11-A</option><option>11-B</option>
+      <option>12-A</option><option>12-B</option>
+    </select>
+  </div>
+
+  <!-- PODIUM (Top 3) -->
+  <div class="sb-podium-wrap">
+    <div class="sb-section-title">🏅 Top 3 Students</div>
+    <div class="podium" id="podium">
+      <div class="empty-state">Loading rankings...</div>
+    </div>
+  </div>
+
+  <!-- ADD SCORE FORM -->
+  <div class="sb-add-wrap">
+    <div class="sb-add-card">
+      <div class="sb-add-title">➕ Add Score Entry</div>
+      <form class="sb-form" id="addScoreForm">
+        <input class="sb-input" type="number" id="s_student_id" placeholder="Student ID" required />
+        <input class="sb-input" type="text" id="s_subject" placeholder="Subject" required />
+        <input class="sb-input" type="number" id="s_obtained" placeholder="Marks Obtained" required />
+        <input class="sb-input" type="number" id="s_total" placeholder="Total Marks (100)" value="100" />
+        <input class="sb-input" type="date" id="s_date" />
+        <select class="sb-input" id="s_period">
+          <option value="monthly">Monthly</option>
+          <option value="weekly">Weekly</option>
+          <option value="annual">Annual</option>
+        </select>
+        <button class="sb-submit" type="submit">💾 Save Score</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- FULL LEADERBOARD TABLE -->
+  <div class="sb-table-wrap">
+    <div class="sb-section-title">📊 Full Class Leaderboard</div>
+    <div class="sb-card">
+      <table class="sb-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Student</th>
+            <th>Class</th>
+            <th>Score</th>
+            <th>Progress</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardBody">
+          <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const API = 'https://school-ai-agent-eynr.onrender.com';
+    const ADMIN_KEY = 'school-admin-super-secret-key-123';
+    const headers = { 'Content-Type': 'application/json', 'X-Admin-Key': ADMIN_KEY };
+
+    let currentPeriod = 'monthly';
+    let currentClass = '';
+
+    // ── Grade helper
+    function getGrade(pct) {
+      const p = parseFloat(pct);
+      if (p >= 90) return '<span class="grade grade-a">A+</span>';
+      if (p >= 75) return '<span class="grade grade-b">A</span>';
+      if (p >= 60) return '<span class="grade grade-c">B</span>';
+      return '<span class="grade grade-d">C</span>';
+    }
+
+    // ── Rank badge
+    function rankBadge(r) {
+      const emoji = r === 1 ? '🥇' : r === 2 ? '🥈' : r === 3 ? '🥉' : r;
+      const cls = r === 1 ? 'rank-1-b' : r === 2 ? 'rank-2-b' : r === 3 ? 'rank-3-b' : 'rank-other';
+      return `<span class="rank-badge ${cls}">${emoji}</span>`;
+    }
+
+    // ── Load leaderboard
+    async function loadLeaderboard() {
+      const tbody = document.getElementById('leaderboardBody');
+      const podium = document.getElementById('podium');
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Loading...</td></tr>';
+      podium.innerHTML = '<div class="empty-state">Loading...</div>';
+
+      try {
+        let url = `${API}/api/scores/leaderboard?period=${currentPeriod}`;
+        if (currentClass) url += `&class=${encodeURIComponent(currentClass)}`;
+
+        const res = await fetch(url, { headers });
+        const data = await res.json();
+
+        if (!data.success || !data.data.length) {
+          tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No scores found. Add some scores above!</td></tr>';
+          podium.innerHTML = '<div class="empty-state">No data yet</div>';
+          return;
+        }
+
+        const list = data.data;
+
+        // Render podium (top 3)
+        const top3 = [list[1], list[0], list[2]].filter(Boolean); // 2nd, 1st, 3rd order
+        const rankOrder = [2, 1, 3];
+        podium.innerHTML = top3.map((s, i) => {
+          const rank = rankOrder[i];
+          const emoji = rank === 1 ? '👑' : rank === 2 ? '⭐' : '🌟';
+          return `
+            <div class="podium-item rank-${rank}">
+              <div class="podium-avatar">${emoji}</div>
+              <div class="podium-name">${s.name}</div>
+              <div class="podium-class">Class ${s.class}</div>
+              <div class="podium-pct">${s.percentage}%</div>
+              <div class="podium-base">${rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉'}</div>
+            </div>`;
+        }).join('');
+
+        // Render full table
+        tbody.innerHTML = list.map(s => `
+          <tr>
+            <td>${rankBadge(s.rank)}</td>
+            <td><b>${s.name}</b></td>
+            <td><span style="color:#9d95ff">${s.class}</span></td>
+            <td>${s.total_obtained} / ${s.total_possible}</td>
+            <td>
+              <div class="progress-wrap">
+                <div class="progress-bar"><div class="progress-fill" style="width:${s.percentage}%"></div></div>
+                <span class="progress-pct">${s.percentage}%</span>
+              </div>
+            </td>
+            <td>${getGrade(s.percentage)}</td>
+          </tr>`).join('');
+
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">⚠️ Could not connect to server.</td></tr>';
+      }
+    }
+
+    // ── Period tabs
+    document.querySelectorAll('.period-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.period-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentPeriod = btn.dataset.period;
+        loadLeaderboard();
+      });
+    });
+
+    // ── Class filter
+    document.getElementById('classFilter').addEventListener('change', e => {
+      currentClass = e.target.value;
+      loadLeaderboard();
+    });
+
+    // ── Add Score form
+    document.getElementById('addScoreForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('.sb-submit');
+      btn.textContent = '⏳ Saving...'; btn.disabled = true;
+
+      try {
+        const body = {
+          student_id: parseInt(document.getElementById('s_student_id').value),
+          subject: document.getElementById('s_subject').value,
+          marks_obtained: parseInt(document.getElementById('s_obtained').value),
+          total_marks: parseInt(document.getElementById('s_total').value) || 100,
+          exam_date: document.getElementById('s_date').value || new Date().toISOString().split('T')[0],
+          period: document.getElementById('s_period').value
+        };
+        const res = await fetch(`${API}/api/scores`, { method: 'POST', headers, body: JSON.stringify(body) });
+        const data = await res.json();
+        if (data.success) {
+          btn.textContent = '✅ Saved!';
+          e.target.reset();
+          document.getElementById('s_total').value = '100';
+          setTimeout(() => { btn.textContent = '💾 Save Score'; btn.disabled = false; }, 1500);
+          loadLeaderboard();
+        } else {
+          alert('Error: ' + data.error);
+          btn.textContent = '💾 Save Score'; btn.disabled = false;
+        }
+      } catch (err) {
+        alert('Server error. Try again.');
+        btn.textContent = '💾 Save Score'; btn.disabled = false;
+      }
+    });
+
+    // ── Init
+    loadLeaderboard();
+  </script>
+</body>
+</html>

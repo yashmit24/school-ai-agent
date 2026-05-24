@@ -16,6 +16,7 @@ const examsRouter = require('./routes/exams');
 const feesRouter = require('./routes/fees');
 const attendanceRouter = require('./routes/attendance');
 const adminRouter = require('./routes/admin');
+const scoresRouter = require('./routes/scores');
 
 // Import & Initialize Telegram Bot Service
 require('./services/telegramService');
@@ -66,6 +67,7 @@ app.use('/api/students', checkDb, authMiddleware, studentsRouter);
 app.use('/api/exams', checkDb, authMiddleware, examsRouter);
 app.use('/api/fees', checkDb, authMiddleware, feesRouter);
 app.use('/api/attendance', checkDb, authMiddleware, attendanceRouter);
+app.use('/api/scores', checkDb, authMiddleware, scoresRouter);
 
 // Global Error Handler Middleware (MUST be last)
 app.use(errorHandler);
