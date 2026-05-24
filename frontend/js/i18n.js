@@ -6,7 +6,7 @@
 const TRANSLATIONS = {
   en: {
     // Chatbot
-    bot_name: 'School AI Assistant',
+    bot_name: 'School Mitra',
     bot_status: 'Online 24×7',
     clear_btn: 'Clear',
     placeholder: 'Ask anything about school...',
@@ -80,7 +80,7 @@ const TRANSLATIONS = {
 
   hi: {
     // Chatbot
-    bot_name: 'स्कूल AI सहायक',
+    bot_name: 'स्कूल मित्र',
     bot_status: '24×7 उपलब्ध',
     clear_btn: 'साफ करें',
     placeholder: 'स्कूल के बारे में कुछ भी पूछें...',
@@ -154,7 +154,7 @@ const TRANSLATIONS = {
 
   hinglish: {
     // Chatbot
-    bot_name: 'School AI Assistant',
+    bot_name: 'School Mitra',
     bot_status: '24×7 Available',
     clear_btn: 'Clear Karo',
     placeholder: 'School ke baare mein kuch bhi pucho...',
