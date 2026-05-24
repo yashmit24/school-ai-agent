@@ -82,8 +82,11 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, error: 'student_id and marks_obtained required' });
     }
     const { data, error } = await supabase.from('scores').insert([{
-      student_id, exam_id, subject, marks_obtained,
-      total_marks: total_marks || 100,
+      student_id,           // UUID — keep as string
+      exam_id: exam_id || null,
+      subject,
+      marks_obtained: parseInt(marks_obtained),
+      total_marks: parseInt(total_marks) || 100,
       exam_date: exam_date || new Date().toISOString().split('T')[0],
       period: period || 'monthly'
     }]).select();

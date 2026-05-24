@@ -171,10 +171,12 @@
     <div class="sb-add-card">
       <div class="sb-add-title">➕ Add Score Entry</div>
       <form class="sb-form" id="addScoreForm">
-        <input class="sb-input" type="number" id="s_student_id" placeholder="Student ID" required />
-        <input class="sb-input" type="text" id="s_subject" placeholder="Subject" required />
+        <select class="sb-input" id="s_student_id" required>
+          <option value="">Loading students...</option>
+        </select>
+        <input class="sb-input" type="text" id="s_subject" placeholder="Subject (e.g. Maths)" required />
         <input class="sb-input" type="number" id="s_obtained" placeholder="Marks Obtained" required />
-        <input class="sb-input" type="number" id="s_total" placeholder="Total Marks (100)" value="100" />
+        <input class="sb-input" type="number" id="s_total" placeholder="Total Marks" value="100" />
         <input class="sb-input" type="date" id="s_date" />
         <select class="sb-input" id="s_period">
           <option value="monthly">Monthly</option>
@@ -291,6 +293,20 @@
       }
     }
 
+    // ── Load students into dropdown
+    async function loadStudents() {
+      const sel = document.getElementById('s_student_id');
+      try {
+        const res = await fetch(`${API}/api/students`, { headers });
+        const data = await res.json();
+        const students = data.data || [];
+        sel.innerHTML = '<option value="">Select Student</option>' +
+          students.map(s => `<option value="${s.id}">${s.name} — Class ${s.class} (Roll ${s.roll_no})</option>`).join('');
+      } catch (e) {
+        sel.innerHTML = '<option value="">Could not load students</option>';
+      }
+    }
+
     // ── Period tabs
     document.querySelectorAll('.period-tab').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -341,6 +357,7 @@
     });
 
     // ── Init
+    loadStudents();
     loadLeaderboard();
   </script>
 </body>
