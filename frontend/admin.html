@@ -36,6 +36,9 @@
       <a href="#" class="sidebar-link" data-tab="attendance" id="tab-attendance">
         <span>📋</span> <span data-i18n="nav_attendance">Attendance</span>
       </a>
+      <a href="#" class="sidebar-link" data-tab="branding" id="tab-branding">
+        <span>🎨</span> <span>School Branding</span>
+      </a>
     </nav>
     <div class="sidebar-bottom">
       <a href="scoreboard.html" class="sidebar-link">
@@ -241,9 +244,119 @@
       </div>
     </section>
 
+      <!-- ══════════════════════════════════════ -->
+      <!-- BRANDING TAB                           -->
+      <!-- ══════════════════════════════════════ -->
+      <section class="tab-content" id="branding">
+        <div class="admin-card" style="max-width:800px">
+          <div class="card-header">
+            <h2 class="card-title">🎨 School Branding</h2>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:4px">Changes apply across all pages automatically</p>
+          </div>
+
+          <!-- LIVE PREVIEW -->
+          <div id="brandingPreview" style="background:var(--surface-2,#1a1a2e);border:1px solid rgba(108,99,255,0.25);border-radius:14px;padding:20px;margin-bottom:28px;display:flex;align-items:center;gap:18px;">
+            <div id="previewLogo" style="width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#6c63ff,#48cfad);display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;overflow:hidden">
+              <img id="previewLogoImg" src="" alt="" style="width:100%;height:100%;object-fit:contain;display:none" />
+              <span id="previewLogoEmoji">🏫</span>
+            </div>
+            <div>
+              <div id="previewName" style="font-size:1.2rem;font-weight:800;color:#fff">Sunshine Public School</div>
+              <div id="previewTagline" style="font-size:0.82rem;color:#9d95ff;margin-top:2px">Educating for a Better Tomorrow</div>
+              <div id="previewPrincipal" style="font-size:0.78rem;color:#9d95ff;margin-top:4px"></div>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <div id="previewColor1" style="width:28px;height:28px;border-radius:50%;background:#6c63ff;border:2px solid rgba(255,255,255,0.2)"></div>
+              <div id="previewColor2" style="width:28px;height:28px;border-radius:50%;background:#48cfad;border:2px solid rgba(255,255,255,0.2)"></div>
+              <div id="previewColor3" style="width:28px;height:28px;border-radius:50%;background:#f7c948;border:2px solid rgba(255,255,255,0.2)"></div>
+            </div>
+          </div>
+
+          <!-- FORM -->
+          <form id="brandingForm">
+            <!-- Logo -->
+            <div style="margin-bottom:22px">
+              <label style="display:block;font-size:0.8rem;font-weight:600;color:#9d95ff;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">🖼️ School Logo</label>
+              <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+                <label for="logoUpload" style="cursor:pointer;padding:10px 18px;background:rgba(108,99,255,0.12);border:1.5px dashed rgba(108,99,255,0.4);border-radius:10px;font-size:0.85rem;color:#9d95ff;transition:all 0.2s" onmouseover="this.style.borderColor='#6c63ff'" onmouseout="this.style.borderColor='rgba(108,99,255,0.4)'">
+                  📁 Upload Logo
+                  <input type="file" id="logoUpload" accept="image/*" style="display:none" onchange="handleLogoUpload(event)">
+                </label>
+                <span style="color:#9d95ff;font-size:0.8rem">— or paste URL —</span>
+                <input type="url" id="b_logo_url" class="admin-input" placeholder="https://your-logo-url.com/logo.png" style="flex:1;min-width:220px" oninput="updateLogoPreview(this.value)">
+              </div>
+              <div id="logoSizeWarning" style="color:#e74c3c;font-size:0.75rem;margin-top:6px;display:none">⚠️ Image too large! Please use a URL instead or compress the image.</div>
+            </div>
+
+            <!-- Row 1: School Name + Tagline -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:600;color:#9d95ff;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">🏫 School Name</label>
+                <input type="text" id="b_school_name" class="admin-input" placeholder="Sunshine Public School" oninput="document.getElementById('previewName').textContent=this.value">
+              </div>
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:600;color:#9d95ff;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">✨ Tagline</label>
+                <input type="text" id="b_tagline" class="admin-input" placeholder="Educating for a Better Tomorrow" oninput="document.getElementById('previewTagline').textContent=this.value">
+              </div>
+            </div>
+
+            <!-- Row 2: Principal + Phone -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:600;color:#9d95ff;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">👨‍💼 Principal Name</label>
+                <input type="text" id="b_principal_name" class="admin-input" placeholder="Dr. A.K. Sharma" oninput="document.getElementById('previewPrincipal').textContent=this.value?'Principal: '+this.value:''">
+              </div>
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:600;color:#9d95ff;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">📞 Phone</label>
+                <input type="text" id="b_phone" class="admin-input" placeholder="+91 98765 43210">
+              </div>
+            </div>
+
+            <!-- Row 3: Email + Address -->
+            <div style="margin-bottom:18px">
+              <label style="display:block;font-size:0.8rem;font-weight:600;color:#9d95ff;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">📧 Email</label>
+              <input type="email" id="b_email" class="admin-input" placeholder="info@school.com">
+            </div>
+            <div style="margin-bottom:22px">
+              <label style="display:block;font-size:0.8rem;font-weight:600;color:#9d95ff;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">📍 School Address</label>
+              <textarea id="b_address" class="admin-input" placeholder="123 Education Street, New Delhi - 110001" rows="2" style="resize:vertical"></textarea>
+            </div>
+
+            <!-- Color Pickers -->
+            <div style="margin-bottom:24px">
+              <label style="display:block;font-size:0.8rem;font-weight:600;color:#9d95ff;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.5px">🎨 Theme Colors</label>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+                <div style="text-align:center">
+                  <label style="display:block;font-size:0.75rem;color:#9d95ff;margin-bottom:6px">Primary</label>
+                  <input type="color" id="b_primary" value="#6c63ff" style="width:100%;height:44px;border:none;border-radius:10px;cursor:pointer;background:none" oninput="document.getElementById('previewColor1').style.background=this.value">
+                </div>
+                <div style="text-align:center">
+                  <label style="display:block;font-size:0.75rem;color:#9d95ff;margin-bottom:6px">Secondary</label>
+                  <input type="color" id="b_secondary" value="#48cfad" style="width:100%;height:44px;border:none;border-radius:10px;cursor:pointer;background:none" oninput="document.getElementById('previewColor2').style.background=this.value">
+                </div>
+                <div style="text-align:center">
+                  <label style="display:block;font-size:0.75rem;color:#9d95ff;margin-bottom:6px">Accent</label>
+                  <input type="color" id="b_accent" value="#f7c948" style="width:100%;height:44px;border:none;border-radius:10px;cursor:pointer;background:none" oninput="document.getElementById('previewColor3').style.background=this.value">
+                </div>
+              </div>
+            </div>
+
+            <!-- Save Button -->
+            <div style="display:flex;gap:12px;align-items:center">
+              <button type="submit" id="brandingSaveBtn" style="padding:13px 32px;background:linear-gradient(135deg,#6c63ff,#48cfad);border:none;border-radius:12px;color:#fff;font-weight:700;font-size:0.95rem;cursor:pointer;font-family:inherit;transition:opacity 0.2s;min-width:160px">
+                💾 Save Branding
+              </button>
+              <span id="brandingSaveMsg" style="font-size:0.85rem;display:none"></span>
+            </div>
+          </form>
+        </div>
+      </section>
+
   </div><!-- end admin-main -->
 
   <script src="js/i18n.js"></script>
+  <script src="js/branding.js"></script>
   <script src="js/admin.js"></script>
+  <script src="js/branding-admin.js"></script>
 </body>
 </html>

@@ -17,6 +17,7 @@ const feesRouter = require('./routes/fees');
 const attendanceRouter = require('./routes/attendance');
 const adminRouter = require('./routes/admin');
 const scoresRouter = require('./routes/scores');
+const brandingRouter = require('./routes/branding');
 
 // Import & Initialize Telegram Bot Service
 require('./services/telegramService');
@@ -63,6 +64,7 @@ app.get('/', (req, res) => {
 // Feel free to attach authMiddleware on admin-only routes
 app.use('/api/chat', chatRouter);
 app.use('/api/admin', checkDb, adminRouter);
+app.use('/api/branding', checkDb, brandingRouter);  // GET is public, PUT uses authMiddleware inside
 app.use('/api/students', checkDb, authMiddleware, studentsRouter);
 app.use('/api/exams', checkDb, authMiddleware, examsRouter);
 app.use('/api/fees', checkDb, authMiddleware, feesRouter);
