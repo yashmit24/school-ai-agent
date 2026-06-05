@@ -6,6 +6,7 @@ require('dotenv').config();
 
 // Import Middlewares
 const authMiddleware = require('./middleware/authMiddleware');
+const jwtMiddleware = require('./middleware/jwtMiddleware');
 const errorHandler = require('./middleware/errorHandler');
 const checkDb = require('./middleware/checkDb');
 
@@ -18,6 +19,7 @@ const attendanceRouter = require('./routes/attendance');
 const adminRouter = require('./routes/admin');
 const scoresRouter = require('./routes/scores');
 const brandingRouter = require('./routes/branding');
+const authRouter = require('./routes/auth');
 
 // Import & Initialize Telegram Bot Service
 require('./services/telegramService');
@@ -63,13 +65,14 @@ app.get('/', (req, res) => {
 // Bind Routes with optional Authentication for modification routes
 // Feel free to attach authMiddleware on admin-only routes
 app.use('/api/chat', chatRouter);
+app.use('/api/auth', checkDb, authRouter);                              // Public auth routes
 app.use('/api/admin', checkDb, adminRouter);
-app.use('/api/branding', checkDb, brandingRouter);  // GET is public, PUT uses authMiddleware inside
-app.use('/api/students', checkDb, authMiddleware, studentsRouter);
-app.use('/api/exams', checkDb, authMiddleware, examsRouter);
-app.use('/api/fees', checkDb, authMiddleware, feesRouter);
-app.use('/api/attendance', checkDb, authMiddleware, attendanceRouter);
-app.use('/api/scores', checkDb, authMiddleware, scoresRouter);
+app.use('/api/branding', checkDb, brandingRouter);
+app.use('/api/students', checkDb, jwtMiddleware, studentsRouter);
+app.use('/api/exams', checkDb, jwtMiddleware, examsRouter);
+app.use('/api/fees', checkDb, jwtMiddleware, feesRouter);
+app.use('/api/attendance', checkDb, jwtMiddleware, attendanceRouter);
+app.use('/api/scores', checkDb, jwtMiddleware, scoresRouter);
 
 // Global Error Handler Middleware (MUST be last)
 app.use(errorHandler);

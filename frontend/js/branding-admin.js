@@ -4,10 +4,15 @@
  */
 
 const API = 'https://school-ai-agent-eynr.onrender.com';
-const ADMIN_HEADERS = {
-  'Content-Type': 'application/json',
-  'X-Admin-Key': 'school-admin-super-secret-key-123'
-};
+
+function getBrandingHeaders() {
+  const token = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': token ? `Bearer ${token}` : ''
+  };
+}
+const ADMIN_HEADERS = getBrandingHeaders();
 
 // ─────────────────────────────────────────
 // LOAD EXISTING BRANDING INTO FORM

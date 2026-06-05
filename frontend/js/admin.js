@@ -3,12 +3,49 @@
 // =============================================
 
 const API_BASE = 'https://school-ai-agent-eynr.onrender.com';
-const ADMIN_KEY = 'school-admin-super-secret-key-123';
 
-const headers = {
-  'Content-Type': 'application/json',
-  'X-Admin-Key': ADMIN_KEY
+// ─── Auth Guard — redirect to login if no valid token
+function getAdminToken() {
+  return localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+}
+
+function authGuard() {
+  const token = getAdminToken();
+  if (!token) { window.location.href = 'login.html'; return false; }
+  return token;
+}
+
+function getAuthHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${getAdminToken()}`
+  };
+}
+
+// Logout
+window.logoutAdmin = async function() {
+  if (!confirm('Are you sure you want to logout?')) return;
+  await fetch(`${API_BASE}/api/auth/logout`, { method: 'POST', headers: getAuthHeaders() }).catch(() => {});
+  localStorage.removeItem('adminToken');
+  localStorage.removeItem('adminUser');
+  sessionStorage.removeItem('adminToken');
+  sessionStorage.removeItem('adminUser');
+  window.location.href = 'login.html';
 };
+
+// Show logged-in admin name
+function showAdminUser() {
+  const raw = localStorage.getItem('adminUser') || sessionStorage.getItem('adminUser');
+  if (raw) {
+    try {
+      const u = JSON.parse(raw);
+      const el = document.getElementById('adminUserName');
+      if (el) el.textContent = '👤 ' + (u.name || u.email);
+    } catch(e) {}
+  }
+}
+
+const headers = getAuthHeaders();
 
 // ─────────────────────────────────────────
 // OVERRIDE setLang for admin-specific UI updates
@@ -244,6 +281,8 @@ document.getElementById('menuToggle')?.addEventListener('click', () => {
 // ─────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────
-initLangSwitcher();  // from i18n.js — applies saved language on page load
+authGuard();          // Redirect to login if no token
+showAdminUser();      // Show admin name in topbar
+initLangSwitcher();   // from i18n.js — applies saved language on page load
 startClock();
 loadDashboard();
