@@ -39,8 +39,12 @@ app.use(helmet({
 app.use(cors());
 
 // Body Parser Middleware
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));  // 5mb for base64 logo images
 app.use(express.urlencoded({ extended: true }));
+
+// Serve Frontend Static Files
+const path = require('path');
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // Rate Limiting (Prevent spam/abuse)
 const limiter = rateLimit({
