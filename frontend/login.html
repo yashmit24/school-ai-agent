@@ -231,23 +231,13 @@
         // If no admin table or empty, setup route returns something different
         if (pj.error && pj.error.toLowerCase().includes('does not exist')) {
           document.getElementById('setupTab').style.display = 'block';
-          switchPanel('setup');
-        }
-      } catch(e) {}
-    }
-
-    // ── Show/hide setup tab based on admin count
     async function checkFirstTimeSetup() {
       try {
-        // Try a dummy login to see if table exists
-        const res = await fetch(`${API}/api/auth/login`, {
-          method: 'POST', headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ email: 'x', password: 'x' })
-        });
+        const res = await fetch(`${API}/api/auth/needs-setup`);
         const json = await res.json();
-        if (!json.success && json.error && json.error.includes('does not exist')) {
-          // Table doesn't exist — show setup
+        if (json.success && json.needsSetup) {
           document.getElementById('setupTab').style.display = 'flex';
+          switchPanel('setup'); // Auto-switch to setup if no admin exists
         }
       } catch(e) {}
     }

@@ -11,6 +11,19 @@ const JWT_EXPIRES = '24h';
 const RESET_EXPIRES_MS = 60 * 60 * 1000; // 1 hour
 
 // ─────────────────────────────────────────
+// GET /api/auth/needs-setup — check if first admin setup is required
+// ─────────────────────────────────────────
+router.get('/needs-setup', async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('admin_users').select('id').limit(1);
+    const needsSetup = !data || data.length === 0;
+    res.json({ success: true, needsSetup });
+  } catch (err) {
+    res.json({ success: true, needsSetup: false });
+  }
+});
+
+// ─────────────────────────────────────────
 // POST /api/auth/login
 // ─────────────────────────────────────────
 router.post('/login', async (req, res) => {
