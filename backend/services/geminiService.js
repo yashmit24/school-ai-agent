@@ -1,139 +1,230 @@
 const { model } = require('../config/gemini');
 
-// ─────────────────────────────────────────
-// SYSTEM PROMPT
-// ─────────────────────────────────────────
-function buildSystemPrompt() {
-  return `You are "School Mitra" — an intelligent AI assistant for ${process.env.SCHOOL_NAME || 'Sunshine Public School'}.
-You help students, parents, and staff with school-related queries.
+const SCHOOL_NAME = process.env.SCHOOL_NAME || 'Sunshine Public School';
+const SCHOOL_ADDRESS = process.env.SCHOOL_ADDRESS || 'Contact school for address';
+const SCHOOL_PHONE = process.env.SCHOOL_PHONE || 'Contact school office';
+const SCHOOL_TIMINGS = process.env.SCHOOL_TIMINGS || '8:00 AM – 2:30 PM';
 
-School Information:
-- Name: ${process.env.SCHOOL_NAME || 'Sunshine Public School'}
-- Address: ${process.env.SCHOOL_ADDRESS || '123 Education Street'}
-- Phone: ${process.env.SCHOOL_PHONE || '+91-9876543210'}
-- Email: ${process.env.SCHOOL_EMAIL || 'info@school.com'}
-- Timings: ${process.env.SCHOOL_TIMINGS || '8:00 AM to 2:30 PM'}
+// ─────────────────────────────────────────
+// STRICT RAG SYSTEM PROMPT
+// ─────────────────────────────────────────
+function buildRAGSystemPrompt(dbContext) {
+  return `You are "School Mitra" — the official AI assistant for ${SCHOOL_NAME}.
 
-CRITICAL RULES:
-1. You have DIRECT ACCESS to the school database provided below. Use it!
-2. NEVER say you cannot access records — you have the full data.
-3. Answer with SPECIFIC details: names, amounts, dates, room numbers, phone numbers.
-4. If a student is not found in the database, say "Record not found."
-5. Keep answers short and accurate. Do NOT make up information.
-6. Be polite and friendly.`;
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SCHOOL INFORMATION:
+• Name: ${SCHOOL_NAME}
+• Address: ${SCHOOL_ADDRESS}
+• Phone: ${SCHOOL_PHONE}
+• Timings: ${SCHOOL_TIMINGS}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ABSOLUTE RULES — NEVER BREAK THESE:
+
+RULE 1 — GROUNDED ONLY:
+You MUST answer ONLY from the school database provided below.
+Do NOT use any general knowledge, assumptions, or outside information.
+
+RULE 2 — NO HALLUCINATION:
+If a specific piece of information (student name, fee amount, date, attendance, exam, notice) is NOT present in the database below, you MUST say:
+"This information is not available. Please contact school administration."
+NEVER guess, infer, or make up any data.
+
+RULE 3 — STUDENT PRIVACY:
+Only share information that is relevant to the query.
+Do not volunteer private data (phone, email, address) unless specifically asked and the data is in the database.
+
+RULE 4 — SCOPE:
+You only answer school-related questions.
+If someone asks about topics unrelated to school (news, cricket, recipes, etc.), say:
+"I am School Mitra, your school assistant. I can only help with school-related queries."
+
+RULE 5 — FORMAT:
+Keep answers concise, clear, and formatted with emojis where helpful.
+Use bullet points for lists. Use ₹ for amounts.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LIVE SCHOOL DATABASE:
+${dbContext}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Remember: If any specific information is not in the database above — say "Please contact school administration." — NEVER make it up.`;
 }
 
 // ─────────────────────────────────────────
 // LANGUAGE INSTRUCTIONS
 // ─────────────────────────────────────────
-const LANG_INSTRUCTIONS = {
-  en: 'Respond in clear English.',
-  hi: 'केवल हिंदी में उत्तर दें।',
-  hinglish: 'Respond in Hinglish (Roman script Hindi + English mix). Example: "Aapki fees 5000 rupaye hai!"'
+const LANG = {
+  en:       'Respond in clear, simple English.',
+  hi:       'केवल हिंदी में उत्तर दें। Simple और clear भाषा में।',
+  hinglish: 'Respond in Hinglish (mix of Hindi words in English script). Example: "Aapke bache ki fees ₹5000 baki hai."'
 };
 
 // ─────────────────────────────────────────
-// CONVERSATION HISTORY
+// Conversation History Store (in-memory)
 // ─────────────────────────────────────────
-const conversationHistory = {};
+const chatHistory = {};
 
 // ─────────────────────────────────────────
-// Helper: Trim context data to avoid token limit errors
-// Only send relevant fields, not full nested objects
+// Format DB context for AI (structured, readable)
 // ─────────────────────────────────────────
-function trimContext(contextData) {
-  if (!contextData) return null;
-  return {
-    students: (contextData.students || []).slice(0, 30).map(s => ({
-      id: s.id, name: s.name, class: s.class, roll_no: s.roll_no,
-      parent_name: s.parent_name, phone: s.phone
-    })),
-    fees: (contextData.fees || []).slice(0, 30).map(f => ({
-      student_id: f.student_id,
-      student_name: f.students?.name || f.student_name,
-      amount: f.amount, due_date: f.due_date, paid: f.paid, month: f.month
-    })),
-    attendance: (contextData.attendance || []).slice(0, 30).map(a => ({
-      student_id: a.student_id,
-      student_name: a.students?.name || a.student_name,
-      date: a.date, status: a.status
-    })),
-    exams: (contextData.exams || []).slice(0, 20).map(e => ({
-      name: e.name, subject: e.subject, class: e.class,
-      date: e.date, time: e.time, room: e.room
-    })),
-    staff: (contextData.staff || []).slice(0, 20).map(s => ({
-      name: s.name, role: s.role, subject: s.subject, phone: s.phone, email: s.email
-    })),
-    transport: (contextData.transport || []).slice(0, 15).map(t => ({
-      route_name: t.route_name, stops: t.stops,
-      driver_name: t.driver_name, driver_phone: t.driver_phone, bus_number: t.bus_number
-    })),
-    timetable: (contextData.timetable || []).slice(0, 20).map(t => ({
-      class: t.class, day: t.day, period: t.period,
-      subject: t.subject, teacher: t.teacher, time: t.time
-    }))
-  };
+function formatContext(ctx) {
+  if (!ctx) return 'No database connection. Direct queries to school office.';
+
+  const parts = [];
+
+  // Students
+  if (ctx.students?.length) {
+    parts.push('STUDENTS (' + ctx.students.length + ' records):');
+    ctx.students.slice(0, 50).forEach(s => {
+      parts.push(`  • ${s.name} | Class ${s.class}${s.section ? '-' + s.section : ''} | Roll ${s.roll_no || '—'} | Parent: ${s.parent_name || '—'} | Phone: ${s.phone || '—'}${s.blood_group ? ' | Blood: ' + s.blood_group : ''}${s.allergies && s.allergies !== 'None' ? ' | Allergy: ' + s.allergies : ''}`);
+    });
+  } else {
+    parts.push('STUDENTS: No student records found.');
+  }
+
+  // Fees
+  if (ctx.fees?.length) {
+    parts.push('\nFEE RECORDS (' + ctx.fees.length + ' records):');
+    ctx.fees.slice(0, 50).forEach(f => {
+      const name = f.students?.name || 'Unknown';
+      const status = f.paid ? '✅ PAID' : '❌ UNPAID';
+      const due = f.due_date ? 'Due: ' + f.due_date : '';
+      const paid_on = f.paid && f.paid_date ? 'Paid on: ' + f.paid_date : '';
+      parts.push(`  • ${name} (Class ${f.students?.class || '?'}) | ${f.description || 'Fee'} | ₹${f.amount || 0} | ${status} | ${due} ${paid_on}`);
+    });
+  } else {
+    parts.push('\nFEE RECORDS: No fee records found.');
+  }
+
+  // Attendance
+  if (ctx.attendance?.length) {
+    // Group attendance by student
+    const grouped = {};
+    ctx.attendance.forEach(a => {
+      const key = a.students?.name || a.student_id;
+      if (!grouped[key]) grouped[key] = { name: key, class: a.students?.class, total: 0, present: 0, absent: 0, late: 0, recent: [] };
+      grouped[key].total++;
+      if (a.status === 'present') grouped[key].present++;
+      else if (a.status === 'absent') grouped[key].absent++;
+      else if (a.status === 'late') grouped[key].late++;
+      if (grouped[key].recent.length < 5) grouped[key].recent.push(a.date + ':' + a.status);
+    });
+
+    parts.push('\nATTENDANCE SUMMARY:');
+    Object.values(grouped).forEach(g => {
+      const pct = g.total > 0 ? ((g.present / g.total) * 100).toFixed(1) : 0;
+      parts.push(`  • ${g.name} (Class ${g.class || '?'}) | ${pct}% (${g.present}P/${g.absent}A/${g.late}L of ${g.total} days) | Recent: ${g.recent.join(', ')}`);
+    });
+  } else {
+    parts.push('\nATTENDANCE: No attendance records found.');
+  }
+
+  // Exams
+  if (ctx.exams?.length) {
+    parts.push('\nEXAM SCHEDULE:');
+    ctx.exams.forEach(e => {
+      parts.push(`  • ${e.subject || e.name} | Class ${e.class || 'All'} | Date: ${e.date || '—'} | Time: ${e.time || '—'} | Room: ${e.room || '—'}`);
+    });
+  } else {
+    parts.push('\nEXAM SCHEDULE: No exams scheduled.');
+  }
+
+  // Notices
+  if (ctx.notices?.length) {
+    parts.push('\nSCHOOL NOTICES:');
+    ctx.notices.forEach(n => {
+      parts.push(`  • [${n.created_at ? n.created_at.substring(0,10) : 'Date?'}] ${n.title || 'Notice'}: ${n.body || n.content || '—'}`);
+    });
+  } else {
+    parts.push('\nNOTICES: No notices found.');
+  }
+
+  // Homework
+  if (ctx.homework?.length) {
+    parts.push('\nHOMEWORK:');
+    ctx.homework.forEach(h => {
+      parts.push(`  • Class ${h.class || '?'} | ${h.subject} | ${h.title} | Due: ${h.due_date || '—'}${h.description ? ' | ' + h.description : ''}`);
+    });
+  } else {
+    parts.push('\nHOMEWORK: No homework records found.');
+  }
+
+  // Scores
+  if (ctx.scores?.length) {
+    parts.push('\nEXAM SCORES:');
+    ctx.scores.slice(0, 40).forEach(s => {
+      const name = s.students?.name || 'Unknown';
+      parts.push(`  • ${name} (Class ${s.students?.class || '?'}) | ${s.exam_name || 'Exam'} | ${s.subject || ''} | Score: ${s.marks_obtained || '—'}/${s.total_marks || '—'} | ${s.grade || ''}`);
+    });
+  }
+
+  return parts.join('\n');
 }
 
 // ─────────────────────────────────────────
-// MAIN: Generate AI Response
+// MAIN: Generate RAG Response
 // ─────────────────────────────────────────
-async function generateResponse(userMessage, userId = 'default', contextData = null, language = 'en') {
+async function generateRAGResponse(userMessage, userId = 'default', contextData = null, language = 'en') {
   try {
-    if (!conversationHistory[userId]) {
-      conversationHistory[userId] = [];
-    }
+    if (!chatHistory[userId]) chatHistory[userId] = [];
 
-    // Trim context to avoid token overflow
-    const trimmed = trimContext(contextData);
-    const dbContext = trimmed
-      ? `\n\nSCHOOL DATABASE:\n${JSON.stringify(trimmed, null, 1)}`
-      : '';
+    const dbContext = formatContext(contextData);
+    const systemPrompt = buildRAGSystemPrompt(dbContext);
+    const langInstruction = LANG[language] || LANG.en;
 
-    const langInstruction = LANG_INSTRUCTIONS[language] || LANG_INSTRUCTIONS['en'];
+    // Build the full grounded prompt
+    const fullPrompt = `${systemPrompt}
 
-    // Full message sent to Gemini — includes system prompt + DB + user question
-    const fullMessage = `${buildSystemPrompt()}
+LANGUAGE INSTRUCTION: ${langInstruction}
 
-LANGUAGE: ${langInstruction}
-${dbContext}
+USER QUESTION: ${userMessage}
 
-Question: ${userMessage}
-Answer:`;
+ANSWER (only from school database above, no hallucinations):`;
 
-    // Use last 4 history items for context (2 exchanges)
-    const historyForChat = conversationHistory[userId].slice(-4);
+    // Use last 3 Q&A pairs for conversation context
+    const recentHistory = chatHistory[userId].slice(-6);
 
-    const chat = model.startChat({ history: historyForChat });
-
-    const result = await chat.sendMessage(fullMessage);
+    const chat = model.startChat({ history: recentHistory });
+    const result = await chat.sendMessage(fullPrompt);
     const response = result.response.text();
 
-    // Save clean Q&A to history
-    conversationHistory[userId].push({ role: 'user', parts: [{ text: userMessage }] });
-    conversationHistory[userId].push({ role: 'model', parts: [{ text: response }] });
+    // Store clean history
+    chatHistory[userId].push({ role: 'user', parts: [{ text: userMessage }] });
+    chatHistory[userId].push({ role: 'model', parts: [{ text: response }] });
 
-    if (conversationHistory[userId].length > 16) {
-      conversationHistory[userId] = conversationHistory[userId].slice(-16);
+    // Keep last 10 exchanges only
+    if (chatHistory[userId].length > 20) {
+      chatHistory[userId] = chatHistory[userId].slice(-20);
     }
 
     return response;
 
   } catch (error) {
-    console.error('Gemini Error:', error.message);
-    if (error.message.includes('API_KEY')) {
+    console.error('Gemini RAG Error:', error.message);
+
+    if (error.message?.includes('API_KEY') || error.message?.includes('api_key')) {
       return '⚠️ AI service is not configured. Please contact the school office.';
     }
-    if (error.message.includes('quota') || error.message.includes('limit')) {
-      return '⚠️ AI usage limit reached. Please try again after a minute.';
+    if (error.message?.includes('quota') || error.message?.includes('limit') || error.message?.includes('429')) {
+      return '⚠️ AI usage limit reached. Please try again in a minute.';
     }
-    return '🙏 School Mitra abhi available nahi hai. Thodi der baad try karein.';
+    if (error.message?.includes('SAFETY')) {
+      return '⚠️ Your message could not be processed. Please rephrase your question.';
+    }
+    return '🙏 School Mitra is temporarily unavailable. Please try again shortly or contact the school office.';
   }
 }
 
-function clearHistory(userId) {
-  delete conversationHistory[userId];
+// ─────────────────────────────────────────
+// Legacy export wrapper (backward compat)
+// ─────────────────────────────────────────
+async function generateResponse(userMessage, userId, contextData, language) {
+  return generateRAGResponse(userMessage, userId, contextData, language);
 }
 
-module.exports = { generateResponse, clearHistory };
+function clearHistory(userId) {
+  delete chatHistory[userId];
+}
+
+module.exports = { generateResponse, generateRAGResponse, clearHistory };
