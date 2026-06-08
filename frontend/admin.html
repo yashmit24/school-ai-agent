@@ -139,26 +139,122 @@
     </section>
 
     <!-- STUDENTS TAB -->
+    <!-- STUDENTS TAB -->
     <section class="tab-content" id="students">
+
+      <!-- STUDENT MODAL (Add / Edit) -->
+      <div id="studentModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+        <div style="background:#1a1a2e;border:1px solid rgba(108,99,255,0.3);border-radius:20px;padding:32px;width:90%;max-width:680px;max-height:90vh;overflow-y:auto;position:relative;">
+          <button onclick="closeStudentModal()" style="position:absolute;top:16px;right:16px;background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:8px;color:#e74c3c;width:32px;height:32px;cursor:pointer;font-size:1rem;">✕</button>
+          <h2 id="modalTitle" style="font-size:1.2rem;font-weight:800;margin-bottom:24px;">➕ Add New Student</h2>
+          <div id="modalAlert" style="display:none;padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:0.85rem;"></div>
+          <form id="studentForm" onsubmit="saveStudent(event)">
+            <input type="hidden" id="studentId"/>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <div class="mf"><label class="ml">Full Name *</label><input class="mi" id="sf_name" placeholder="Rahul Sharma" required/></div>
+              <div class="mf"><label class="ml">Admission No</label><input class="mi" id="sf_admission_no" placeholder="ADM2024001"/></div>
+              <div class="mf"><label class="ml">Class *</label>
+                <select class="mi" id="sf_class" required>
+                  <option value="">Select Class</option>
+                  <option>Nursery</option><option>LKG</option><option>UKG</option>
+                  <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                  <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+                  <option>11</option><option>12</option>
+                </select>
+              </div>
+              <div class="mf"><label class="ml">Section</label>
+                <select class="mi" id="sf_section">
+                  <option value="">Select</option><option>A</option><option>B</option><option>C</option><option>D</option>
+                </select>
+              </div>
+              <div class="mf"><label class="ml">Roll No</label><input class="mi" id="sf_roll_no" placeholder="01" type="number"/></div>
+              <div class="mf"><label class="ml">Gender</label>
+                <select class="mi" id="sf_gender">
+                  <option value="">Select</option><option>Male</option><option>Female</option><option>Other</option>
+                </select>
+              </div>
+              <div class="mf"><label class="ml">Date of Birth</label><input class="mi" id="sf_dob" type="date"/></div>
+              <div class="mf"><label class="ml">Blood Group</label>
+                <select class="mi" id="sf_blood_group">
+                  <option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+                </select>
+              </div>
+              <div class="mf" style="grid-column:1/-1"><label class="ml">Address</label><input class="mi" id="sf_address" placeholder="House No, Street, City"/></div>
+              <div class="mf"><label class="ml">Parent/Guardian Name *</label><input class="mi" id="sf_parent_name" placeholder="Suresh Sharma" required/></div>
+              <div class="mf"><label class="ml">Parent Phone *</label><input class="mi" id="sf_phone" placeholder="+91 98765 43210" required/></div>
+              <div class="mf"><label class="ml">Parent Email</label><input class="mi" id="sf_email" type="email" placeholder="parent@email.com"/></div>
+              <div class="mf"><label class="ml">Emergency Contact</label><input class="mi" id="sf_emergency_contact" placeholder="Alternate phone"/></div>
+              <div class="mf"><label class="ml">WhatsApp/Telegram ID</label><input class="mi" id="sf_telegram_id" placeholder="@username or +91..."/></div>
+              <div class="mf"><label class="ml">Any Allergies?</label><input class="mi" id="sf_allergies" placeholder="e.g. Peanuts, Dust (or None)"/></div>
+              <div class="mf" style="grid-column:1/-1"><label class="ml">Medical Notes / School Medicines Given</label><textarea class="mi" id="sf_medical_notes" placeholder="e.g. Takes Paracetamol for fever. Has inhaler." rows="2" style="resize:vertical"></textarea></div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:20px;">
+              <button type="submit" id="saveStudentBtn" class="admin-btn" style="flex:1;padding:12px;font-size:0.9rem;">💾 Save Student</button>
+              <button type="button" onclick="closeStudentModal()" style="padding:12px 20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#9d95ff;cursor:pointer;font-family:inherit;">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- DELETE CONFIRM MODAL -->
+      <div id="deleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+        <div style="background:#1a1a2e;border:1px solid rgba(231,76,60,0.3);border-radius:20px;padding:32px;width:90%;max-width:400px;text-align:center;">
+          <div style="font-size:3rem;margin-bottom:12px;">🗑️</div>
+          <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:8px;">Delete Student?</h3>
+          <p id="deleteStudentName" style="color:#9d95ff;font-size:0.9rem;margin-bottom:24px;"></p>
+          <div style="display:flex;gap:12px;justify-content:center;">
+            <button onclick="confirmDelete()" style="padding:10px 24px;background:linear-gradient(135deg,#e74c3c,#c0392b);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-family:inherit;">Yes, Delete</button>
+            <button onclick="document.getElementById('deleteModal').style.display='none'" style="padding:10px 24px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#9d95ff;cursor:pointer;font-family:inherit;">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CARD -->
       <div class="admin-card">
         <div class="admin-card-header">
-          <h3>👨‍🎓 <span data-i18n="all_students">All Students</span></h3>
-          <button class="admin-btn" onclick="loadStudents()">🔄 <span data-i18n="refresh">Refresh</span></button>
+          <h3>👨‍🎓 Student Management</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <!-- Search -->
+            <div style="position:relative;">
+              <input id="studentSearch" type="text" placeholder="🔍 Search name, class, phone..." oninput="filterStudents()" style="padding:8px 14px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(108,99,255,0.25);border-radius:10px;color:#e0e0f0;font-family:inherit;font-size:0.82rem;width:230px;outline:none;"/>
+            </div>
+            <!-- Class Filter -->
+            <select id="classFilter" onchange="filterStudents()" style="padding:8px 12px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(108,99,255,0.25);border-radius:10px;color:#e0e0f0;font-family:inherit;font-size:0.82rem;outline:none;">
+              <option value="">All Classes</option>
+              <option>Nursery</option><option>LKG</option><option>UKG</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+              <option>11</option><option>12</option>
+            </select>
+            <button class="admin-btn" onclick="loadStudents()">🔄 Refresh</button>
+            <button class="admin-btn" onclick="openAddStudentModal()" style="background:linear-gradient(135deg,#6c63ff,#48cfad);">➕ Add Student</button>
+          </div>
         </div>
+        <!-- Stats Bar -->
+        <div id="studentStats" style="display:flex;gap:16px;flex-wrap:wrap;padding:12px 0 16px;border-bottom:1px solid rgba(108,99,255,0.1);margin-bottom:16px;font-size:0.82rem;color:#9d95ff;"></div>
         <div class="table-wrap">
           <table class="admin-table" id="studentsTable">
             <thead>
               <tr>
-                <th data-i18n="th_name">Name</th><th data-i18n="th_class">Class</th><th data-i18n="th_roll">Roll No</th><th data-i18n="th_parent">Parent</th><th data-i18n="th_phone">Phone</th>
+                <th>#</th>
+                <th>Student</th>
+                <th>Class</th>
+                <th>Roll No</th>
+                <th>Parent</th>
+                <th>Phone</th>
+                <th>Blood</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="studentsBody">
-              <tr><td colspan="5" class="loading-row" data-i18n="loading">Loading...</td></tr>
+              <tr><td colspan="8" class="loading-row">Loading...</td></tr>
             </tbody>
           </table>
         </div>
+        <div id="studentCount" style="text-align:right;font-size:0.78rem;color:#9d95ff;margin-top:10px;"></div>
       </div>
     </section>
+
 
     <!-- EXAMS TAB -->
     <section class="tab-content" id="exams">
@@ -361,6 +457,7 @@
   <script src="js/i18n.js"></script>
   <script src="js/branding.js"></script>
   <script src="js/admin.js"></script>
+  <script src="js/students-manager.js"></script>
   <script src="js/branding-admin.js"></script>
 </body>
 </html>

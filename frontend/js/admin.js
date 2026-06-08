@@ -109,30 +109,14 @@ async function loadDashboard() {
 }
 
 // ─────────────────────────────────────────
-// LOAD STUDENTS TABLE
+// LOAD STUDENTS — handled by students-manager.js
 // ─────────────────────────────────────────
-async function loadStudents() {
-  const tbody = document.getElementById('studentsBody');
-  tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Loading...</td></tr>';
-  try {
-    const res = await fetch(`${API_BASE}/api/students`, { headers });
-    const data = await res.json();
-    if (!data.success || !data.data.length) {
-      tbody.innerHTML = '<tr><td colspan="5" class="loading-row">No students found.</td></tr>';
-      return;
-    }
-    tbody.innerHTML = data.data.map(s => `
-      <tr>
-        <td><b>${s.name || '—'}</b></td>
-        <td>${s.class || '—'}</td>
-        <td>${s.roll_no || '—'}</td>
-        <td>${s.parent_name || '—'}</td>
-        <td>${s.phone || '—'}</td>
-      </tr>
-    `).join('');
-  } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="5" class="loading-row">Error: ${err.message}</td></tr>`;
+function loadStudents() {
+  if (typeof window.openAddStudentModal !== 'undefined' || typeof allStudents !== 'undefined') {
+    // students-manager.js is loaded — it handles this
+    if (typeof loadStudentsFromManager === 'function') loadStudentsFromManager();
   }
+  // will be overridden by students-manager.js at DOMContentLoaded
 }
 
 // ─────────────────────────────────────────

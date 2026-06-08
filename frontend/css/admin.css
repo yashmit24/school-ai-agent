@@ -242,3 +242,24 @@ body.admin-page {
   color: #fff;
   box-shadow: 0 2px 8px rgba(108,99,255,0.4);
 }
+
+/* --- MODAL FORM FIELDS --- */
+.mf { display: flex; flex-direction: column; }
+.ml { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.mi { padding: 10px 13px; background: rgba(255,255,255,0.05); border: 1.5px solid rgba(108,99,255,0.2); border-radius: 10px; color: var(--text-main); font-family: var(--font); font-size: 0.88rem; outline: none; transition: border-color 0.2s; width: 100%; }
+.mi:focus { border-color: var(--primary); }
+.mi::placeholder { color: #5a5580; }
+select.mi option { background: #1a1a2e; }
+
+/* --- ACTION BUTTONS IN TABLE --- */
+.btn-edit { padding: 5px 12px; background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3); border-radius: 7px; color: #9d95ff; font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: var(--font); transition: all 0.2s; }
+.btn-edit:hover { background: rgba(108,99,255,0.3); }
+.btn-del { padding: 5px 12px; background: rgba(231,76,60,0.12); border: 1px solid rgba(231,76,60,0.25); border-radius: 7px; color: #e74c3c; font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: var(--font); transition: all 0.2s; }
+.btn-del:hover { background: rgba(231,76,60,0.25); }
+.badge-class { background: rgba(108,99,255,0.15); color: #9d95ff; padding: 3px 9px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.badge-blood { background: rgba(231,76,60,0.12); color: #e74c3c; padding: 3px 9px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+
+@media (max-width: 600px) {
+  .mi { font-size: 0.82rem; }
+  #studentSearch { width: 150px !important; }
+}
