@@ -21,7 +21,8 @@ const scoresRouter = require('./routes/scores');
 const brandingRouter = require('./routes/branding');
 const authRouter = require('./routes/auth');
 const parentRouter = require('./routes/parent');
-const teacherAiRouter = require('./routes/teacher-ai');
+const teacherAiRouter  = require('./routes/teacher-ai');
+const whatsappRouter   = require('./routes/whatsapp');
 
 // Import & Initialize Telegram Bot Service
 require('./services/telegramService');
@@ -81,6 +82,7 @@ app.use('/api/attendance', checkDb, jwtMiddleware, attendanceRouter);
 app.use('/api/scores', checkDb, jwtMiddleware, scoresRouter);
 app.use('/api/parent', checkDb, parentRouter);        // Parent portal (own JWT inside)
 app.use('/api/teacher-ai', checkDb, teacherAiRouter); // Teacher AI tools (JWT protected)
+app.use('/api/whatsapp',  whatsappRouter);            // WhatsApp webhook (no JWT, own HMAC auth)
 
 // Global Error Handler Middleware (MUST be last)
 app.use(errorHandler);
