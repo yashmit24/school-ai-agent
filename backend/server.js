@@ -20,6 +20,7 @@ const adminRouter = require('./routes/admin');
 const scoresRouter = require('./routes/scores');
 const brandingRouter = require('./routes/branding');
 const authRouter = require('./routes/auth');
+const parentRouter = require('./routes/parent');
 
 // Import & Initialize Telegram Bot Service
 require('./services/telegramService');
@@ -77,6 +78,7 @@ app.use('/api/exams', checkDb, jwtMiddleware, examsRouter);
 app.use('/api/fees', checkDb, jwtMiddleware, feesRouter);
 app.use('/api/attendance', checkDb, jwtMiddleware, attendanceRouter);
 app.use('/api/scores', checkDb, jwtMiddleware, scoresRouter);
+app.use('/api/parent', checkDb, parentRouter);        // Parent portal (own JWT inside)
 
 // Global Error Handler Middleware (MUST be last)
 app.use(errorHandler);

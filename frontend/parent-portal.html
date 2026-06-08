@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <meta name="theme-color" content="#0d0d1a"/>
+  <title>Parent Portal — School Mitra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    :root{--primary:#6c63ff;--secondary:#48cfad;--accent:#f7c948;--bg:#0d0d1a;--surface:#13132a;--card:rgba(255,255,255,0.04);--border:rgba(108,99,255,0.18);--text:#e0e0f0;--muted:#7b75b0;--nav-h:68px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:calc(var(--nav-h) + 16px);max-width:480px;margin:0 auto;position:relative}
+
+    /* ── TOP BAR */
+    .topbar{background:rgba(13,13,26,0.95);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(16px)}
+    .topbar-left{display:flex;align-items:center;gap:12px}
+    .topbar-logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .topbar-name{font-size:1rem;font-weight:700}
+    .topbar-sub{font-size:0.72rem;color:var(--muted)}
+    .topbar-right{display:flex;align-items:center;gap:10px}
+    .logout-btn{background:rgba(231,76,60,0.12);border:1px solid rgba(231,76,60,0.25);border-radius:8px;color:#e74c3c;font-size:0.75rem;font-weight:600;padding:6px 10px;cursor:pointer;font-family:'Inter',sans-serif}
+
+    /* ── PAGES */
+    .page{display:none;padding:16px;animation:fadeUp 0.25s ease}
+    .page.active{display:block}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ── BOTTOM NAV */
+    .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(13,13,26,0.97);border-top:1px solid var(--border);height:var(--nav-h);display:flex;align-items:stretch;backdrop-filter:blur(20px);z-index:200;padding:0 4px}
+    .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:none;cursor:pointer;padding:6px 2px;border-radius:14px;transition:all 0.2s;color:var(--muted);font-family:'Inter',sans-serif}
+    .nav-btn.active{color:var(--primary);background:rgba(108,99,255,0.1)}
+    .nav-icon{font-size:1.35rem}
+    .nav-label{font-size:0.6rem;font-weight:600;text-transform:uppercase;letter-spacing:0.4px}
+
+    /* ── CARDS */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px;transition:transform 0.15s}
+    .card-title{font-size:0.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+    .card-big{font-size:1.8rem;font-weight:800;margin-bottom:4px}
+    .card-sub{font-size:0.8rem;color:var(--muted)}
+
+    /* ── HOME */
+    .student-card{background:linear-gradient(135deg,rgba(108,99,255,0.25),rgba(72,207,173,0.15));border:1px solid rgba(108,99,255,0.3);border-radius:20px;padding:22px;margin-bottom:16px;position:relative;overflow:hidden}
+    .student-card::before{content:'🎓';position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:4rem;opacity:0.12}
+    .student-name{font-size:1.3rem;font-weight:800;margin-bottom:6px}
+    .student-meta{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{background:rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+    .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+    .q-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;text-align:center}
+    .q-icon{font-size:1.8rem;margin-bottom:6px}
+    .q-val{font-size:1.3rem;font-weight:800;margin-bottom:2px}
+    .q-lbl{font-size:0.7rem;color:var(--muted)}
+
+    /* ── ATTENDANCE */
+    .att-ring-wrap{display:flex;align-items:center;justify-content:center;margin:20px 0}
+    .att-ring{width:140px;height:140px;position:relative;flex-shrink:0}
+    .att-ring svg{transform:rotate(-90deg)}
+    .att-ring-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .att-pct{font-size:2rem;font-weight:800}
+    .att-label{font-size:0.7rem;color:var(--muted)}
+    .att-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+    .att-stat{text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 8px}
+    .att-stat-val{font-size:1.4rem;font-weight:800;margin-bottom:2px}
+    .att-stat-lbl{font-size:0.68rem;color:var(--muted)}
+    .att-list-item{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:8px}
+    .status-present{color:#2ecc71;background:rgba(46,204,113,0.1);padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700}
+    .status-absent{color:#e74c3c;background:rgba(231,76,60,0.1);padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700}
+    .status-late{color:#f7c948;background:rgba(247,201,72,0.1);padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700}
+
+    /* ── FEES */
+    .fee-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+    .fee-box{border-radius:16px;padding:18px;text-align:center}
+    .fee-paid{background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.25)}
+    .fee-due{background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.2)}
+    .fee-amount{font-size:1.5rem;font-weight:800;margin-bottom:4px}
+    .fee-type{font-size:0.72rem;font-weight:600;opacity:0.8}
+    .fee-item{display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:8px}
+    .fee-item-left{}
+    .fee-desc{font-size:0.88rem;font-weight:600;margin-bottom:3px}
+    .fee-date{font-size:0.72rem;color:var(--muted)}
+    .badge-paid{background:rgba(46,204,113,0.15);color:#2ecc71;border-radius:20px;padding:4px 12px;font-size:0.72rem;font-weight:700}
+    .badge-due{background:rgba(231,76,60,0.12);color:#e74c3c;border-radius:20px;padding:4px 12px;font-size:0.72rem;font-weight:700}
+
+    /* ── HOMEWORK */
+    .hw-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;border-left:4px solid var(--primary)}
+    .hw-subject{font-size:0.72rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
+    .hw-title{font-size:0.95rem;font-weight:600;margin-bottom:4px}
+    .hw-due{font-size:0.75rem;color:var(--muted)}
+    .hw-desc{font-size:0.82rem;color:var(--muted);margin-top:6px;line-height:1.5}
+
+    /* ── NOTICES */
+    .notice-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;border-left:4px solid var(--accent)}
+    .notice-date{font-size:0.7rem;color:var(--muted);margin-bottom:5px}
+    .notice-title{font-size:0.95rem;font-weight:700;margin-bottom:6px}
+    .notice-body{font-size:0.82rem;color:var(--muted);line-height:1.5}
+    .notice-tag{display:inline-block;background:rgba(247,201,72,0.12);color:var(--accent);border-radius:20px;padding:3px 10px;font-size:0.68rem;font-weight:600;margin-bottom:6px}
+
+    /* ── EXAMS */
+    .exam-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;gap:14px;align-items:center}
+    .exam-date-box{background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:12px;padding:10px 12px;text-align:center;min-width:52px;flex-shrink:0}
+    .exam-day{font-size:1.3rem;font-weight:800;line-height:1;color:#fff}
+    .exam-month{font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.8);text-transform:uppercase}
+    .exam-info{}
+    .exam-subject{font-size:0.95rem;font-weight:700;margin-bottom:3px}
+    .exam-meta{font-size:0.75rem;color:var(--muted)}
+    .exam-upcoming{border-left:4px solid var(--accent)}
+
+    /* ── SHARED */
+    .section-title{font-size:1rem;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:0.88rem}
+    .loading{text-align:center;padding:30px;color:var(--muted);animation:pulse 1.5s infinite}
+    @keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
+    .page-header{margin-bottom:16px}
+    .page-header h2{font-size:1.1rem;font-weight:800}
+    .page-header p{font-size:0.8rem;color:var(--muted);margin-top:3px}
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo" id="topLogo">🏫</div>
+      <div>
+        <div class="topbar-name" id="topSchoolName">School Mitra</div>
+        <div class="topbar-sub" id="topStudentName">Loading...</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div class="page active" id="page-home">
+    <div style="padding-top:6px">
+      <div class="student-card" id="studentCard">
+        <div class="student-name" id="sc-name">Loading...</div>
+        <div class="student-meta" id="sc-meta"></div>
+      </div>
+      <div class="quick-grid" id="quickGrid">
+        <div class="q-card"><div class="q-icon">📅</div><div class="q-val" id="q-att">—</div><div class="q-lbl">Attendance</div></div>
+        <div class="q-card"><div class="q-icon">💰</div><div class="q-val" id="q-due" style="color:#e74c3c">—</div><div class="q-lbl">Fees Due</div></div>
+        <div class="q-card" onclick="switchPage('homework')" style="cursor:pointer"><div class="q-icon">📚</div><div class="q-val" id="q-hw">—</div><div class="q-lbl">Homework</div></div>
+        <div class="q-card" onclick="switchPage('notices')" style="cursor:pointer"><div class="q-icon">📢</div><div class="q-val" id="q-notice">—</div><div class="q-lbl">New Notices</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔔 Latest Notice</div>
+        <div id="latestNotice" class="card-sub">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATTENDANCE PAGE -->
+  <div class="page" id="page-attendance">
+    <div class="page-header"><h2>📅 Attendance</h2><p>Your child's attendance record</p></div>
+    <div id="attContent"><div class="loading">Loading attendance...</div></div>
+  </div>
+
+  <!-- FEES PAGE -->
+  <div class="page" id="page-fees">
+    <div class="page-header"><h2>💰 Fee Status</h2><p>Payment records and dues</p></div>
+    <div id="feesContent"><div class="loading">Loading fees...</div></div>
+  </div>
+
+  <!-- HOMEWORK PAGE -->
+  <div class="page" id="page-homework">
+    <div class="page-header"><h2>📚 Homework</h2><p>Assigned tasks for your child's class</p></div>
+    <div id="hwContent"><div class="loading">Loading homework...</div></div>
+  </div>
+
+  <!-- NOTICES PAGE -->
+  <div class="page" id="page-notices">
+    <div class="page-header"><h2>📢 School Notices</h2><p>Important announcements</p></div>
+    <div id="noticesContent"><div class="loading">Loading notices...</div></div>
+  </div>
+
+  <!-- EXAMS PAGE -->
+  <div class="page" id="page-exams">
+    <div class="page-header"><h2>📝 Exam Schedule</h2><p>Upcoming exams for your child's class</p></div>
+    <div id="examsContent"><div class="loading">Loading exam schedule...</div></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="nav">
+    <button class="nav-btn active" id="nav-home" onclick="switchPage('home')">
+      <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
+    </button>
+    <button class="nav-btn" id="nav-attendance" onclick="switchPage('attendance')">
+      <span class="nav-icon">📅</span><span class="nav-label">Attend</span>
+    </button>
+    <button class="nav-btn" id="nav-fees" onclick="switchPage('fees')">
+      <span class="nav-icon">💰</span><span class="nav-label">Fees</span>
+    </button>
+    <button class="nav-btn" id="nav-homework" onclick="switchPage('homework')">
+      <span class="nav-icon">📚</span><span class="nav-label">H.Work</span>
+    </button>
+    <button class="nav-btn" id="nav-notices" onclick="switchPage('notices')">
+      <span class="nav-icon">📢</span><span class="nav-label">Notices</span>
+    </button>
+    <button class="nav-btn" id="nav-exams" onclick="switchPage('exams')">
+      <span class="nav-icon">📝</span><span class="nav-label">Exams</span>
+    </button>
+  </nav>
+
+<script>
+  var API = 'https://school-ai-agent-eynr.onrender.com';
+  var token = localStorage.getItem('parentToken') || sessionStorage.getItem('parentToken');
+  var studentData = JSON.parse(localStorage.getItem('parentStudent') || 'null');
+  var loaded = {};
+
+  // Auth guard
+  if (!token) { window.location.href = 'parent-login.html'; }
+
+  function hdrs() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }; }
+
+  // ── Branding
+  fetch(API + '/api/branding').then(function(r){return r.json();}).then(function(j){
+    if (j.success && j.data) {
+      var b = j.data;
+      if (b.school_name) document.getElementById('topSchoolName').textContent = b.school_name;
+      if (b.logo_url) document.getElementById('topLogo').innerHTML = '<img src="'+b.logo_url+'" style="width:28px;height:28px;object-fit:contain;border-radius:7px"/>';
+      if (b.primary_color) document.documentElement.style.setProperty('--primary', b.primary_color);
+      if (b.secondary_color) document.documentElement.style.setProperty('--secondary', b.secondary_color);
+    }
+  }).catch(function(){});
+
+  // ── Fill student card from cached data
+  function fillStudentCard(s) {
+    document.getElementById('sc-name').textContent = s.name || 'Student';
+    document.getElementById('topStudentName').textContent = (s.parent_name || 'Parent') + '\'s Portal';
+    var meta = '';
+    if (s.class) meta += '<span class="chip">🏫 Class ' + s.class + (s.section ? '-' + s.section : '') + '</span>';
+    if (s.roll_no) meta += '<span class="chip">📋 Roll ' + s.roll_no + '</span>';
+    if (s.blood_group) meta += '<span class="chip">🩸 ' + s.blood_group + '</span>';
+    if (s.admission_no) meta += '<span class="chip">🆔 ' + s.admission_no + '</span>';
+    document.getElementById('sc-meta').innerHTML = meta;
+  }
+
+  if (studentData) fillStudentCard(studentData);
+
+  // ── Load home quick data
+  async function loadHome() {
+    // Attendance
+    fetch(API + '/api/parent/attendance', { headers: hdrs() }).then(function(r){return r.json();}).then(function(j){
+      if (j.success) {
+        document.getElementById('q-att').textContent = j.summary.percentage;
+        loaded.att = j;
+      }
+    }).catch(function(){});
+
+    // Fees
+    fetch(API + '/api/parent/fees', { headers: hdrs() }).then(function(r){return r.json();}).then(function(j){
+      if (j.success) {
+        var due = j.summary.totalDue;
+        document.getElementById('q-due').textContent = due > 0 ? '₹' + due.toLocaleString('en-IN') : '✅ Clear';
+        if (due === 0) document.getElementById('q-due').style.color = '#2ecc71';
+        loaded.fees = j;
+      }
+    }).catch(function(){});
+
+    // Homework
+    fetch(API + '/api/parent/homework', { headers: hdrs() }).then(function(r){return r.json();}).then(function(j){
+      if (j.success) {
+        document.getElementById('q-hw').textContent = (j.data || []).length;
+        loaded.hw = j;
+      }
+    }).catch(function(){});
+
+    // Notices
+    fetch(API + '/api/parent/notices', { headers: hdrs() }).then(function(r){return r.json();}).then(function(j){
+      if (j.success) {
+        var notices = j.data || [];
+        document.getElementById('q-notice').textContent = notices.length;
+        if (notices.length > 0) {
+          var n = notices[0];
+          document.getElementById('latestNotice').innerHTML =
+            '<b style="color:var(--text)">' + (n.title || 'Notice') + '</b>' +
+            '<br/><span style="font-size:0.78rem">' + (n.body || n.content || '').substring(0,120) + '...</span>';
+        } else {
+          document.getElementById('latestNotice').textContent = 'No notices yet.';
+        }
+        loaded.notices = j;
+      }
+    }).catch(function(){});
+  }
+
+  // ── PAGE SWITCHER
+  window.switchPage = function(name) {
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById('page-' + name).classList.add('active');
+    var nb = document.getElementById('nav-' + name);
+    if (nb) nb.classList.add('active');
+    window.scrollTo(0, 0);
+
+    if (name === 'attendance') loadAttendance();
+    if (name === 'fees') loadFees();
+    if (name === 'homework') loadHomework();
+    if (name === 'notices') loadNotices();
+    if (name === 'exams') loadExams();
+  };
+
+  // ── ATTENDANCE
+  async function loadAttendance() {
+    var el = document.getElementById('attContent');
+    if (loaded.attRendered) return;
+    el.innerHTML = '<div class="loading">Loading attendance...</div>';
+    try {
+      var res = await fetch(API + '/api/parent/attendance', { headers: hdrs() });
+      var j = await res.json();
+      if (!j.success) throw new Error(j.error);
+      var s = j.summary; var records = j.data || [];
+      var pct = parseFloat(s.percentage);
+      var color = pct >= 75 ? '#2ecc71' : pct >= 60 ? '#f7c948' : '#e74c3c';
+      var circ = 2 * Math.PI * 54;
+      var dash = circ * (pct / 100);
+
+      var html = '<div class="att-ring-wrap"><div class="att-ring">' +
+        '<svg width="140" height="140" viewBox="0 0 140 140">' +
+        '<circle cx="70" cy="70" r="54" fill="none" stroke="rgba(108,99,255,0.1)" stroke-width="12"/>' +
+        '<circle cx="70" cy="70" r="54" fill="none" stroke="' + color + '" stroke-width="12" stroke-linecap="round" stroke-dasharray="' + dash + ' ' + circ + '" style="transition:stroke-dasharray 1s ease"/>' +
+        '</svg><div class="att-ring-text"><span class="att-pct" style="color:' + color + '">' + s.percentage + '</span><span class="att-label">Attendance</span></div>' +
+        '</div></div>';
+
+      html += '<div class="att-stats">' +
+        '<div class="att-stat"><div class="att-stat-val" style="color:#2ecc71">' + s.present + '</div><div class="att-stat-lbl">Present</div></div>' +
+        '<div class="att-stat"><div class="att-stat-val" style="color:#e74c3c">' + s.absent + '</div><div class="att-stat-lbl">Absent</div></div>' +
+        '<div class="att-stat"><div class="att-stat-val" style="color:#f7c948">' + (s.late||0) + '</div><div class="att-stat-lbl">Late</div></div>' +
+      '</div>';
+
+      html += '<div class="section-title">🗓️ Recent Records</div>';
+      if (records.length === 0) {
+        html += '<div class="empty">No attendance records yet.</div>';
+      } else {
+        records.slice(0, 30).forEach(function(r) {
+          var d = new Date(r.date);
+          var ds = d.toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'});
+          var cls = 'status-' + (r.status || 'present');
+          html += '<div class="att-list-item"><span style="font-size:0.88rem">' + ds + '</span><span class="' + cls + '">' + (r.status || '').toUpperCase() + '</span></div>';
+        });
+      }
+
+      el.innerHTML = html;
+      loaded.attRendered = true;
+    } catch(err) {
+      el.innerHTML = '<div class="empty">❌ ' + err.message + '</div>';
+    }
+  }
+
+  // ── FEES
+  async function loadFees() {
+    var el = document.getElementById('feesContent');
+    if (loaded.feesRendered) return;
+    el.innerHTML = '<div class="loading">Loading fees...</div>';
+    try {
+      var res = await fetch(API + '/api/parent/fees', { headers: hdrs() });
+      var j = await res.json();
+      if (!j.success) throw new Error(j.error);
+      var s = j.summary; var fees = j.data || [];
+
+      var html = '<div class="fee-summary">' +
+        '<div class="fee-box fee-paid"><div class="fee-amount" style="color:#2ecc71">₹' + (s.totalPaid||0).toLocaleString('en-IN') + '</div><div class="fee-type">✅ Total Paid</div></div>' +
+        '<div class="fee-box fee-due"><div class="fee-amount" style="color:#e74c3c">₹' + (s.totalDue||0).toLocaleString('en-IN') + '</div><div class="fee-type">⏳ Total Due</div></div>' +
+      '</div>';
+
+      if (fees.length === 0) {
+        html += '<div class="empty">No fee records found.</div>';
+      } else {
+        html += '<div class="section-title">📋 Fee Records</div>';
+        fees.forEach(function(f) {
+          var due = f.due_date ? new Date(f.due_date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+          html += '<div class="fee-item"><div class="fee-item-left"><div class="fee-desc">' + (f.description || 'Fee') + '</div><div class="fee-date">Due: ' + due + '</div></div>' +
+            '<div><div style="font-size:0.95rem;font-weight:700;margin-bottom:4px">₹' + (Number(f.amount)||0).toLocaleString('en-IN') + '</div>' +
+            (f.paid ? '<span class="badge-paid">PAID</span>' : '<span class="badge-due">DUE</span>') + '</div></div>';
+        });
+      }
+
+      el.innerHTML = html;
+      loaded.feesRendered = true;
+    } catch(err) {
+      el.innerHTML = '<div class="empty">❌ ' + err.message + '</div>';
+    }
+  }
+
+  // ── HOMEWORK
+  async function loadHomework() {
+    var el = document.getElementById('hwContent');
+    if (loaded.hwRendered) return;
+    el.innerHTML = '<div class="loading">Loading homework...</div>';
+    try {
+      var res = await fetch(API + '/api/parent/homework', { headers: hdrs() });
+      var j = await res.json();
+      if (!j.success) throw new Error(j.error);
+      var hws = j.data || [];
+
+      if (hws.length === 0) {
+        el.innerHTML = '<div class="empty">🎉 No pending homework! Great job!</div>';
+        return;
+      }
+
+      var html = '';
+      hws.forEach(function(h) {
+        var due = h.due_date ? new Date(h.due_date).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '—';
+        var today = new Date(); var dueDate = new Date(h.due_date);
+        var isOverdue = dueDate < today;
+        html += '<div class="hw-item" style="border-left-color:' + (isOverdue ? '#e74c3c' : 'var(--primary)') + '">' +
+          '<div class="hw-subject">' + (h.subject || 'General') + '</div>' +
+          '<div class="hw-title">' + (h.title || 'Homework') + '</div>' +
+          '<div class="hw-due">📅 Due: ' + due + (isOverdue ? ' <span style="color:#e74c3c">(Overdue)</span>' : '') + '</div>' +
+          (h.description ? '<div class="hw-desc">' + h.description + '</div>' : '') +
+        '</div>';
+      });
+
+      el.innerHTML = html;
+      loaded.hwRendered = true;
+    } catch(err) {
+      el.innerHTML = '<div class="empty">❌ ' + err.message + '</div>';
+    }
+  }
+
+  // ── NOTICES
+  async function loadNotices() {
+    var el = document.getElementById('noticesContent');
+    if (loaded.noticesRendered) return;
+    el.innerHTML = '<div class="loading">Loading notices...</div>';
+    try {
+      var res = await fetch(API + '/api/parent/notices', { headers: hdrs() });
+      var j = await res.json();
+      if (!j.success) throw new Error(j.error);
+      var notices = j.data || [];
+
+      if (notices.length === 0) {
+        el.innerHTML = '<div class="empty">No notices at the moment.</div>';
+        return;
+      }
+
+      var html = '';
+      notices.forEach(function(n) {
+        var d = n.created_at ? new Date(n.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '';
+        html += '<div class="notice-item">' +
+          (n.tag ? '<div><span class="notice-tag">' + n.tag + '</span></div>' : '') +
+          '<div class="notice-date">' + d + '</div>' +
+          '<div class="notice-title">' + (n.title || 'Notice') + '</div>' +
+          '<div class="notice-body">' + (n.body || n.content || '') + '</div>' +
+        '</div>';
+      });
+
+      el.innerHTML = html;
+      loaded.noticesRendered = true;
+    } catch(err) {
+      el.innerHTML = '<div class="empty">❌ ' + err.message + '</div>';
+    }
+  }
+
+  // ── EXAMS
+  async function loadExams() {
+    var el = document.getElementById('examsContent');
+    if (loaded.examsRendered) return;
+    el.innerHTML = '<div class="loading">Loading exam schedule...</div>';
+    try {
+      var res = await fetch(API + '/api/parent/exams', { headers: hdrs() });
+      var j = await res.json();
+      if (!j.success) throw new Error(j.error);
+      var exams = j.data || [];
+
+      if (exams.length === 0) {
+        el.innerHTML = '<div class="empty">No exams scheduled yet.</div>';
+        return;
+      }
+
+      var today = new Date();
+      var html = '';
+      exams.forEach(function(e) {
+        var d = e.date ? new Date(e.date) : null;
+        var day = d ? d.getDate() : '?';
+        var month = d ? d.toLocaleString('en-IN',{month:'short'}) : '?';
+        var isUpcoming = d && d >= today;
+        html += '<div class="exam-item ' + (isUpcoming ? 'exam-upcoming' : '') + '">' +
+          '<div class="exam-date-box"><div class="exam-day">' + day + '</div><div class="exam-month">' + month + '</div></div>' +
+          '<div class="exam-info">' +
+            '<div class="exam-subject">' + (e.subject || e.name || 'Exam') + '</div>' +
+            '<div class="exam-meta">⏰ ' + (e.time || 'TBD') + ' &nbsp;•&nbsp; 🏫 Room ' + (e.room || 'TBD') + (isUpcoming ? ' &nbsp;<span style="color:var(--accent)">●</span>' : '') + '</div>' +
+          '</div>' +
+        '</div>';
+      });
+
+      el.innerHTML = html;
+      loaded.examsRendered = true;
+    } catch(err) {
+      el.innerHTML = '<div class="empty">❌ ' + err.message + '</div>';
+    }
+  }
+
+  // ── LOGOUT
+  window.doLogout = function() {
+    localStorage.removeItem('parentToken');
+    localStorage.removeItem('parentStudent');
+    sessionStorage.removeItem('parentToken');
+    window.location.href = 'parent-login.html';
+  };
+
+  // ── INIT
+  loadHome();
+</script>
+</body>
+</html>
