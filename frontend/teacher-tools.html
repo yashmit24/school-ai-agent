@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Teacher AI Tools — School Mitra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#6c63ff;--secondary:#48cfad;--accent:#f7c948;--bg:#0d0d1a;--surface:#13132a;--card:rgba(255,255,255,0.04);--border:rgba(108,99,255,0.18);--text:#e0e0f0;--muted:#7b75b0;--font:'Inter',sans-serif}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
+
+    /* ── TOP BAR */
+    .topbar{background:rgba(13,13,26,0.97);border-bottom:1px solid var(--border);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(16px)}
+    .topbar-left{display:flex;align-items:center;gap:14px}
+    .logo-box{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+    .topbar-title{font-size:1rem;font-weight:700}
+    .topbar-sub{font-size:0.72rem;color:var(--muted)}
+    .topbar-right{display:flex;gap:10px;align-items:center}
+    .btn-back{padding:7px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:var(--font);font-size:0.8rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px}
+    .btn-back:hover{color:var(--text);border-color:var(--primary)}
+
+    /* ── MAIN LAYOUT */
+    .main{max-width:1100px;margin:0 auto;padding:28px 24px}
+
+    /* ── TOOL TABS */
+    .tool-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+    .tool-tab{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:20px 16px;text-align:center;cursor:pointer;transition:all 0.2s;user-select:none}
+    .tool-tab:hover{border-color:var(--primary);transform:translateY(-2px)}
+    .tool-tab.active{border-color:var(--primary);background:rgba(108,99,255,0.12);box-shadow:0 0 24px rgba(108,99,255,0.15)}
+    .tool-icon{font-size:2rem;margin-bottom:8px}
+    .tool-name{font-size:0.82rem;font-weight:700;margin-bottom:3px}
+    .tool-desc{font-size:0.7rem;color:var(--muted)}
+
+    /* ── PANEL */
+    .panel{display:none;animation:fadeIn 0.25s ease}
+    .panel.active{display:grid;grid-template-columns:360px 1fr;gap:20px}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ── FORM CARD */
+    .form-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px}
+    .form-card h3{font-size:0.95rem;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    .field{margin-bottom:14px}
+    .label{display:block;font-size:0.7rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
+    .inp,.sel,.ta{width:100%;padding:10px 13px;background:rgba(255,255,255,0.05);border:1.5px solid rgba(108,99,255,0.2);border-radius:10px;color:var(--text);font-family:var(--font);font-size:0.87rem;outline:none;transition:border-color 0.2s}
+    .inp:focus,.sel:focus,.ta:focus{border-color:var(--primary)}
+    .inp::placeholder,.ta::placeholder{color:#4a4570}
+    .sel option{background:#1a1a2e}
+    .ta{resize:vertical;min-height:80px}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .gen-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--primary),var(--secondary));border:none;border-radius:11px;color:#fff;font-family:var(--font);font-size:0.95rem;font-weight:700;cursor:pointer;transition:opacity 0.2s,transform 0.15s;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px}
+    .gen-btn:hover{opacity:0.9;transform:translateY(-1px)}
+    .gen-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+
+    /* ── PREVIEW CARD */
+    .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;display:flex;flex-direction:column;min-height:500px}
+    .preview-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)}
+    .preview-header h3{font-size:0.95rem;font-weight:700;display:flex;align-items:center;gap:8px}
+    .preview-actions{display:flex;gap:8px}
+    .btn-copy,.btn-pdf{padding:7px 14px;border-radius:8px;font-family:var(--font);font-size:0.78rem;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;gap:5px;transition:all 0.2s}
+    .btn-copy{background:rgba(108,99,255,0.15);color:#9d95ff;border:1px solid rgba(108,99,255,0.3)}
+    .btn-copy:hover{background:rgba(108,99,255,0.25)}
+    .btn-pdf{background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff}
+    .btn-pdf:hover{opacity:0.9}
+    .preview-body{flex:1;padding:22px;overflow-y:auto;max-height:600px}
+    .preview-body pre{white-space:pre-wrap;word-break:break-word;font-family:var(--font);font-size:0.87rem;line-height:1.7;color:var(--text)}
+    .preview-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--muted);padding:40px}
+    .preview-placeholder .big{font-size:3.5rem}
+    .preview-placeholder p{font-size:0.85rem;text-align:center;line-height:1.5}
+    .generating{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:60px;color:var(--muted)}
+    .spinner{width:44px;height:44px;border:3px solid rgba(108,99,255,0.15);border-top-color:var(--primary);border-radius:50%;animation:spin 0.9s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ── REMARKS TOOL — student rows */
+    .student-rows{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;max-height:340px;overflow-y:auto}
+    .s-row{background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.15);border-radius:10px;padding:12px;position:relative}
+    .s-row-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .s-num{font-size:0.7rem;font-weight:700;color:var(--primary)}
+    .s-remove{background:none;border:none;color:#e74c3c;cursor:pointer;font-size:0.9rem;padding:0}
+    .add-student-btn{padding:9px;background:rgba(72,207,173,0.1);border:1px dashed rgba(72,207,173,0.3);border-radius:10px;color:#48cfad;font-family:var(--font);font-size:0.82rem;font-weight:600;cursor:pointer;width:100%;text-align:center;transition:all 0.2s}
+    .add-student-btn:hover{background:rgba(72,207,173,0.15)}
+
+    /* ── RESPONSIVE */
+    @media(max-width:900px){
+      .panel.active{grid-template-columns:1fr}
+      .tool-tabs{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:550px){
+      .tool-tabs{grid-template-columns:1fr 1fr}
+      .main{padding:16px}
+      .row2{grid-template-columns:1fr}
+    }
+
+    /* ── PRINT STYLES */
+    @media print{
+      body{background:#fff;color:#000}
+      .topbar,.tool-tabs,.form-card,.preview-header,.btn-copy,.btn-pdf{display:none!important}
+      .main{padding:0;max-width:100%}
+      .panel.active{display:block}
+      .preview-card{border:none;border-radius:0;min-height:auto;box-shadow:none}
+      .preview-body{max-height:none;overflow:visible;padding:0}
+      .preview-body pre{color:#000;font-size:12pt;line-height:1.8}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo-box">🧑‍🏫</div>
+      <div>
+        <div class="topbar-title">Teacher AI Tools</div>
+        <div class="topbar-sub" id="topSchool">School Mitra</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <a href="admin.html" class="btn-back">← Back to Dashboard</a>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOOL TABS -->
+    <div class="tool-tabs">
+      <div class="tool-tab active" id="tab-hw" onclick="switchTool('hw')">
+        <div class="tool-icon">📋</div>
+        <div class="tool-name">Homework</div>
+        <div class="tool-desc">Generate assignments</div>
+      </div>
+      <div class="tool-tab" id="tab-ws" onclick="switchTool('ws')">
+        <div class="tool-icon">📄</div>
+        <div class="tool-name">Worksheet</div>
+        <div class="tool-desc">Practice sheets</div>
+      </div>
+      <div class="tool-tab" id="tab-ep" onclick="switchTool('ep')">
+        <div class="tool-icon">📝</div>
+        <div class="tool-name">Exam Paper</div>
+        <div class="tool-desc">Full question papers</div>
+      </div>
+      <div class="tool-tab" id="tab-rm" onclick="switchTool('rm')">
+        <div class="tool-icon">💬</div>
+        <div class="tool-name">Remarks</div>
+        <div class="tool-desc">Report card comments</div>
+      </div>
+    </div>
+
+    <!-- ═══════ HOMEWORK PANEL ═══════ -->
+    <div class="panel active" id="panel-hw">
+      <div class="form-card">
+        <h3>📋 Homework Generator</h3>
+        <div class="row2">
+          <div class="field"><label class="label">Subject *</label><input class="inp" id="hw-subject" placeholder="Mathematics"/></div>
+          <div class="field"><label class="label">Class *</label>
+            <select class="sel" id="hw-class">
+              <option value="">Select</option>
+              <option>Nursery</option><option>LKG</option><option>UKG</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+              <option>11</option><option>12</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label class="label">Topic / Chapter *</label><input class="inp" id="hw-topic" placeholder="e.g. Fractions, Photosynthesis, Mughal Empire"/></div>
+        <div class="row2">
+          <div class="field"><label class="label">No. of Questions</label>
+            <select class="sel" id="hw-num">
+              <option>5</option><option>8</option><option>10</option><option>15</option>
+            </select>
+          </div>
+          <div class="field"><label class="label">Difficulty</label>
+            <select class="sel" id="hw-diff">
+              <option>Easy</option><option selected>Medium</option><option>Hard</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label class="label">Language</label>
+          <select class="sel" id="hw-lang">
+            <option value="english">English</option><option value="hindi">Hindi</option><option value="hinglish">Hinglish</option>
+          </select>
+        </div>
+        <div class="field"><label class="label">Special Instructions</label><textarea class="ta" id="hw-instr" placeholder="e.g. Include real-life examples, avoid complex calculations"></textarea></div>
+        <button class="gen-btn" id="hw-btn" onclick="generate('homework')">✨ Generate Homework</button>
+      </div>
+      <div class="preview-card" id="preview-hw">
+        <div class="preview-header">
+          <h3>📋 Preview</h3>
+          <div class="preview-actions">
+            <button class="btn-copy" onclick="copyText('hw')">📋 Copy</button>
+            <button class="btn-pdf" onclick="exportPDF()">🖨️ Print / PDF</button>
+          </div>
+        </div>
+        <div class="preview-body" id="preview-body-hw">
+          <div class="preview-placeholder">
+            <div class="big">📋</div>
+            <p>Fill in the form and click <b>Generate Homework</b><br/>AI will create a complete assignment for you.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ WORKSHEET PANEL ═══════ -->
+    <div class="panel" id="panel-ws">
+      <div class="form-card">
+        <h3>📄 Worksheet Generator</h3>
+        <div class="row2">
+          <div class="field"><label class="label">Subject *</label><input class="inp" id="ws-subject" placeholder="Science"/></div>
+          <div class="field"><label class="label">Class *</label>
+            <select class="sel" id="ws-class">
+              <option value="">Select</option>
+              <option>Nursery</option><option>LKG</option><option>UKG</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+              <option>11</option><option>12</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label class="label">Topic *</label><input class="inp" id="ws-topic" placeholder="e.g. Parts of a Plant, Newton's Laws"/></div>
+        <div class="row2">
+          <div class="field"><label class="label">Type</label>
+            <select class="sel" id="ws-type">
+              <option>Practice</option><option>Revision</option><option>Assessment</option><option>Enrichment</option>
+            </select>
+          </div>
+          <div class="field"><label class="label">Questions</label>
+            <select class="sel" id="ws-num">
+              <option>10</option><option>15</option><option>20</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label class="label">Language</label>
+          <select class="sel" id="ws-lang">
+            <option value="english">English</option><option value="hindi">Hindi</option><option value="hinglish">Hinglish</option>
+          </select>
+        </div>
+        <button class="gen-btn" id="ws-btn" onclick="generate('worksheet')">✨ Generate Worksheet</button>
+      </div>
+      <div class="preview-card" id="preview-ws">
+        <div class="preview-header">
+          <h3>📄 Preview</h3>
+          <div class="preview-actions">
+            <button class="btn-copy" onclick="copyText('ws')">📋 Copy</button>
+            <button class="btn-pdf" onclick="exportPDF()">🖨️ Print / PDF</button>
+          </div>
+        </div>
+        <div class="preview-body" id="preview-body-ws">
+          <div class="preview-placeholder">
+            <div class="big">📄</div>
+            <p>Fill in the form and click <b>Generate Worksheet</b><br/>AI will create a ready-to-print worksheet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ EXAM PAPER PANEL ═══════ -->
+    <div class="panel" id="panel-ep">
+      <div class="form-card">
+        <h3>📝 Exam Paper Generator</h3>
+        <div class="row2">
+          <div class="field"><label class="label">Subject *</label><input class="inp" id="ep-subject" placeholder="English"/></div>
+          <div class="field"><label class="label">Class *</label>
+            <select class="sel" id="ep-class">
+              <option value="">Select</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+              <option>11</option><option>12</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label class="label">Topics Covered *</label><input class="inp" id="ep-topics" placeholder="e.g. Chapter 1-4, Algebra, Grammar & Comprehension"/></div>
+        <div class="row2">
+          <div class="field"><label class="label">Exam Type</label>
+            <select class="sel" id="ep-type">
+              <option>Unit Test</option><option>Mid-Term</option><option>Final Exam</option><option>Pre-Board</option><option>Class Test</option>
+            </select>
+          </div>
+          <div class="field"><label class="label">Total Marks</label>
+            <select class="sel" id="ep-marks">
+              <option>20</option><option>25</option><option selected>50</option><option>80</option><option>100</option>
+            </select>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field"><label class="label">Duration</label>
+            <select class="sel" id="ep-duration">
+              <option>30 Minutes</option><option>1 Hour</option><option selected>2 Hours</option><option>3 Hours</option>
+            </select>
+          </div>
+          <div class="field"><label class="label">Language</label>
+            <select class="sel" id="ep-lang">
+              <option value="english">English</option><option value="hindi">Hindi</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label class="label">Special Instructions</label><textarea class="ta" id="ep-instr" placeholder="e.g. Include diagram-based questions, no calculator allowed"></textarea></div>
+        <button class="gen-btn" id="ep-btn" onclick="generate('exam-paper')">✨ Generate Exam Paper</button>
+      </div>
+      <div class="preview-card" id="preview-ep">
+        <div class="preview-header">
+          <h3>📝 Preview</h3>
+          <div class="preview-actions">
+            <button class="btn-copy" onclick="copyText('ep')">📋 Copy</button>
+            <button class="btn-pdf" onclick="exportPDF()">🖨️ Print / PDF</button>
+          </div>
+        </div>
+        <div class="preview-body" id="preview-body-ep">
+          <div class="preview-placeholder">
+            <div class="big">📝</div>
+            <p>Fill in the form and click <b>Generate Exam Paper</b><br/>AI will create a complete question paper with marking scheme.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════ REMARKS PANEL ═══════ -->
+    <div class="panel" id="panel-rm">
+      <div class="form-card">
+        <h3>💬 Remarks Generator</h3>
+        <div class="field"><label class="label">Language</label>
+          <select class="sel" id="rm-lang">
+            <option value="english">English</option><option value="hindi">Hindi</option>
+          </select>
+        </div>
+        <div class="label" style="margin-bottom:8px">Student Details</div>
+        <div class="student-rows" id="studentRows"></div>
+        <button class="add-student-btn" onclick="addStudentRow()">+ Add Student</button>
+        <button class="gen-btn" id="rm-btn" onclick="generate('remarks')" style="margin-top:14px">✨ Generate Remarks</button>
+      </div>
+      <div class="preview-card" id="preview-rm">
+        <div class="preview-header">
+          <h3>💬 Preview</h3>
+          <div class="preview-actions">
+            <button class="btn-copy" onclick="copyText('rm')">📋 Copy</button>
+            <button class="btn-pdf" onclick="exportPDF()">🖨️ Print / PDF</button>
+          </div>
+        </div>
+        <div class="preview-body" id="preview-body-rm">
+          <div class="preview-placeholder">
+            <div class="big">💬</div>
+            <p>Add students and click <b>Generate Remarks</b><br/>AI will write personalized, encouraging report card comments.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+<script>
+  var API = 'https://school-ai-agent-eynr.onrender.com';
+  var currentTool = 'hw';
+  var generatedText = { hw: '', ws: '', ep: '', rm: '' };
+  var studentCount = 0;
+
+  // Auth guard
+  var token = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+  if (!token) { window.location.href = 'login.html'; }
+
+  function hdrs() {
+    return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+  }
+
+  // Branding
+  fetch(API + '/api/branding').then(function(r){ return r.json(); }).then(function(j){
+    if (j.success && j.data) {
+      if (j.data.school_name) document.getElementById('topSchool').textContent = j.data.school_name;
+      if (j.data.primary_color) document.documentElement.style.setProperty('--primary', j.data.primary_color);
+      if (j.data.secondary_color) document.documentElement.style.setProperty('--secondary', j.data.secondary_color);
+    }
+  }).catch(function(){});
+
+  // Switch active tool tab
+  window.switchTool = function(tool) {
+    currentTool = tool;
+    document.querySelectorAll('.tool-tab').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('tab-' + tool).classList.add('active');
+    document.getElementById('panel-' + tool).classList.add('active');
+  };
+
+  // ── Generate function
+  window.generate = async function(type) {
+    var toolKey = { homework: 'hw', worksheet: 'ws', 'exam-paper': 'ep', remarks: 'rm' }[type];
+    var btn = document.getElementById(toolKey + '-btn');
+    var previewBody = document.getElementById('preview-body-' + toolKey);
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Generating...';
+    previewBody.innerHTML = '<div class="generating"><div class="spinner"></div><p>AI is creating your ' + type.replace('-', ' ') + '...<br/><small style="color:var(--muted)">This may take 15-30 seconds</small></p></div>';
+
+    try {
+      var body = {};
+      var url = API + '/api/teacher-ai/' + type;
+
+      if (type === 'homework') {
+        body = {
+          subject: document.getElementById('hw-subject').value.trim(),
+          topic: document.getElementById('hw-topic').value.trim(),
+          className: document.getElementById('hw-class').value,
+          numQuestions: document.getElementById('hw-num').value,
+          difficulty: document.getElementById('hw-diff').value,
+          instructions: document.getElementById('hw-instr').value.trim(),
+          language: document.getElementById('hw-lang').value
+        };
+        if (!body.subject || !body.topic || !body.className) throw new Error('Please fill Subject, Class and Topic.');
+      }
+      else if (type === 'worksheet') {
+        body = {
+          subject: document.getElementById('ws-subject').value.trim(),
+          topic: document.getElementById('ws-topic').value.trim(),
+          className: document.getElementById('ws-class').value,
+          worksheetType: document.getElementById('ws-type').value,
+          numQuestions: document.getElementById('ws-num').value,
+          language: document.getElementById('ws-lang').value
+        };
+        if (!body.subject || !body.topic || !body.className) throw new Error('Please fill Subject, Class and Topic.');
+      }
+      else if (type === 'exam-paper') {
+        body = {
+          subject: document.getElementById('ep-subject').value.trim(),
+          topics: document.getElementById('ep-topics').value.trim(),
+          className: document.getElementById('ep-class').value,
+          examType: document.getElementById('ep-type').value,
+          totalMarks: document.getElementById('ep-marks').value,
+          duration: document.getElementById('ep-duration').value,
+          instructions: document.getElementById('ep-instr').value.trim(),
+          language: document.getElementById('ep-lang').value
+        };
+        if (!body.subject || !body.topics || !body.className) throw new Error('Please fill Subject, Class and Topics.');
+      }
+      else if (type === 'remarks') {
+        var rows = document.querySelectorAll('.s-row');
+        var students = [];
+        rows.forEach(function(row) {
+          var idx = row.getAttribute('data-idx');
+          students.push({
+            name: document.getElementById('s-name-' + idx)?.value.trim() || '',
+            class: document.getElementById('s-class-' + idx)?.value || '',
+            grade: document.getElementById('s-grade-' + idx)?.value || '',
+            percentage: document.getElementById('s-pct-' + idx)?.value || '',
+            strengths: document.getElementById('s-str-' + idx)?.value.trim() || '',
+            improvements: document.getElementById('s-imp-' + idx)?.value.trim() || '',
+            behavior: document.getElementById('s-beh-' + idx)?.value || ''
+          });
+        });
+        if (!students.length || !students[0].name) throw new Error('Please add at least one student.');
+        body = { students: students, language: document.getElementById('rm-lang').value };
+      }
+
+      var res = await fetch(url, { method: 'POST', headers: hdrs(), body: JSON.stringify(body) });
+      var json = await res.json();
+
+      if (!json.success) throw new Error(json.error || 'Generation failed');
+
+      generatedText[toolKey] = json.content;
+
+      // Render with markdown-like formatting
+      previewBody.innerHTML = '<pre>' + escHtml(json.content) + '</pre>';
+
+    } catch (err) {
+      previewBody.innerHTML = '<div class="preview-placeholder"><div class="big">❌</div><p>' + err.message + '</p></div>';
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '✨ Generate ' + (type === 'homework' ? 'Homework' : type === 'worksheet' ? 'Worksheet' : type === 'exam-paper' ? 'Exam Paper' : 'Remarks');
+  };
+
+  // ── Copy to clipboard
+  window.copyText = function(toolKey) {
+    var text = generatedText[toolKey];
+    if (!text) { alert('Nothing generated yet!'); return; }
+    navigator.clipboard.writeText(text).then(function(){ alert('✅ Copied to clipboard!'); });
+  };
+
+  // ── Print / PDF
+  window.exportPDF = function() {
+    var text = generatedText[currentTool];
+    if (!text) { alert('Generate content first!'); return; }
+    window.print();
+  };
+
+  // ── HTML escape
+  function escHtml(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── Student rows for remarks
+  window.addStudentRow = function() {
+    studentCount++;
+    var idx = studentCount;
+    var container = document.getElementById('studentRows');
+    var div = document.createElement('div');
+    div.className = 's-row';
+    div.setAttribute('data-idx', idx);
+    div.innerHTML =
+      '<div class="s-row-header"><span class="s-num">Student ' + idx + '</span>' +
+      '<button class="s-remove" onclick="this.parentElement.parentElement.remove()">✕</button></div>' +
+      '<div class="row2">' +
+        '<div class="field"><label class="label">Name *</label><input class="inp" id="s-name-' + idx + '" placeholder="Rahul Sharma"/></div>' +
+        '<div class="field"><label class="label">Class</label><input class="inp" id="s-class-' + idx + '" placeholder="8-A"/></div>' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label class="label">Grade / %</label><input class="inp" id="s-grade-' + idx + '" placeholder="A+ / 92%"/></div>' +
+        '<div class="field"><label class="label">Score %</label><input class="inp" id="s-pct-' + idx + '" placeholder="92" type="number"/></div>' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label class="label">Strengths</label><input class="inp" id="s-str-' + idx + '" placeholder="Maths, curious"/></div>' +
+        '<div class="field"><label class="label">Improve In</label><input class="inp" id="s-imp-' + idx + '" placeholder="Time management"/></div>' +
+      '</div>' +
+      '<div class="field"><label class="label">Behavior</label>' +
+        '<select class="sel" id="s-beh-' + idx + '">' +
+          '<option>Excellent</option><option>Good</option><option selected>Satisfactory</option><option>Needs Improvement</option>' +
+        '</select>' +
+      '</div>';
+    container.appendChild(div);
+  };
+
+  // Add 1 student row by default for remarks
+  addStudentRow();
+</script>
+</body>
+</html>
