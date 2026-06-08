@@ -21,6 +21,7 @@
       <ul class="nav-links">
         <li><a href="#features">Features</a></li>
         <li><a href="#about">About</a></li>
+        <li><a href="parent-login.html" class="nav-btn" style="background:linear-gradient(135deg,#48cfad,#6c63ff)">👨‍👩‍👧 Parent Portal</a></li>
         <li><a href="chatbot.html" class="nav-btn">💬 Chat Now</a></li>
         <li><a href="admin.html" class="nav-btn-outline">⚙️ Admin</a></li>
       </ul>
@@ -29,6 +30,7 @@
     <ul class="mobile-menu" id="mobileMenu">
       <li><a href="#features">Features</a></li>
       <li><a href="#about">About</a></li>
+      <li><a href="parent-login.html">👨‍👩‍👧 Parent Portal</a></li>
       <li><a href="chatbot.html">💬 Chat Now</a></li>
       <li><a href="admin.html">⚙️ Admin</a></li>
     </ul>
@@ -45,7 +47,7 @@
         <a href="chatbot.html" class="btn-primary" id="chatNowBtn">
           🤖 Chat with School Mitra
         </a>
-        <a href="#features" class="btn-secondary">Explore Features →</a>
+        <a href="parent-login.html" class="btn-secondary" style="border-color:rgba(72,207,173,0.4);color:#48cfad">👨‍👩‍👧 Parent Portal →</a>
       </div>
       <div class="hero-stats">
         <div class="stat"><span class="stat-num">24×7</span><span class="stat-label">Available</span></div>
@@ -134,14 +136,20 @@
         <h2>Access From <span class="gradient-text">Anywhere</span></h2>
         <p>Use the AI assistant from your browser or Telegram</p>
       </div>
-      <div class="channels-grid">
+      <div class="channels-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
         <div class="channel-card">
           <div class="channel-icon web-icon">🌐</div>
           <h3>Website Chatbot</h3>
           <p>Chat directly from this website. Open on mobile or desktop — works everywhere.</p>
           <a href="chatbot.html" class="channel-btn">Open School Mitra →</a>
         </div>
-        <div class="channel-card highlight-card">
+        <div class="channel-card highlight-card" style="border-color:rgba(72,207,173,0.35);background:rgba(72,207,173,0.05)">
+          <div class="channel-icon" style="background:linear-gradient(135deg,rgba(72,207,173,0.2),rgba(108,99,255,0.2))">👨‍👩‍👧</div>
+          <h3>Parent Portal</h3>
+          <p>Login with Roll Number and Phone to check attendance, fees, homework, notices and exam schedule.</p>
+          <a href="parent-login.html" class="channel-btn" style="background:linear-gradient(135deg,#48cfad,#6c63ff)">Open Parent Portal →</a>
+        </div>
+        <div class="channel-card">
           <div class="channel-icon tg-icon">✈️</div>
           <h3>Telegram Bot</h3>
           <p>Chat on Telegram for instant access. Get automatic reminders delivered directly to your phone.</p>
@@ -161,6 +169,7 @@
         </div>
         <div class="footer-links">
           <a href="chatbot.html">School Mitra</a>
+          <a href="parent-login.html">Parent Portal</a>
           <a href="admin.html">Admin Panel</a>
         </div>
       </div>
