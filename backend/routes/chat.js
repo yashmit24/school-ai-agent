@@ -44,24 +44,32 @@ function formatKB(kb) {
 async function saveLead(session, lastMessage) {
   if (!session.phone || session.leadSaved) return;
   try {
-    const { calcScore } = require('./leads');
+    // Inline scoring to avoid circular require
+    let score = 20; // phone present
+    if (session.parentName) score += 8;
+    if (session.studentName) score += 8;
+    if (session.classInterested) score += 8;
+    if (session.city) score += 4;
+    if (session.timeline === 'within_7_days') score += 30;
+    else if (session.timeline === 'within_30_days') score += 15;
+    if (session.askedFees) score += 10;
+    if (session.askedVisit) score += 10;
+    if (session.askedDocs) score += 5;
+    score = Math.min(score, 100);
+    const category = score >= 80 ? 'Hot' : score >= 50 ? 'Warm' : 'Cold';
     const leadData = {
-      parent_name: session.parentName || 'Unknown',
+      parent_name: session.parentName || 'Website Visitor',
       student_name: session.studentName || '',
       class_interested: session.classInterested || '',
       phone: session.phone,
       city: session.city || '',
       admission_timeline: session.timeline || '',
-      source: 'Website',
+      source: 'Chatbot',
       last_message: lastMessage || '',
+      lead_score: score,
+      lead_category: category
     };
-    const { score, category } = calcScore({
-      ...leadData,
-      askedAboutFees: session.askedFees,
-      askedAboutVisit: session.askedVisit,
-      askedAboutDocuments: session.askedDocs,
-    });
-    await supabase.from('leads').insert([{ ...leadData, lead_score: score, lead_category: category }]);
+    await supabase.from('leads').insert([leadData]);
     session.leadSaved = true;
     console.log(`✅ Lead auto-saved: ${session.parentName} (${session.phone}) — ${category}`);
   } catch (e) {
