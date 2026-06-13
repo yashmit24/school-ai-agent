@@ -1210,15 +1210,11 @@
 
   // ─── INIT ────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
+    // admin.js handles tab routing and calls switchTab() for CRM tabs
+    // We just need to load the CRM dashboard data on startup
     loadCRMDashboard();
-    // Override tab click to support new tabs
-    document.querySelectorAll('.sidebar-link[data-tab]').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        switchTab(link.dataset.tab);
-      });
-    });
   });
+
   </script>
 </body>
 </html>

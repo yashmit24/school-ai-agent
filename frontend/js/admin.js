@@ -84,26 +84,39 @@ async function loadDashboard() {
     const data = await res.json();
 
     if (data.success) {
-      document.getElementById('statStudents').textContent = data.data.totalStudents;
-      document.getElementById('statUnpaidFees').textContent = data.data.unpaidFees;
-      document.getElementById('statExams').textContent = data.data.totalExams;
-      document.getElementById('statStaff').textContent = data.data.totalStaff;
+      // Legacy stat cards (may or may not exist in current layout)
+      const safeSet = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      safeSet('statStudents', data.data.totalStudents);
+      safeSet('statUnpaidFees', data.data.unpaidFees);
+      safeSet('statExams', data.data.totalExams);
+      safeSet('statStaff', data.data.totalStaff);
+
+      // Server status badge
       const ss = document.getElementById('serverStatus');
-      ss.textContent = t('status_online');
-      ss.dataset.online = 'true';
+      if (ss) {
+        ss.textContent = t('status_online');
+        ss.style.color = '';
+        ss.dataset.online = 'true';
+      }
       const dbBadge = document.getElementById('dbStatusBadge');
-      dbBadge.textContent = t('status_connected');
-      dbBadge.className = 'badge badge-green';
+      if (dbBadge) {
+        dbBadge.textContent = t('status_connected');
+        dbBadge.className = 'badge badge-green';
+      }
       document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('loading'));
     }
   } catch (err) {
     const ss = document.getElementById('serverStatus');
-    ss.textContent = t('status_offline');
-    ss.style.color = '#e74c3c';
-    ss.dataset.online = 'false';
+    if (ss) {
+      ss.textContent = t('status_offline');
+      ss.style.color = '#e74c3c';
+      ss.dataset.online = 'false';
+    }
     const dbBadge = document.getElementById('dbStatusBadge');
-    dbBadge.textContent = t('status_disconnected');
-    dbBadge.className = 'badge badge-red';
+    if (dbBadge) {
+      dbBadge.textContent = t('status_disconnected');
+      dbBadge.className = 'badge badge-red';
+    }
     console.error('Dashboard error:', err);
   }
 }
@@ -232,6 +245,8 @@ async function loadAttendance() {
 // ─────────────────────────────────────────
 // TAB NAVIGATION
 // ─────────────────────────────────────────
+// CRM tabs — handled by inline CRM script
+const crmTabs = new Set(['leads','campus-visits','followups','admission-fees','knowledge-base','callbacks','wa-generator']);
 const tabLoaders = { students: loadStudents, exams: loadExams, fees: loadFees, staff: loadStaff, attendance: loadAttendance };
 
 document.querySelectorAll('.sidebar-link[data-tab]').forEach(link => {
@@ -245,10 +260,15 @@ document.querySelectorAll('.sidebar-link[data-tab]').forEach(link => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById(tab)?.classList.add('active');
 
-    document.getElementById('pageTitle').textContent =
-      tab.charAt(0).toUpperCase() + tab.slice(1);
+    const titleEl = document.getElementById('pageTitle');
+    if (titleEl) titleEl.textContent = tab.replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase());
 
-    if (tabLoaders[tab]) tabLoaders[tab]();
+    // CRM tabs have their own loaders in the inline script
+    if (crmTabs.has(tab)) {
+      if (typeof switchTab === 'function') switchTab(tab);
+    } else if (tabLoaders[tab]) {
+      tabLoaders[tab]();
+    }
 
     // Close mobile sidebar
     document.getElementById('sidebar').classList.remove('open');
