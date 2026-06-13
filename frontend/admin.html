@@ -17,24 +17,54 @@
       <span>🏫</span>
       <span class="sidebar-logo-text">School Mitra</span>
     </div>
+    <!-- ADMISSION CRM SECTION -->
+    <div style="padding:8px 16px 4px;font-size:0.65rem;font-weight:700;color:rgba(108,99,255,0.7);text-transform:uppercase;letter-spacing:1px;">🎯 Admission CRM</div>
     <nav class="sidebar-nav">
       <a href="#" class="sidebar-link active" data-tab="dashboard" id="tab-dashboard">
-        <span>📊</span> <span data-i18n="nav_dashboard">Dashboard</span>
+        <span>📊</span> <span>Dashboard</span>
       </a>
-      <a href="#" class="sidebar-link" data-tab="students" id="tab-students">
-        <span>👨‍🎓</span> <span data-i18n="nav_students">Students</span>
+      <a href="#" class="sidebar-link" data-tab="leads" id="tab-leads">
+        <span>🔥</span> <span>Admission Leads</span>
+        <span id="hotBadge" style="margin-left:auto;background:#e74c3c;color:#fff;font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:20px;display:none">0</span>
       </a>
-      <a href="#" class="sidebar-link" data-tab="exams" id="tab-exams">
-        <span>📝</span> <span data-i18n="nav_exams">Exams</span>
+      <a href="#" class="sidebar-link" data-tab="campus-visits" id="tab-campus-visits">
+        <span>🏫</span> <span>Campus Visits</span>
       </a>
-      <a href="#" class="sidebar-link" data-tab="fees" id="tab-fees">
-        <span>💰</span> <span data-i18n="nav_fees">Fees</span>
+      <a href="#" class="sidebar-link" data-tab="followups" id="tab-followups">
+        <span>📞</span> <span>Follow-ups</span>
+        <span id="overdueBadge" style="margin-left:auto;background:#e74c3c;color:#fff;font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:20px;display:none">0</span>
+      </a>
+      <a href="#" class="sidebar-link" data-tab="admission-fees" id="tab-admission-fees">
+        <span>💳</span> <span>Admission Fees</span>
       </a>
       <a href="#" class="sidebar-link" data-tab="staff" id="tab-staff">
-        <span>👩‍🏫</span> <span data-i18n="nav_staff">Staff</span>
+        <span>👩‍💼</span> <span>Counsellors</span>
+      </a>
+      <a href="#" class="sidebar-link" data-tab="knowledge-base" id="tab-knowledge-base">
+        <span>📚</span> <span>Knowledge Base</span>
+      </a>
+      <a href="#" class="sidebar-link" data-tab="callbacks" id="tab-callbacks">
+        <span>🔔</span> <span>Callbacks</span>
+        <span id="callbackBadge" style="margin-left:auto;background:#f7c948;color:#000;font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:20px;display:none">0</span>
+      </a>
+      <a href="#" class="sidebar-link" data-tab="wa-generator" id="tab-wa-generator">
+        <span>💬</span> <span>WA Messages</span>
+      </a>
+    </nav>
+    <!-- SCHOOL MANAGEMENT SECTION -->
+    <div style="padding:12px 16px 4px;font-size:0.65rem;font-weight:700;color:rgba(72,207,173,0.6);text-transform:uppercase;letter-spacing:1px;border-top:1px solid rgba(255,255,255,0.06);margin-top:6px;">🏫 School Management</div>
+    <nav class="sidebar-nav">
+      <a href="#" class="sidebar-link" data-tab="students" id="tab-students">
+        <span>👨‍🎓</span> <span>Students</span>
+      </a>
+      <a href="#" class="sidebar-link" data-tab="exams" id="tab-exams">
+        <span>📝</span> <span>Exams</span>
+      </a>
+      <a href="#" class="sidebar-link" data-tab="fees" id="tab-fees">
+        <span>💰</span> <span>School Fees</span>
       </a>
       <a href="#" class="sidebar-link" data-tab="attendance" id="tab-attendance">
-        <span>📋</span> <span data-i18n="nav_attendance">Attendance</span>
+        <span>📋</span> <span>Attendance</span>
       </a>
       <a href="#" class="sidebar-link" data-tab="branding" id="tab-branding">
         <span>🎨</span> <span>School Branding</span>
@@ -42,22 +72,19 @@
     </nav>
     <div class="sidebar-bottom">
       <a href="analytics.html" class="sidebar-link" style="border:1px solid rgba(108,99,255,0.2);background:rgba(108,99,255,0.07)">
-        <span>📊</span> <span>Principal Analytics</span>
+        <span>📊</span> <span>Analytics</span>
       </a>
       <a href="teacher-tools.html" class="sidebar-link" style="border:1px solid rgba(247,201,72,0.2);background:rgba(247,201,72,0.05)">
-        <span>🧑‍🏫</span> <span>Teacher AI Tools</span>
+        <span>🧑‍🏫</span> <span>Teacher Tools</span>
       </a>
       <a href="parent-login.html" class="sidebar-link" style="border:1px solid rgba(72,207,173,0.2);background:rgba(72,207,173,0.05)">
         <span>👨‍👩‍👧</span> <span>Parent Portal</span>
       </a>
-      <a href="scoreboard.html" class="sidebar-link">
-        <span>🏆</span> <span data-i18n="nav_scoreboard">Scoreboard</span>
+      <a href="chatbot.html" class="sidebar-link">
+        <span>🤖</span> <span>Admission Chatbot</span>
       </a>
       <a href="index.html" class="sidebar-link">
-        <span>🌐</span> <span data-i18n="nav_view_website">View Website</span>
-      </a>
-      <a href="chatbot.html" class="sidebar-link">
-        <span>💬</span> <span data-i18n="nav_open_chatbot">Open Chatbot</span>
+        <span>🌐</span> <span>View Website</span>
       </a>
     </div>
   </aside>
@@ -86,62 +113,93 @@
 
     <!-- DASHBOARD TAB -->
     <section class="tab-content active" id="dashboard">
-      <div class="stats-grid" id="statsGrid">
-        <div class="stat-card loading">
-          <div class="stat-card-icon">👨‍🎓</div>
-          <div class="stat-card-value" id="statStudents">--</div>
-          <div class="stat-card-label" data-i18n="stat_students">Total Students</div>
+
+      <!-- ADMISSION CRM KPI CARDS -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px" id="crmStatsGrid">
+        <div class="stat-card" style="border-left:3px solid #6c63ff;cursor:pointer" onclick="switchTab('leads')">
+          <div class="stat-card-icon">📋</div>
+          <div class="stat-card-value" id="kpi-total">--</div>
+          <div class="stat-card-label">Total Leads</div>
         </div>
-        <div class="stat-card loading">
-          <div class="stat-card-icon">💰</div>
-          <div class="stat-card-value" id="statUnpaidFees">--</div>
-          <div class="stat-card-label" data-i18n="stat_unpaid_fees">Unpaid Fees</div>
+        <div class="stat-card" style="border-left:3px solid #e74c3c;cursor:pointer" onclick="switchTab('leads')">
+          <div class="stat-card-icon">🔥</div>
+          <div class="stat-card-value" id="kpi-hot" style="color:#e74c3c">--</div>
+          <div class="stat-card-label">Hot Leads</div>
         </div>
-        <div class="stat-card loading">
-          <div class="stat-card-icon">📝</div>
-          <div class="stat-card-value" id="statExams">--</div>
-          <div class="stat-card-label" data-i18n="stat_exams">Total Exams</div>
+        <div class="stat-card" style="border-left:3px solid #f7c948;cursor:pointer" onclick="switchTab('leads')">
+          <div class="stat-card-icon">🌤</div>
+          <div class="stat-card-value" id="kpi-warm" style="color:#f7c948">--</div>
+          <div class="stat-card-label">Warm Leads</div>
         </div>
-        <div class="stat-card loading">
-          <div class="stat-card-icon">👩‍🏫</div>
-          <div class="stat-card-value" id="statStaff">--</div>
-          <div class="stat-card-label" data-i18n="stat_staff">Staff Members</div>
+        <div class="stat-card" style="border-left:3px solid #48cfad;cursor:pointer" onclick="switchTab('leads')">
+          <div class="stat-card-icon">✅</div>
+          <div class="stat-card-value" id="kpi-converted" style="color:#48cfad">--</div>
+          <div class="stat-card-label">Converted</div>
+        </div>
+        <div class="stat-card" style="cursor:pointer" onclick="switchTab('leads')">
+          <div class="stat-card-icon">📅</div>
+          <div class="stat-card-value" id="kpi-today">--</div>
+          <div class="stat-card-label">Today's Enquiries</div>
+        </div>
+        <div class="stat-card" style="cursor:pointer" onclick="switchTab('campus-visits')">
+          <div class="stat-card-icon">🏫</div>
+          <div class="stat-card-value" id="kpi-visits">--</div>
+          <div class="stat-card-label">Campus Visits</div>
+        </div>
+        <div class="stat-card" style="cursor:pointer" onclick="switchTab('followups')">
+          <div class="stat-card-icon">⏰</div>
+          <div class="stat-card-value" id="kpi-followups" style="color:#f7c948">--</div>
+          <div class="stat-card-label">Pending Follow-ups</div>
+        </div>
+        <div class="stat-card" style="cursor:pointer" onclick="switchTab('callbacks')">
+          <div class="stat-card-icon">🔔</div>
+          <div class="stat-card-value" id="kpi-callbacks" style="color:#e74c3c">--</div>
+          <div class="stat-card-label">Callbacks Pending</div>
         </div>
       </div>
 
+      <!-- LEAD FUNNEL + SOURCE -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>🎯 Lead Funnel</h3></div>
+          <div id="leadFunnel" style="padding:8px 0">Loading...</div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>📡 Lead Sources</h3></div>
+          <div id="leadSources" style="padding:8px 0">Loading...</div>
+        </div>
+      </div>
+
+      <!-- RECENT LEADS + OVERDUE FOLLOWUPS -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>🆕 Recent Enquiries</h3><button class="admin-btn" onclick="switchTab('leads')" style="font-size:0.75rem;padding:6px 12px">View All</button></div>
+          <div id="recentLeads">Loading...</div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>🚨 Overdue Follow-ups</h3><button class="admin-btn" onclick="switchTab('followups')" style="font-size:0.75rem;padding:6px 12px;background:rgba(231,76,60,0.15);color:#e74c3c">View All</button></div>
+          <div id="overdueFollowups">Loading...</div>
+        </div>
+      </div>
+
+      <!-- SYSTEM STATUS -->
       <div class="admin-cards-row">
         <div class="admin-card">
-          <div class="admin-card-header">
-            <h3>📅 <span data-i18n="quick_links">Quick Links</span></h3>
-          </div>
-          <div class="quick-links">
-            <a href="chatbot.html" class="quick-link-btn">💬 <span data-i18n="open_chatbot">Open AI Chatbot</span></a>
-            <a href="scoreboard.html" class="quick-link-btn">🏆 <span data-i18n="scoreboard">Scoreboard</span></a>
-            <a href="index.html" class="quick-link-btn">🌐 <span data-i18n="view_homepage">View Homepage</span></a>
-            <a href="https://supabase.com/dashboard" target="_blank" class="quick-link-btn">🗄️ Supabase DB</a>
+          <div class="admin-card-header"><h3>🕐 System Status</h3></div>
+          <div class="status-list">
+            <div class="status-item"><span>🤖 Gemini AI</span><span class="badge badge-green">Active</span></div>
+            <div class="status-item"><span>🗄️ Supabase DB</span><span class="badge badge-green" id="dbStatusBadge">Checking...</span></div>
+            <div class="status-item"><span>📱 WhatsApp Bot</span><span class="badge badge-green">Active</span></div>
+            <div class="status-item"><span>⏰ Cron Jobs</span><span class="badge badge-green">Running</span></div>
           </div>
         </div>
         <div class="admin-card">
-          <div class="admin-card-header">
-            <h3>🕐 <span data-i18n="system_status">System Status</span></h3>
-          </div>
-          <div class="status-list">
-            <div class="status-item">
-              <span>🤖 Gemini AI</span>
-              <span class="badge badge-green" data-i18n="status_active">Active</span>
-            </div>
-            <div class="status-item">
-              <span>🗄️ Supabase DB</span>
-              <span class="badge badge-green" id="dbStatusBadge" data-i18n="status_checking">Checking...</span>
-            </div>
-            <div class="status-item">
-              <span>✈️ Telegram Bot</span>
-              <span class="badge badge-green" data-i18n="status_active">Active</span>
-            </div>
-            <div class="status-item">
-              <span>⏰ <span data-i18n="cron_jobs">Cron Jobs</span></span>
-              <span class="badge badge-green" data-i18n="status_running">Running</span>
-            </div>
+          <div class="admin-card-header"><h3>⚡ Quick Links</h3></div>
+          <div class="quick-links">
+            <a href="chatbot.html" class="quick-link-btn">🤖 Admission Chatbot</a>
+            <a href="analytics.html" class="quick-link-btn">📊 Analytics</a>
+            <a href="index.html" class="quick-link-btn">🌐 View Website</a>
+            <a href="https://supabase.com/dashboard" target="_blank" class="quick-link-btn">🗄️ Supabase DB</a>
           </div>
         </div>
       </div>
@@ -353,6 +411,294 @@
       </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- LEADS TAB                                   -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tab-content" id="leads">
+      <!-- ADD/EDIT LEAD MODAL -->
+      <div id="leadModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+        <div style="background:#1a1a2e;border:1px solid rgba(108,99,255,0.3);border-radius:20px;padding:28px;width:92%;max-width:720px;max-height:90vh;overflow-y:auto;position:relative;">
+          <button onclick="document.getElementById('leadModal').style.display='none'" style="position:absolute;top:14px;right:14px;background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:8px;color:#e74c3c;width:30px;height:30px;cursor:pointer;">✕</button>
+          <h2 id="leadModalTitle" style="font-size:1.1rem;font-weight:800;margin-bottom:20px;">➕ Add Admission Lead</h2>
+          <form id="leadForm" onsubmit="saveLead(event)">
+            <input type="hidden" id="leadId"/>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="mf"><label class="ml">Parent Name *</label><input class="mi" id="lf_parent_name" placeholder="Rajesh Kumar" required/></div>
+              <div class="mf"><label class="ml">Student Name</label><input class="mi" id="lf_student_name" placeholder="Aarav Kumar"/></div>
+              <div class="mf"><label class="ml">Class Interested</label>
+                <select class="mi" id="lf_class_interested"><option value="">Select Class</option><option>Nursery</option><option>LKG</option><option>UKG</option><option>Class 1</option><option>Class 2</option><option>Class 3</option><option>Class 4</option><option>Class 5</option><option>Class 6</option><option>Class 7</option><option>Class 8</option><option>Class 9</option><option>Class 10</option><option>Class 11</option><option>Class 12</option></select>
+              </div>
+              <div class="mf"><label class="ml">Phone *</label><input class="mi" id="lf_phone" placeholder="9811234567" required/></div>
+              <div class="mf"><label class="ml">WhatsApp</label><input class="mi" id="lf_whatsapp" placeholder="9811234567"/></div>
+              <div class="mf"><label class="ml">Email</label><input class="mi" id="lf_email" type="email" placeholder="parent@email.com"/></div>
+              <div class="mf"><label class="ml">City</label><input class="mi" id="lf_city" placeholder="Delhi"/></div>
+              <div class="mf"><label class="ml">Area</label><input class="mi" id="lf_area" placeholder="Rohini, Sector 7"/></div>
+              <div class="mf"><label class="ml">Admission Timeline</label>
+                <select class="mi" id="lf_admission_timeline"><option value="">Select</option><option value="within_7_days">Within 7 Days 🔥</option><option value="within_30_days">Within 30 Days 🌤</option><option value="next_session">Next Session ❄</option><option value="exploring">Just Exploring</option></select>
+              </div>
+              <div class="mf"><label class="ml">Budget Range</label><input class="mi" id="lf_budget_range" placeholder="₹50,000–₹70,000/year"/></div>
+              <div class="mf"><label class="ml">Source</label>
+                <select class="mi" id="lf_source"><option>Website</option><option>WhatsApp</option><option>Walk-in</option><option>Referral</option><option>Facebook</option><option>Instagram</option><option>Google Ads</option></select>
+              </div>
+              <div class="mf"><label class="ml">Status</label>
+                <select class="mi" id="lf_status"><option>New</option><option>Contacted</option><option>Visit Booked</option><option>Applied</option><option>Converted</option><option>Lost</option></select>
+              </div>
+              <div class="mf"><label class="ml">Follow-up Date</label><input class="mi" id="lf_followup_date" type="date"/></div>
+              <div class="mf"><label class="ml">Assigned Counsellor</label><input class="mi" id="lf_assigned_counsellor" placeholder="Ms. Deepa"/></div>
+              <div class="mf" style="grid-column:1/-1"><label class="ml">Last Message / Notes</label><textarea class="mi" id="lf_notes" rows="2" placeholder="What did the parent ask about?"></textarea></div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:18px;">
+              <button type="submit" class="admin-btn" style="flex:1;padding:12px;">💾 Save Lead</button>
+              <button type="button" onclick="document.getElementById('leadModal').style.display='none'" style="padding:12px 20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#9d95ff;cursor:pointer;font-family:inherit;">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3>🔥 Admission Leads</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <input id="leadSearch" type="text" placeholder="🔍 Search name, phone..." oninput="filterLeads()" style="padding:7px 12px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(108,99,255,0.25);border-radius:10px;color:#e0e0f0;font-family:inherit;font-size:0.82rem;width:200px;outline:none;"/>
+            <select id="leadCatFilter" onchange="filterLeads()" style="padding:7px 10px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(108,99,255,0.25);border-radius:10px;color:#e0e0f0;font-family:inherit;font-size:0.82rem;outline:none;">
+              <option value="">All Categories</option><option value="Hot">🔥 Hot</option><option value="Warm">🌤 Warm</option><option value="Cold">❄ Cold</option>
+            </select>
+            <select id="leadStatusFilter" onchange="filterLeads()" style="padding:7px 10px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(108,99,255,0.25);border-radius:10px;color:#e0e0f0;font-family:inherit;font-size:0.82rem;outline:none;">
+              <option value="">All Status</option><option>New</option><option>Contacted</option><option>Visit Booked</option><option>Applied</option><option>Converted</option><option>Lost</option>
+            </select>
+            <button class="admin-btn" onclick="loadLeads()">🔄 Refresh</button>
+            <button class="admin-btn" onclick="openLeadModal()" style="background:linear-gradient(135deg,#e74c3c,#f39c12);">➕ Add Lead</button>
+          </div>
+        </div>
+        <div id="leadsGrid" style="display:grid;gap:12px;padding:4px 0;">Loading...</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- CAMPUS VISITS TAB                           -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tab-content" id="campus-visits">
+      <!-- ADD VISIT MODAL -->
+      <div id="visitModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+        <div style="background:#1a1a2e;border:1px solid rgba(72,207,173,0.3);border-radius:20px;padding:28px;width:90%;max-width:560px;position:relative;">
+          <button onclick="document.getElementById('visitModal').style.display='none'" style="position:absolute;top:14px;right:14px;background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:8px;color:#e74c3c;width:30px;height:30px;cursor:pointer;">✕</button>
+          <h2 style="font-size:1.1rem;font-weight:800;margin-bottom:20px;">🏫 Book Campus Visit</h2>
+          <form id="visitForm" onsubmit="saveVisit(event)">
+            <input type="hidden" id="visitId"/>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="mf"><label class="ml">Parent Name *</label><input class="mi" id="vf_parent_name" required placeholder="Rajesh Kumar"/></div>
+              <div class="mf"><label class="ml">Phone *</label><input class="mi" id="vf_phone" required placeholder="9811234567"/></div>
+              <div class="mf"><label class="ml">Student Name</label><input class="mi" id="vf_student_name" placeholder="Aarav Kumar"/></div>
+              <div class="mf"><label class="ml">Class Interested</label><input class="mi" id="vf_class_interested" placeholder="Class 6"/></div>
+              <div class="mf"><label class="ml">Visit Date *</label><input class="mi" id="vf_visit_date" type="date" required/></div>
+              <div class="mf"><label class="ml">Visit Time *</label><input class="mi" id="vf_visit_time" placeholder="10:00 AM" required/></div>
+              <div class="mf"><label class="ml">Assigned Counsellor</label><input class="mi" id="vf_assigned_counsellor" placeholder="Ms. Deepa"/></div>
+              <div class="mf"><label class="ml">Status</label>
+                <select class="mi" id="vf_status"><option>Scheduled</option><option>Completed</option><option>Missed</option><option>Rescheduled</option></select>
+              </div>
+              <div class="mf" style="grid-column:1/-1"><label class="ml">Notes</label><textarea class="mi" id="vf_notes" rows="2"></textarea></div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:18px;">
+              <button type="submit" class="admin-btn" style="flex:1;padding:12px;">💾 Save Visit</button>
+              <button type="button" onclick="document.getElementById('visitModal').style.display='none'" style="padding:12px 20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#9d95ff;cursor:pointer;font-family:inherit;">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3>🏫 Campus Visits</h3>
+          <div style="display:flex;gap:8px;">
+            <button class="admin-btn" onclick="loadVisits()">🔄 Refresh</button>
+            <button class="admin-btn" onclick="openVisitModal()" style="background:linear-gradient(135deg,#48cfad,#2ecc71);">➕ Book Visit</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Parent</th><th>Student</th><th>Class</th><th>Date</th><th>Time</th><th>Counsellor</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="visitsBody"><tr><td colspan="8" class="loading-row">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- FOLLOW-UPS TAB                              -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tab-content" id="followups">
+      <!-- ADD FOLLOWUP MODAL -->
+      <div id="followupModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+        <div style="background:#1a1a2e;border:1px solid rgba(247,201,72,0.3);border-radius:20px;padding:28px;width:90%;max-width:520px;position:relative;">
+          <button onclick="document.getElementById('followupModal').style.display='none'" style="position:absolute;top:14px;right:14px;background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:8px;color:#e74c3c;width:30px;height:30px;cursor:pointer;">✕</button>
+          <h2 style="font-size:1.1rem;font-weight:800;margin-bottom:20px;">📞 Add Follow-up</h2>
+          <form id="followupForm" onsubmit="saveFollowup(event)">
+            <input type="hidden" id="followupId"/>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="mf"><label class="ml">Lead Name *</label><input class="mi" id="ff_lead_name" required/></div>
+              <div class="mf"><label class="ml">Phone *</label><input class="mi" id="ff_phone" required/></div>
+              <div class="mf"><label class="ml">Follow-up Date *</label><input class="mi" id="ff_followup_date" type="date" required/></div>
+              <div class="mf"><label class="ml">Type *</label>
+                <select class="mi" id="ff_followup_type" required><option>Call</option><option>WhatsApp</option><option>Visit Reminder</option><option>Document Reminder</option><option>Fee Reminder</option></select>
+              </div>
+              <div class="mf" style="grid-column:1/-1"><label class="ml">Notes</label><textarea class="mi" id="ff_notes" rows="2"></textarea></div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:18px;">
+              <button type="submit" class="admin-btn" style="flex:1;padding:12px;">💾 Save & Generate AI Message</button>
+              <button type="button" onclick="document.getElementById('followupModal').style.display='none'" style="padding:12px 20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#9d95ff;cursor:pointer;font-family:inherit;">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3>📞 Follow-up Reminders</h3>
+          <div style="display:flex;gap:8px;">
+            <select id="followupStatusFilter" onchange="loadFollowups()" style="padding:7px 10px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(108,99,255,0.25);border-radius:10px;color:#e0e0f0;font-family:inherit;font-size:0.82rem;outline:none;">
+              <option value="">All</option><option value="Pending">⏳ Pending</option><option value="Overdue">🚨 Overdue</option><option value="Done">✅ Done</option>
+            </select>
+            <button class="admin-btn" onclick="loadFollowups()">🔄 Refresh</button>
+            <button class="admin-btn" onclick="openFollowupModal()" style="background:linear-gradient(135deg,#f7c948,#e67e22);color:#000;">➕ Add Follow-up</button>
+          </div>
+        </div>
+        <div id="followupsGrid" style="display:grid;gap:12px;padding:4px 0;">Loading...</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- ADMISSION FEES TAB                          -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tab-content" id="admission-fees">
+      <div id="admFeeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+        <div style="background:#1a1a2e;border:1px solid rgba(72,207,173,0.3);border-radius:20px;padding:28px;width:90%;max-width:520px;position:relative;">
+          <button onclick="document.getElementById('admFeeModal').style.display='none'" style="position:absolute;top:14px;right:14px;background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:8px;color:#e74c3c;width:30px;height:30px;cursor:pointer;">✕</button>
+          <h2 style="font-size:1.1rem;font-weight:800;margin-bottom:20px;">💳 Admission Fee Record</h2>
+          <form id="admFeeForm" onsubmit="saveAdmFee(event)">
+            <input type="hidden" id="admFeeId"/>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="mf"><label class="ml">Student Name *</label><input class="mi" id="af_student_name" required/></div>
+              <div class="mf"><label class="ml">Class *</label><input class="mi" id="af_class" required placeholder="Class 6"/></div>
+              <div class="mf"><label class="ml">Application Fee (₹)</label><input class="mi" id="af_application_fee" type="number" placeholder="500"/></div>
+              <div class="mf"><label class="ml">Admission Fee (₹)</label><input class="mi" id="af_admission_fee" type="number" placeholder="25000"/></div>
+              <div class="mf"><label class="ml">1st Installment (₹)</label><input class="mi" id="af_first_installment" type="number" placeholder="20000"/></div>
+              <div class="mf"><label class="ml">Payment Status</label>
+                <select class="mi" id="af_payment_status"><option>Pending</option><option>Partial</option><option>Paid</option></select>
+              </div>
+              <div class="mf"><label class="ml">Due Date</label><input class="mi" id="af_due_date" type="date"/></div>
+              <div class="mf" style="grid-column:1/-1"><label class="ml">Notes</label><textarea class="mi" id="af_notes" rows="2"></textarea></div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:18px;">
+              <button type="submit" class="admin-btn" style="flex:1;padding:12px;">💾 Save Record</button>
+              <button type="button" onclick="document.getElementById('admFeeModal').style.display='none'" style="padding:12px 20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#9d95ff;cursor:pointer;font-family:inherit;">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3>💳 Admission Fee Records</h3>
+          <div style="display:flex;gap:8px;"><button class="admin-btn" onclick="loadAdmFees()">🔄 Refresh</button><button class="admin-btn" onclick="openAdmFeeModal()" style="background:linear-gradient(135deg,#48cfad,#2ecc71);">➕ Add Record</button></div>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Student</th><th>Class</th><th>App. Fee</th><th>Adm. Fee</th><th>1st Install.</th><th>Status</th><th>Due Date</th><th>Actions</th></tr></thead>
+            <tbody id="admFeesBody"><tr><td colspan="8" class="loading-row">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- KNOWLEDGE BASE TAB                          -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tab-content" id="knowledge-base">
+      <div class="admin-card" style="max-width:900px">
+        <div class="admin-card-header"><h3>📚 Admission Knowledge Base</h3><span style="font-size:0.78rem;color:#9d95ff">Chatbot answers only from this data</span></div>
+        <div id="kbAlert" style="display:none;padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:0.85rem;"></div>
+        <form id="kbForm" onsubmit="saveKB(event)">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="mf"><label class="ml">School Name</label><input class="mi" id="kb_school_name" placeholder="Sunshine Public School"/></div>
+            <div class="mf"><label class="ml">Admission Status</label>
+              <select class="mi" id="kb_admission_open"><option value="true">✅ Admission OPEN</option><option value="false">❌ Admission CLOSED</option></select>
+            </div>
+            <div class="mf" style="grid-column:1/-1">
+              <label class="ml">🚫 Admission Closed Message (shown when admission is closed)</label>
+              <textarea class="mi" id="kb_admission_closed_msg" rows="2" placeholder="Abhi admission band hai. Please next session ke liye contact karein..."></textarea>
+            </div>
+            <div class="mf"><label class="ml">Classes Available</label><input class="mi" id="kb_classes_available" placeholder="Nursery to 12th"/></div>
+            <div class="mf"><label class="ml">School Timings</label><input class="mi" id="kb_school_timings" placeholder="8:00 AM – 2:30 PM"/></div>
+            <div class="mf" style="grid-column:1/-1"><label class="ml">Fee Structure</label><textarea class="mi" id="kb_fee_structure" rows="3" placeholder="Class 1-5: ₹55,000/year..."></textarea></div>
+            <div class="mf" style="grid-column:1/-1"><label class="ml">Required Documents</label><textarea class="mi" id="kb_required_documents" rows="2" placeholder="Birth Certificate, Aadhaar Card..."></textarea></div>
+            <div class="mf" style="grid-column:1/-1"><label class="ml">Age Criteria</label><textarea class="mi" id="kb_age_criteria" rows="2"></textarea></div>
+            <div class="mf" style="grid-column:1/-1"><label class="ml">Admission Process (Step by Step)</label><textarea class="mi" id="kb_admission_process" rows="3"></textarea></div>
+            <div class="mf" style="grid-column:1/-1"><label class="ml">Facilities</label><textarea class="mi" id="kb_facilities" rows="2" placeholder="Smart Classes, Library, Pool..."></textarea></div>
+            <div class="mf" style="grid-column:1/-1"><label class="ml">Transport Routes</label><textarea class="mi" id="kb_transport_routes" rows="2"></textarea></div>
+            <div class="mf"><label class="ml">Contact Phone</label><input class="mi" id="kb_contact_phone" placeholder="+91 98765 43210"/></div>
+            <div class="mf"><label class="ml">Contact Email</label><input class="mi" id="kb_contact_email" type="email"/></div>
+            <div class="mf" style="grid-column:1/-1"><label class="ml">Campus Visit Slots</label><textarea class="mi" id="kb_campus_visit_slots" rows="2" placeholder="Mon-Sat: 9AM-12PM and 2PM-5PM"></textarea></div>
+            <div class="mf" style="grid-column:1/-1"><label class="ml">Scholarship Info</label><textarea class="mi" id="kb_scholarship_info" rows="2"></textarea></div>
+            <div class="mf" style="grid-column:1/-1"><label class="ml">FAQs</label><textarea class="mi" id="kb_faqs" rows="4" placeholder="Q: Is there registration fee? A: Yes ₹500..."></textarea></div>
+            <div class="mf" style="grid-column:1/-1"><label class="ml">Principal's Message</label><textarea class="mi" id="kb_principal_message" rows="2"></textarea></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;margin-top:20px;">
+            <button type="submit" class="admin-btn" style="padding:13px 32px;background:linear-gradient(135deg,#6c63ff,#48cfad);">💾 Save Knowledge Base</button>
+            <span id="kbSaveMsg" style="font-size:0.85rem;display:none;"></span>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- CALLBACKS TAB                               -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tab-content" id="callbacks">
+      <div class="admin-card">
+        <div class="admin-card-header"><h3>🔔 Callback Requests</h3><button class="admin-btn" onclick="loadCallbacks()">🔄 Refresh</button></div>
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Parent</th><th>Phone</th><th>Message</th><th>Urgency</th><th>Status</th><th>Time</th><th>Actions</th></tr></thead>
+            <tbody id="callbacksBody"><tr><td colspan="7" class="loading-row">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- WA MESSAGE GENERATOR TAB                    -->
+    <!-- ═══════════════════════════════════════════ -->
+    <section class="tab-content" id="wa-generator">
+      <div class="admin-card" style="max-width:800px">
+        <div class="admin-card-header"><h3>💬 WhatsApp Message Generator</h3><span style="font-size:0.78rem;color:#9d95ff">AI-powered Hinglish messages — just copy & send!</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
+          <div class="mf"><label class="ml">Template Type</label>
+            <select class="mi" id="waTmplType">
+              <option value="new_enquiry">👋 New Enquiry Reply</option>
+              <option value="followup">📞 Follow-up Message</option>
+              <option value="visit_confirm">🏫 Campus Visit Confirmation</option>
+              <option value="doc_reminder">📄 Document Reminder</option>
+              <option value="fee_reminder">💰 Fee Reminder</option>
+              <option value="closing_reminder">⚠️ Admission Closing Reminder</option>
+              <option value="lost_recovery">💙 Lost Lead Recovery</option>
+            </select>
+          </div>
+          <div class="mf"><label class="ml">Parent Name</label><input class="mi" id="wa_parent_name" placeholder="Rajesh Kumar"/></div>
+          <div class="mf"><label class="ml">Student Name</label><input class="mi" id="wa_student_name" placeholder="Aarav Kumar"/></div>
+          <div class="mf"><label class="ml">Class Interested</label><input class="mi" id="wa_class_interested" placeholder="Class 6"/></div>
+          <div class="mf"><label class="ml">Visit Date (if applicable)</label><input class="mi" id="wa_visit_date" type="date"/></div>
+          <div class="mf"><label class="ml">Visit Time</label><input class="mi" id="wa_visit_time" placeholder="10:00 AM"/></div>
+          <div class="mf" style="grid-column:1/-1"><label class="ml">Extra Info / Context</label><textarea class="mi" id="wa_extra_info" rows="2" placeholder="e.g. Parent asked about scholarship, was interested in science stream..."></textarea></div>
+        </div>
+        <button class="admin-btn" onclick="generateWAMessage()" style="background:linear-gradient(135deg,#25d366,#128c7e);margin-bottom:18px;padding:12px 28px;">✨ Generate AI Message</button>
+        <div id="waResult" style="display:none;background:rgba(37,211,102,0.06);border:1px solid rgba(37,211,102,0.2);border-radius:14px;padding:18px;">
+          <div style="font-size:0.75rem;color:#25d366;font-weight:700;margin-bottom:10px;">📱 READY TO SEND MESSAGE</div>
+          <div id="waMessageText" style="white-space:pre-wrap;line-height:1.6;font-size:0.9rem;color:#e0e0f0;"></div>
+          <button onclick="copyWAMessage()" style="margin-top:14px;padding:9px 20px;background:rgba(37,211,102,0.15);border:1px solid rgba(37,211,102,0.3);border-radius:9px;color:#25d366;font-family:inherit;font-size:0.82rem;font-weight:700;cursor:pointer;">📋 Copy Message</button>
+        </div>
+        <div id="waLoading" style="display:none;color:#9d95ff;font-size:0.88rem;margin-top:12px;">⏳ Generating AI message...</div>
+      </div>
+    </section>
+
       <!-- ══════════════════════════════════════ -->
       <!-- BRANDING TAB                           -->
       <!-- ══════════════════════════════════════ -->
@@ -468,5 +814,412 @@
   <script src="js/admin.js"></script>
   <script src="js/students-manager.js"></script>
   <script src="js/branding-admin.js"></script>
+  <script>
+  // ═══════════════════════════════════════════════════
+  // SCHOOL MITRA CRM — Admin JavaScript
+  // ═══════════════════════════════════════════════════
+  const API = 'https://school-ai-agent-eynr.onrender.com';
+  function hdrs() {
+    const t = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+    return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + t };
+  }
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.sidebar-link[data-tab]').forEach(a => a.classList.remove('active'));
+    const sec = document.getElementById(tab);
+    if (sec) sec.classList.add('active');
+    const link = document.getElementById('tab-' + tab);
+    if (link) link.classList.add('active');
+    document.getElementById('pageTitle') && (document.getElementById('pageTitle').textContent = tab.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()));
+    if (tab==='leads') loadLeads();
+    if (tab==='campus-visits') loadVisits();
+    if (tab==='followups') loadFollowups();
+    if (tab==='admission-fees') loadAdmFees();
+    if (tab==='knowledge-base') loadKB();
+    if (tab==='callbacks') loadCallbacks();
+  }
+
+  // ─── DASHBOARD KPIs ────────────────────────────────
+  async function loadCRMDashboard() {
+    try {
+      const [leadsRes, visitsRes, followupsRes, callbacksRes] = await Promise.all([
+        fetch(API+'/api/leads/stats', {headers:hdrs()}),
+        fetch(API+'/api/campus-visits', {headers:hdrs()}),
+        fetch(API+'/api/followups?status=Pending', {headers:hdrs()}),
+        fetch(API+'/api/callbacks?status=Pending', {headers:hdrs()})
+      ]);
+      const leads = await leadsRes.json();
+      const visits = await visitsRes.json();
+      const followups = await followupsRes.json();
+      const callbacks = await callbacksRes.json();
+
+      if (leads.success) {
+        const s = leads.data;
+        document.getElementById('kpi-total').textContent = s.total;
+        document.getElementById('kpi-hot').textContent = s.hot;
+        document.getElementById('kpi-warm').textContent = s.warm;
+        document.getElementById('kpi-converted').textContent = s.converted;
+        document.getElementById('kpi-today').textContent = s.today;
+        // Sidebar badges
+        const hb = document.getElementById('hotBadge');
+        if (s.hot > 0) { hb.textContent = s.hot; hb.style.display = 'inline-flex'; }
+        // Lead Funnel
+        const funnel = [
+          {label:'New',color:'#6c63ff',val:s.byStatus['New']||0},
+          {label:'Contacted',color:'#48cfad',val:s.byStatus['Contacted']||0},
+          {label:'Visit Booked',color:'#f7c948',val:s.byStatus['Visit Booked']||0},
+          {label:'Applied',color:'#e67e22',val:s.byStatus['Applied']||0},
+          {label:'Converted',color:'#2ecc71',val:s.byStatus['Converted']||0},
+        ];
+        const maxFunnel = Math.max(...funnel.map(f=>f.val), 1);
+        document.getElementById('leadFunnel').innerHTML = funnel.map(f=>`
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <div style="width:90px;font-size:0.75rem;color:#9d95ff;text-align:right;">${f.label}</div>
+            <div style="flex:1;background:rgba(255,255,255,0.05);border-radius:20px;height:22px;overflow:hidden;">
+              <div style="width:${Math.max((f.val/maxFunnel)*100,4)}%;background:${f.color};height:100%;border-radius:20px;transition:width 0.6s;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;">
+                <span style="font-size:0.7rem;font-weight:700;color:#fff">${f.val}</span>
+              </div>
+            </div>
+          </div>`).join('');
+        // Sources
+        const srcColors = {'Website':'#6c63ff','WhatsApp':'#25d366','Google Ads':'#f7c948','Facebook':'#3b5998','Instagram':'#e74c3c','Referral':'#48cfad','Walk-in':'#e67e22'};
+        document.getElementById('leadSources').innerHTML = Object.entries(s.bySource||{}).map(([src,cnt])=>`
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+            <span style="font-size:0.8rem;color:#e0e0f0;">${src}</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:60px;background:rgba(255,255,255,0.05);border-radius:20px;height:8px;"><div style="width:${Math.max((cnt/s.total)*100,8)}%;background:${srcColors[src]||'#6c63ff'};height:100%;border-radius:20px;"></div></div>
+              <span style="font-size:0.78rem;font-weight:700;color:${srcColors[src]||'#6c63ff'};min-width:20px;text-align:right;">${cnt}</span>
+            </div>
+          </div>`).join('') || '<p style="color:#9d95ff;font-size:0.8rem;padding:8px 0">No data yet</p>';
+      }
+      if (visits.success) {
+        document.getElementById('kpi-visits').textContent = (visits.data||[]).filter(v=>v.status==='Scheduled').length;
+      }
+      if (followups.success) {
+        const pd = (followups.data||[]).length;
+        document.getElementById('kpi-followups').textContent = pd;
+        const ob = document.getElementById('overdueBadge');
+        if (pd > 0) { ob.textContent = pd; ob.style.display = 'inline-flex'; }
+        // Recent leads
+        const leadsAll = await fetch(API+'/api/leads', {headers:hdrs()}).then(r=>r.json());
+        if (leadsAll.success) {
+          const recent = (leadsAll.data||[]).slice(0,5);
+          document.getElementById('recentLeads').innerHTML = recent.length ? recent.map(l=>`
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+              <div><div style="font-size:0.82rem;font-weight:600;">${l.parent_name}</div><div style="font-size:0.72rem;color:#9d95ff;">${l.class_interested||'—'} · ${l.source||'—'}</div></div>
+              <span style="font-size:0.7rem;font-weight:700;padding:3px 9px;border-radius:20px;${l.lead_category==='Hot'?'background:rgba(231,76,60,0.2);color:#e74c3c':l.lead_category==='Warm'?'background:rgba(247,201,72,0.2);color:#f7c948':'background:rgba(107,114,128,0.2);color:#9d95ff'}">${l.lead_category==='Hot'?'🔥':l.lead_category==='Warm'?'🌤':'❄'} ${l.lead_category}</span>
+            </div>`).join('') : '<p style="color:#9d95ff;font-size:0.8rem;padding:8px 0">No leads yet. <a href="#" onclick="switchTab(\'leads\')" style="color:#6c63ff;">Add first lead →</a></p>';
+          // Overdue followups
+          const overdue = await fetch(API+'/api/followups?status=Overdue', {headers:hdrs()}).then(r=>r.json());
+          document.getElementById('overdueFollowups').innerHTML = (overdue.data||[]).length ?
+            (overdue.data||[]).slice(0,5).map(f=>`
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+                <div><div style="font-size:0.82rem;font-weight:600;">${f.lead_name}</div><div style="font-size:0.72rem;color:#9d95ff;">${f.followup_type} · ${f.followup_date}</div></div>
+                <button onclick="markFollowupDone('${f.id}')" style="padding:4px 10px;background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:7px;color:#2ecc71;font-size:0.72rem;cursor:pointer;font-family:inherit;">✓ Done</button>
+              </div>`).join('')
+            : '<p style="color:#2ecc71;font-size:0.8rem;padding:8px 0">✅ No overdue follow-ups!</p>';
+        }
+      }
+      if (callbacks.success) {
+        const cb = (callbacks.data||[]).length;
+        document.getElementById('kpi-callbacks').textContent = cb;
+        const cbb = document.getElementById('callbackBadge');
+        if (cb > 0) { cbb.textContent = cb; cbb.style.display = 'inline-flex'; }
+      }
+    } catch(e) { console.error('CRM Dashboard error:', e); }
+  }
+
+  // ─── LEADS ──────────────────────────────────────────
+  let allLeads = [];
+  async function loadLeads() {
+    document.getElementById('leadsGrid').innerHTML = '<p style="color:#9d95ff;padding:20px 0">⏳ Loading leads...</p>';
+    const r = await fetch(API+'/api/leads', {headers:hdrs()});
+    const j = await r.json();
+    allLeads = j.data || [];
+    renderLeads(allLeads);
+  }
+  function filterLeads() {
+    const search = (document.getElementById('leadSearch').value||'').toLowerCase();
+    const cat  = document.getElementById('leadCatFilter').value;
+    const stat = document.getElementById('leadStatusFilter').value;
+    let list = allLeads;
+    if (cat)  list = list.filter(l => l.lead_category === cat);
+    if (stat) list = list.filter(l => l.status === stat);
+    if (search) list = list.filter(l => (l.parent_name||'').toLowerCase().includes(search)||(l.phone||'').includes(search)||(l.student_name||'').toLowerCase().includes(search));
+    renderLeads(list);
+  }
+  function renderLeads(leads) {
+    if (!leads.length) {
+      document.getElementById('leadsGrid').innerHTML = '<div style="text-align:center;padding:40px;color:#9d95ff;"><div style="font-size:2.5rem;margin-bottom:12px;">🔍</div><div>No leads found. <button onclick="openLeadModal()" style="background:none;border:none;color:#6c63ff;cursor:pointer;font-family:inherit;text-decoration:underline;">Add first lead →</button></div></div>';
+      return;
+    }
+    const catStyle = {
+      'Hot':  'background:linear-gradient(135deg,rgba(231,76,60,0.2),rgba(230,126,34,0.15));border-left:3px solid #e74c3c;',
+      'Warm': 'background:linear-gradient(135deg,rgba(247,201,72,0.15),rgba(230,126,34,0.1));border-left:3px solid #f7c948;',
+      'Cold': 'background:rgba(255,255,255,0.03);border-left:3px solid #6b6a8f;'
+    };
+    const catBadge = {
+      'Hot':  'background:rgba(231,76,60,0.2);color:#e74c3c',
+      'Warm': 'background:rgba(247,201,72,0.2);color:#f7c948',
+      'Cold': 'background:rgba(107,114,128,0.15);color:#9d95ff'
+    };
+    const catEmoji = {'Hot':'🔥','Warm':'🌤','Cold':'❄'};
+    const statusBadge = {'New':'background:rgba(108,99,255,0.2);color:#6c63ff','Contacted':'background:rgba(72,207,173,0.2);color:#48cfad','Visit Booked':'background:rgba(247,201,72,0.2);color:#f7c948','Applied':'background:rgba(230,126,34,0.2);color:#e67e22','Converted':'background:rgba(46,204,113,0.2);color:#2ecc71','Lost':'background:rgba(231,76,60,0.1);color:#e74c3c'};
+    document.getElementById('leadsGrid').innerHTML = leads.map(l => `
+      <div style="${catStyle[l.lead_category]||'background:rgba(255,255,255,0.03);border-left:3px solid #9d95ff;'};border-radius:14px;padding:16px 18px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:220px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:0.78rem;font-weight:700;padding:3px 10px;border-radius:20px;${catBadge[l.lead_category]||''}">${catEmoji[l.lead_category]||''} ${l.lead_category} · ${l.lead_score||0}</span>
+            <span style="font-size:0.7rem;font-weight:700;padding:3px 9px;border-radius:20px;${statusBadge[l.status]||''}">${l.status}</span>
+            ${l.callback_requested?'<span style="font-size:0.68rem;background:rgba(231,76,60,0.2);color:#e74c3c;padding:2px 7px;border-radius:20px;">📞 Callback</span>':''}
+          </div>
+          <div style="font-size:1rem;font-weight:700;">${l.parent_name} ${l.student_name?'<span style="font-weight:400;color:#9d95ff;font-size:0.88rem;">→ '+l.student_name+'</span>':''}</div>
+          <div style="font-size:0.8rem;color:#9d95ff;margin-top:3px;">
+            📞 ${l.phone} ${l.city?'· 📍 '+l.city:''} ${l.class_interested?'· 🎓 '+l.class_interested:''} ${l.source?'· '+l.source:''}
+          </div>
+          ${l.last_message?`<div style="font-size:0.76rem;color:#b0aec0;margin-top:4px;font-style:italic;">"${l.last_message.substring(0,80)}${l.last_message.length>80?'...':''}"</div>`:''}
+          ${l.followup_date?`<div style="font-size:0.72rem;margin-top:4px;color:${new Date(l.followup_date)<new Date()?'#e74c3c':'#48cfad'}">⏰ Follow-up: ${l.followup_date}</div>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+          <button onclick="editLead('${l.id}')" style="padding:5px 12px;background:rgba(108,99,255,0.15);border:1px solid rgba(108,99,255,0.3);border-radius:8px;color:#9d95ff;font-size:0.75rem;cursor:pointer;font-family:inherit;">✏️ Edit</button>
+          <button onclick="quickWA('${l.id}','${(l.parent_name||'').replace(/'/g,'\\\'')}')" style="padding:5px 12px;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.25);border-radius:8px;color:#25d366;font-size:0.75rem;cursor:pointer;font-family:inherit;">💬 WA Msg</button>
+          <button onclick="deleteLead('${l.id}')" style="padding:5px 12px;background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.2);border-radius:8px;color:#e74c3c;font-size:0.75rem;cursor:pointer;font-family:inherit;">🗑 Delete</button>
+        </div>
+      </div>`).join('');
+  }
+  function openLeadModal(lead) {
+    document.getElementById('leadId').value = '';
+    document.getElementById('leadModalTitle').textContent = '➕ Add Admission Lead';
+    ['parent_name','student_name','phone','whatsapp','email','city','area','budget_range','assigned_counsellor','notes'].forEach(f => { const el = document.getElementById('lf_'+f); if(el) el.value = lead?lead[f]||'':''; });
+    ['class_interested','admission_timeline','source','status'].forEach(f => { const el = document.getElementById('lf_'+f); if(el) el.value = lead?lead[f]||'':''; });
+    const fd = document.getElementById('lf_followup_date'); if(fd) fd.value = lead&&lead.followup_date?lead.followup_date:'';
+    if(lead) document.getElementById('leadId').value = lead.id;
+    document.getElementById('leadModal').style.display = 'flex';
+  }
+  async function editLead(id) {
+    const lead = allLeads.find(l => l.id === id);
+    if (lead) { document.getElementById('leadModalTitle').textContent = '✏️ Edit Lead'; openLeadModal(lead); }
+  }
+  async function saveLead(e) {
+    e.preventDefault();
+    const id = document.getElementById('leadId').value;
+    const body = {
+      parent_name: document.getElementById('lf_parent_name').value,
+      student_name: document.getElementById('lf_student_name').value,
+      phone: document.getElementById('lf_phone').value,
+      whatsapp: document.getElementById('lf_whatsapp').value,
+      email: document.getElementById('lf_email').value,
+      city: document.getElementById('lf_city').value,
+      area: document.getElementById('lf_area').value,
+      class_interested: document.getElementById('lf_class_interested').value,
+      admission_timeline: document.getElementById('lf_admission_timeline').value,
+      budget_range: document.getElementById('lf_budget_range').value,
+      source: document.getElementById('lf_source').value,
+      status: document.getElementById('lf_status').value,
+      followup_date: document.getElementById('lf_followup_date').value || null,
+      assigned_counsellor: document.getElementById('lf_assigned_counsellor').value,
+      notes: document.getElementById('lf_notes').value,
+      last_message: document.getElementById('lf_notes').value
+    };
+    const url = id ? API+'/api/leads/'+id : API+'/api/leads';
+    const method = id ? 'PUT' : 'POST';
+    const r = await fetch(url, {method, headers:hdrs(), body:JSON.stringify(body)});
+    const j = await r.json();
+    if (j.success) { document.getElementById('leadModal').style.display='none'; loadLeads(); }
+    else alert('Error: ' + j.error);
+  }
+  async function deleteLead(id) {
+    if (!confirm('Delete this lead?')) return;
+    await fetch(API+'/api/leads/'+id, {method:'DELETE', headers:hdrs()});
+    loadLeads();
+  }
+  function quickWA(leadId, parentName) {
+    switchTab('wa-generator');
+    document.getElementById('wa_parent_name').value = parentName;
+  }
+
+  // ─── CAMPUS VISITS ──────────────────────────────────
+  async function loadVisits() {
+    const r = await fetch(API+'/api/campus-visits', {headers:hdrs()});
+    const j = await r.json();
+    const visits = j.data || [];
+    const statusStyle = {'Scheduled':'color:#48cfad','Completed':'color:#2ecc71','Missed':'color:#e74c3c','Rescheduled':'color:#f7c948'};
+    document.getElementById('visitsBody').innerHTML = visits.length ? visits.map(v=>`<tr>
+      <td>${v.parent_name}</td><td>${v.student_name||'—'}</td><td>${v.class_interested||'—'}</td>
+      <td>${v.visit_date}</td><td>${v.visit_time}</td><td>${v.assigned_counsellor||'—'}</td>
+      <td><span style="${statusStyle[v.status]||''};font-weight:700">${v.status}</span></td>
+      <td><button onclick="updateVisitStatus('${v.id}','Completed')" style="padding:4px 8px;background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:6px;color:#2ecc71;font-size:0.72rem;cursor:pointer;font-family:inherit">✓</button>
+          <button onclick="deleteVisit('${v.id}')" style="padding:4px 8px;background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.2);border-radius:6px;color:#e74c3c;font-size:0.72rem;cursor:pointer;font-family:inherit;margin-left:4px">🗑</button></td>
+    </tr>`).join('') : '<tr><td colspan="8" style="text-align:center;color:#9d95ff;padding:24px">No visits booked yet</td></tr>';
+  }
+  function openVisitModal() { document.getElementById('visitId').value=''; document.getElementById('visitForm').reset(); document.getElementById('visitModal').style.display='flex'; }
+  async function saveVisit(e) {
+    e.preventDefault();
+    const id = document.getElementById('visitId').value;
+    const body = { parent_name:document.getElementById('vf_parent_name').value, phone:document.getElementById('vf_phone').value, student_name:document.getElementById('vf_student_name').value, class_interested:document.getElementById('vf_class_interested').value, visit_date:document.getElementById('vf_visit_date').value, visit_time:document.getElementById('vf_visit_time').value, assigned_counsellor:document.getElementById('vf_assigned_counsellor').value, status:document.getElementById('vf_status').value, notes:document.getElementById('vf_notes').value };
+    const url = id ? API+'/api/campus-visits/'+id : API+'/api/campus-visits';
+    const r = await fetch(url, {method:id?'PUT':'POST', headers:hdrs(), body:JSON.stringify(body)});
+    const j = await r.json();
+    if (j.success) { document.getElementById('visitModal').style.display='none'; loadVisits(); }
+    else alert('Error: ' + j.error);
+  }
+  async function updateVisitStatus(id, status) { await fetch(API+'/api/campus-visits/'+id, {method:'PUT', headers:hdrs(), body:JSON.stringify({status})}); loadVisits(); }
+  async function deleteVisit(id) { if(confirm('Delete this visit?')) { await fetch(API+'/api/campus-visits/'+id, {method:'DELETE', headers:hdrs()}); loadVisits(); } }
+
+  // ─── FOLLOW-UPS ─────────────────────────────────────
+  async function loadFollowups() {
+    const status = document.getElementById('followupStatusFilter')?.value || '';
+    const url = API+'/api/followups' + (status?'?status='+status:'');
+    const r = await fetch(url, {headers:hdrs()});
+    const j = await r.json();
+    const followups = j.data || [];
+    const statusStyle = {'Pending':'color:#f7c948','Overdue':'color:#e74c3c','Done':'color:#2ecc71'};
+    document.getElementById('followupsGrid').innerHTML = followups.length ? followups.map(f=>`
+      <div style="background:${f.status==='Overdue'?'rgba(231,76,60,0.07)':f.status==='Done'?'rgba(46,204,113,0.05)':'rgba(255,255,255,0.03)'};border:1px solid ${f.status==='Overdue'?'rgba(231,76,60,0.2)':f.status==='Done'?'rgba(46,204,113,0.15)':'rgba(255,255,255,0.07)'};border-radius:14px;padding:16px 18px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;">
+          <div>
+            <div style="font-size:0.9rem;font-weight:700;">${f.lead_name} <span style="font-size:0.75rem;color:#9d95ff;">· ${f.followup_type}</span></div>
+            <div style="font-size:0.78rem;color:#9d95ff;">📞 ${f.phone} · 📅 ${f.followup_date} · <span style="${statusStyle[f.status]||''};font-weight:700">${f.status}</span></div>
+            ${f.ai_message?`<div style="margin-top:10px;background:rgba(37,211,102,0.06);border:1px solid rgba(37,211,102,0.15);border-radius:10px;padding:10px 14px;">
+              <div style="font-size:0.68rem;color:#25d366;font-weight:700;margin-bottom:4px">💬 AI GENERATED MESSAGE</div>
+              <div style="font-size:0.8rem;line-height:1.5;white-space:pre-wrap">${f.ai_message}</div>
+              <button onclick="navigator.clipboard.writeText('${f.ai_message.replace(/'/g,"\\'")}').then(()=>alert('Copied!'))" style="margin-top:8px;padding:4px 12px;background:rgba(37,211,102,0.15);border:1px solid rgba(37,211,102,0.3);border-radius:7px;color:#25d366;font-size:0.72rem;cursor:pointer;font-family:inherit">📋 Copy</button>
+            </div>`:''}
+          </div>
+          <div style="display:flex;gap:6px;">
+            ${f.status!=='Done'?`<button onclick="markFollowupDone('${f.id}')" style="padding:5px 12px;background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:8px;color:#2ecc71;font-size:0.75rem;cursor:pointer;font-family:inherit">✓ Done</button>`:''}
+            <button onclick="deleteFollowup('${f.id}')" style="padding:5px 10px;background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.2);border-radius:8px;color:#e74c3c;font-size:0.75rem;cursor:pointer;font-family:inherit">🗑</button>
+          </div>
+        </div>
+      </div>`).join('') : '<div style="text-align:center;padding:40px;color:#9d95ff;"><div style="font-size:2rem;margin-bottom:8px;">✅</div>No follow-ups found</div>';
+  }
+  function openFollowupModal() { document.getElementById('followupId').value=''; document.getElementById('followupForm').reset(); document.getElementById('followupModal').style.display='flex'; }
+  async function saveFollowup(e) {
+    e.preventDefault();
+    const body = { lead_name:document.getElementById('ff_lead_name').value, phone:document.getElementById('ff_phone').value, followup_date:document.getElementById('ff_followup_date').value, followup_type:document.getElementById('ff_followup_type').value, notes:document.getElementById('ff_notes').value };
+    const r = await fetch(API+'/api/followups', {method:'POST', headers:hdrs(), body:JSON.stringify(body)});
+    const j = await r.json();
+    if (j.success) { document.getElementById('followupModal').style.display='none'; loadFollowups(); }
+    else alert('Error: ' + j.error);
+  }
+  async function markFollowupDone(id) { await fetch(API+'/api/followups/'+id, {method:'PUT', headers:hdrs(), body:JSON.stringify({status:'Done'})}); loadFollowups(); loadCRMDashboard(); }
+  async function deleteFollowup(id) { if(confirm('Delete?')) { await fetch(API+'/api/followups/'+id, {method:'DELETE', headers:hdrs()}); loadFollowups(); } }
+
+  // ─── ADMISSION FEES ─────────────────────────────────
+  async function loadAdmFees() {
+    const r = await fetch(API+'/api/admission-fees', {headers:hdrs()});
+    const j = await r.json();
+    const fees = j.data || [];
+    const statusStyle = {'Pending':'color:#f7c948','Partial':'color:#e67e22','Paid':'color:#2ecc71'};
+    document.getElementById('admFeesBody').innerHTML = fees.length ? fees.map(f=>`<tr>
+      <td>${f.student_name}</td><td>${f.class}</td>
+      <td>₹${f.application_fee||0}</td><td>₹${f.admission_fee||0}</td><td>₹${f.first_installment||0}</td>
+      <td><span style="${statusStyle[f.payment_status]||''};font-weight:700">${f.payment_status}</span></td>
+      <td>${f.due_date||'—'}</td>
+      <td><button onclick="deleteAdmFee('${f.id}')" style="padding:4px 8px;background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.2);border-radius:6px;color:#e74c3c;font-size:0.72rem;cursor:pointer;font-family:inherit">🗑</button></td>
+    </tr>`).join('') : '<tr><td colspan="8" style="text-align:center;color:#9d95ff;padding:24px">No fee records yet</td></tr>';
+  }
+  function openAdmFeeModal() { document.getElementById('admFeeId').value=''; document.getElementById('admFeeForm').reset(); document.getElementById('admFeeModal').style.display='flex'; }
+  async function saveAdmFee(e) {
+    e.preventDefault();
+    const body = { student_name:document.getElementById('af_student_name').value, class:document.getElementById('af_class').value, application_fee:document.getElementById('af_application_fee').value||0, admission_fee:document.getElementById('af_admission_fee').value||0, first_installment:document.getElementById('af_first_installment').value||0, payment_status:document.getElementById('af_payment_status').value, due_date:document.getElementById('af_due_date').value||null, notes:document.getElementById('af_notes').value };
+    const r = await fetch(API+'/api/admission-fees', {method:'POST', headers:hdrs(), body:JSON.stringify(body)});
+    const j = await r.json();
+    if (j.success) { document.getElementById('admFeeModal').style.display='none'; loadAdmFees(); }
+    else alert('Error: ' + j.error);
+  }
+  async function deleteAdmFee(id) { if(confirm('Delete?')) { await fetch(API+'/api/admission-fees/'+id, {method:'DELETE', headers:hdrs()}); loadAdmFees(); } }
+
+  // ─── KNOWLEDGE BASE ─────────────────────────────────
+  async function loadKB() {
+    const r = await fetch(API+'/api/knowledge-base');
+    const j = await r.json();
+    if (j.success && j.data) {
+      const kb = j.data;
+      ['school_name','classes_available','school_timings','fee_structure','required_documents','age_criteria','admission_process','facilities','transport_routes','contact_phone','contact_email','campus_visit_slots','scholarship_info','faqs','principal_message','admission_closed_msg'].forEach(k => {
+        const el = document.getElementById('kb_'+k); if(el) el.value = kb[k]||'';
+      });
+      const sel = document.getElementById('kb_admission_open');
+      if(sel) sel.value = kb.admission_open ? 'true' : 'false';
+    }
+  }
+  async function saveKB(e) {
+    e.preventDefault();
+    const body = {};
+    ['school_name','classes_available','school_timings','fee_structure','required_documents','age_criteria','admission_process','facilities','transport_routes','contact_phone','contact_email','campus_visit_slots','scholarship_info','faqs','principal_message','admission_closed_msg'].forEach(k => {
+      const el = document.getElementById('kb_'+k); if(el) body[k] = el.value;
+    });
+    body.admission_open = document.getElementById('kb_admission_open').value === 'true';
+    const r = await fetch(API+'/api/knowledge-base', {method:'PUT', headers:hdrs(), body:JSON.stringify(body)});
+    const j = await r.json();
+    const msg = document.getElementById('kbSaveMsg');
+    msg.style.display='inline';
+    if (j.success) { msg.style.color='#2ecc71'; msg.textContent='✅ Knowledge base saved!'; }
+    else { msg.style.color='#e74c3c'; msg.textContent='❌ '+j.error; }
+    setTimeout(()=>msg.style.display='none', 3000);
+  }
+
+  // ─── CALLBACKS ──────────────────────────────────────
+  async function loadCallbacks() {
+    const r = await fetch(API+'/api/callbacks', {headers:hdrs()});
+    const j = await r.json();
+    const cbs = j.data || [];
+    document.getElementById('callbacksBody').innerHTML = cbs.length ? cbs.map(c=>`<tr>
+      <td style="font-weight:600">${c.parent_name}</td>
+      <td><a href="tel:${c.phone}" style="color:#48cfad">${c.phone}</a></td>
+      <td style="max-width:200px;font-size:0.82rem">${c.message||'—'}</td>
+      <td><span style="${c.urgency==='Urgent'?'color:#e74c3c;font-weight:700':'color:#9d95ff'}">${c.urgency}</span></td>
+      <td><span style="${c.status==='Pending'?'color:#f7c948':'color:#2ecc71'};font-weight:700">${c.status}</span></td>
+      <td style="font-size:0.75rem;color:#9d95ff">${new Date(c.created_at).toLocaleString('en-IN')}</td>
+      <td>
+        <button onclick="updateCallback('${c.id}','Called')" style="padding:4px 8px;background:rgba(72,207,173,0.15);border:1px solid rgba(72,207,173,0.3);border-radius:6px;color:#48cfad;font-size:0.72rem;cursor:pointer;font-family:inherit">✓ Called</button>
+        <button onclick="updateCallback('${c.id}','Resolved')" style="padding:4px 8px;background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.2);border-radius:6px;color:#2ecc71;font-size:0.72rem;cursor:pointer;font-family:inherit;margin-left:4px">✅ Resolved</button>
+      </td>
+    </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:#2ecc71;padding:24px">✅ No pending callbacks!</td></tr>';
+  }
+  async function updateCallback(id, status) { await fetch(API+'/api/callbacks/'+id, {method:'PUT', headers:hdrs(), body:JSON.stringify({status})}); loadCallbacks(); }
+
+  // ─── WA MESSAGE GENERATOR ───────────────────────────
+  async function generateWAMessage() {
+    document.getElementById('waResult').style.display='none';
+    document.getElementById('waLoading').style.display='block';
+    const body = {
+      template_type: document.getElementById('waTmplType').value,
+      lead_name: document.getElementById('wa_parent_name').value,
+      student_name: document.getElementById('wa_student_name').value,
+      class_interested: document.getElementById('wa_class_interested').value,
+      visit_date: document.getElementById('wa_visit_date').value,
+      visit_time: document.getElementById('wa_visit_time').value,
+      extra_info: document.getElementById('wa_extra_info').value
+    };
+    const r = await fetch(API+'/api/whatsapp-messages/generate', {method:'POST', headers:hdrs(), body:JSON.stringify(body)});
+    const j = await r.json();
+    document.getElementById('waLoading').style.display='none';
+    if (j.success) {
+      document.getElementById('waMessageText').textContent = j.message;
+      document.getElementById('waResult').style.display='block';
+    } else { alert('Error: ' + j.error); }
+  }
+  function copyWAMessage() {
+    const txt = document.getElementById('waMessageText').textContent;
+    navigator.clipboard.writeText(txt).then(()=>{
+      const btn = event.target; btn.textContent='✅ Copied!'; btn.style.color='#2ecc71';
+      setTimeout(()=>{ btn.textContent='📋 Copy Message'; btn.style.color='#25d366'; }, 2000);
+    });
+  }
+
+  // ─── INIT ────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    loadCRMDashboard();
+    // Override tab click to support new tabs
+    document.querySelectorAll('.sidebar-link[data-tab]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchTab(link.dataset.tab);
+      });
+    });
+  });
+  </script>
 </body>
 </html>
+
