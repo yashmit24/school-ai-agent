@@ -24,6 +24,7 @@ const parentRouter = require('./routes/parent');
 const teacherAiRouter  = require('./routes/teacher-ai');
 const whatsappRouter      = require('./routes/whatsapp');
 const twilioWhatsappRouter = require('./routes/twilio-whatsapp');
+const analyticsRouter      = require('./routes/analytics');
 
 // Import & Initialize Telegram Bot Service
 require('./services/telegramService');
@@ -85,6 +86,7 @@ app.use('/api/parent', checkDb, parentRouter);        // Parent portal (own JWT 
 app.use('/api/teacher-ai', checkDb, teacherAiRouter); // Teacher AI tools (JWT protected)
 app.use('/api/whatsapp',         whatsappRouter);       // Meta WhatsApp webhook
 app.use('/api/twilio-whatsapp',  twilioWhatsappRouter); // Twilio WhatsApp sandbox
+app.use('/api/analytics',       checkDb, analyticsRouter); // Principal analytics
 
 // Global Error Handler Middleware (MUST be last)
 app.use(errorHandler);
