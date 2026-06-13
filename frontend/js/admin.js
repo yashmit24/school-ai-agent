@@ -81,6 +81,7 @@ function startClock() {
 async function loadDashboard() {
   try {
     const res = await fetch(`${API_BASE}/api/admin/dashboard`);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
 
     if (data.success) {
@@ -91,16 +92,16 @@ async function loadDashboard() {
       safeSet('statExams', data.data.totalExams);
       safeSet('statStaff', data.data.totalStaff);
 
-      // Server status badge
+      // Server status badge — use hardcoded strings to avoid i18n dependency
       const ss = document.getElementById('serverStatus');
       if (ss) {
-        ss.textContent = t('status_online');
-        ss.style.color = '';
+        ss.innerHTML = '✅ Server Online';
+        ss.style.color = '#2ecc71';
         ss.dataset.online = 'true';
       }
       const dbBadge = document.getElementById('dbStatusBadge');
       if (dbBadge) {
-        dbBadge.textContent = t('status_connected');
+        dbBadge.textContent = 'Connected';
         dbBadge.className = 'badge badge-green';
       }
       document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('loading'));
@@ -108,16 +109,18 @@ async function loadDashboard() {
   } catch (err) {
     const ss = document.getElementById('serverStatus');
     if (ss) {
-      ss.textContent = t('status_offline');
+      ss.innerHTML = '❌ Server Offline';
       ss.style.color = '#e74c3c';
       ss.dataset.online = 'false';
     }
     const dbBadge = document.getElementById('dbStatusBadge');
     if (dbBadge) {
-      dbBadge.textContent = t('status_disconnected');
+      dbBadge.textContent = 'Disconnected';
       dbBadge.className = 'badge badge-red';
     }
     console.error('Dashboard error:', err);
+    // Auto-retry after 15 seconds
+    setTimeout(loadDashboard, 15000);
   }
 }
 
