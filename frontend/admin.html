@@ -96,21 +96,10 @@
   <div class="admin-main">
 
     <!-- TOP BAR -->
-    <header class="admin-topbar" style="flex-wrap:wrap;gap:8px;height:auto;min-height:60px;padding:10px 20px;">
+    <header class="admin-topbar">
       <button class="menu-toggle" id="menuToggle">☰</button>
-      <h1 class="admin-page-title" id="pageTitle" data-i18n="nav_dashboard" style="margin-right:8px">Dashboard</h1>
-
-      <!-- SCHOOL MANAGEMENT QUICK TABS -->
-      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:4px 10px;background:rgba(72,207,173,0.06);border:1px solid rgba(72,207,173,0.15);border-radius:12px;">
-        <span style="font-size:0.6rem;font-weight:700;color:rgba(72,207,173,0.6);text-transform:uppercase;letter-spacing:1px;white-space:nowrap">🏫 School</span>
-        <button onclick="switchTab('students')" style="padding:4px 10px;background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.2);border-radius:8px;color:#48cfad;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s" onmouseover="this.style.background='rgba(72,207,173,0.25)'" onmouseout="this.style.background='rgba(72,207,173,0.1)'">👨‍🎓 Students</button>
-        <button onclick="switchTab('exams')" style="padding:4px 10px;background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.2);border-radius:8px;color:#48cfad;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s" onmouseover="this.style.background='rgba(72,207,173,0.25)'" onmouseout="this.style.background='rgba(72,207,173,0.1)'">📝 Exams</button>
-        <button onclick="switchTab('fees')" style="padding:4px 10px;background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.2);border-radius:8px;color:#48cfad;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s" onmouseover="this.style.background='rgba(72,207,173,0.25)'" onmouseout="this.style.background='rgba(72,207,173,0.1)'">💰 Fees</button>
-        <button onclick="switchTab('attendance')" style="padding:4px 10px;background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.2);border-radius:8px;color:#48cfad;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s" onmouseover="this.style.background='rgba(72,207,173,0.25)'" onmouseout="this.style.background='rgba(72,207,173,0.1)'">📋 Attendance</button>
-        <button onclick="switchTab('branding')" style="padding:4px 10px;background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.2);border-radius:8px;color:#48cfad;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s" onmouseover="this.style.background='rgba(72,207,173,0.25)'" onmouseout="this.style.background='rgba(72,207,173,0.1)'">🎨 Branding</button>
-      </div>
-
-      <div class="admin-topbar-right" style="margin-left:auto">
+      <h1 class="admin-page-title" id="pageTitle" data-i18n="nav_dashboard">Dashboard</h1>
+      <div class="admin-topbar-right">
         <div class="lang-switcher" id="langSwitcher">
           <button class="lang-btn active" data-lang="en">EN</button>
           <button class="lang-btn" data-lang="hi">हि</button>
@@ -125,6 +114,19 @@
       </div>
     </header>
 
+    <!-- SCHOOL MANAGEMENT SUB-NAVBAR -->
+    <div style="background:rgba(72,207,173,0.05);border-bottom:1px solid rgba(72,207,173,0.15);padding:8px 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span style="font-size:0.65rem;font-weight:700;color:rgba(72,207,173,0.7);text-transform:uppercase;letter-spacing:1.5px;margin-right:4px;">🏫 School Management:</span>
+      <button onclick="switchTab('students')" style="padding:5px 14px;background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.2);border-radius:20px;color:#48cfad;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(72,207,173,0.25)';this.style.borderColor='rgba(72,207,173,0.5)'" onmouseout="this.style.background='rgba(72,207,173,0.1)';this.style.borderColor='rgba(72,207,173,0.2)'">👨‍🎓 Students</button>
+      <button onclick="switchTab('exams')" style="padding:5px 14px;background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.2);border-radius:20px;color:#48cfad;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(72,207,173,0.25)';this.style.borderColor='rgba(72,207,173,0.5)'" onmouseout="this.style.background='rgba(72,207,173,0.1)';this.style.borderColor='rgba(72,207,173,0.2)'">📝 Exams</button>
+      <button onclick="switchTab('fees')" style="padding:5px 14px;background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.2);border-radius:20px;color:#48cfad;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(72,207,173,0.25)';this.style.borderColor='rgba(72,207,173,0.5)'" onmouseout="this.style.background='rgba(72,207,173,0.1)';this.style.borderColor='rgba(72,207,173,0.2)'">💰 School Fees</button>
+      <button onclick="switchTab('attendance')" style="padding:5px 14px;background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.2);border-radius:20px;color:#48cfad;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(72,207,173,0.25)';this.style.borderColor='rgba(72,207,173,0.5)'" onmouseout="this.style.background='rgba(72,207,173,0.1)';this.style.borderColor='rgba(72,207,173,0.2)'">📋 Attendance</button>
+      <button onclick="switchTab('branding')" style="padding:5px 14px;background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.2);border-radius:20px;color:#48cfad;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(72,207,173,0.25)';this.style.borderColor='rgba(72,207,173,0.5)'" onmouseout="this.style.background='rgba(72,207,173,0.1)';this.style.borderColor='rgba(72,207,173,0.2)'">🎨 Branding</button>
+      <div style="margin-left:auto;display:flex;gap:6px;">
+        <a href="analytics.html" style="padding:5px 14px;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:20px;color:#6c63ff;font-size:0.78rem;font-weight:600;text-decoration:none;transition:all 0.2s;">📊 Analytics</a>
+        <a href="chatbot.html" style="padding:5px 14px;background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.2);border-radius:20px;color:#25d366;font-size:0.78rem;font-weight:600;text-decoration:none;">🤖 Chatbot</a>
+      </div>
+    </div>
 
     <!-- DASHBOARD TAB -->
     <section class="tab-content active" id="dashboard">
