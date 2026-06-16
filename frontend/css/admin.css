@@ -24,6 +24,8 @@ body.admin-page {
   z-index: 50;
   transition: transform 0.3s ease;
   padding: 0 0 20px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .sidebar-logo {
   display: flex;
