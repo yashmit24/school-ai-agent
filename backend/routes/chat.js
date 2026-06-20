@@ -3,27 +3,40 @@ const router = express.Router();
 const { model } = require('../config/gemini');
 const supabase = require('../config/supabase');
 
-// In-memory lead capture sessions: { sessionId: { parentName, studentName, phone, classInterested, city, timeline, askedFees, askedVisit, askedDocs } }
+// ─── In-memory sessions ───────────────────────────────────
+// Tracks: parentName, studentName, phone, classInterested, city,
+//         timeline, askedFees, askedVisit, askedDocs,
+//         turnCount, leadSaved, leadSavedId, _lastBotAsk, _ts
 const sessions = {};
 
-// ─── Callback trigger keywords ───────────────────────────
-const CALLBACK_TRIGGERS = ['call me', 'call karo', 'phone karo', 'counsellor', 'counselor',
-  'principal', 'human', 'real person', 'agent', 'baat karni hai', 'callback', 'call back'];
+// ─── Keywords ─────────────────────────────────────────────
+const CALLBACK_TRIGGERS = [
+  'call me', 'call karo', 'phone karo', 'counsellor se baat',
+  'counselor se baat', 'principal se baat', 'human se baat',
+  'real person', 'agent se baat', 'baat karni hai', 'callback chahiye',
+  'call back', 'call chahiye', 'mujhe call karo', 'please call'
+];
+
+const PHONE_REQUEST_TRIGGERS = [
+  'apna number', 'phone number', 'contact karo', 'contact number'
+];
 
 // ─── Fetch Knowledge Base ─────────────────────────────────
 async function fetchKB() {
-  const { data } = await supabase.from('knowledge_base').select('*').limit(1).single();
-  return data || null;
+  try {
+    const { data } = await supabase.from('knowledge_base').select('*').limit(1).single();
+    return data || null;
+  } catch (e) { return null; }
 }
 
-// ─── Format KB as context string ─────────────────────────
+// ─── Format KB as context ────────────────────────────────
 function formatKB(kb) {
   if (!kb) return 'Knowledge base not configured yet.';
   const parts = [];
   if (kb.school_name)        parts.push(`SCHOOL: ${kb.school_name}`);
   if (kb.admission_open !== undefined) parts.push(`ADMISSION STATUS: ${kb.admission_open ? 'OPEN ✅' : 'CLOSED ❌'}`);
   if (!kb.admission_open && kb.admission_closed_msg) parts.push(`CLOSED MESSAGE: ${kb.admission_closed_msg}`);
-  if (kb.classes_available)  parts.push(`CLASSES: ${kb.classes_available}`);
+  if (kb.classes_available)  parts.push(`CLASSES OFFERED: ${kb.classes_available}`);
   if (kb.fee_structure)      parts.push(`FEE STRUCTURE:\n${kb.fee_structure}`);
   if (kb.required_documents) parts.push(`REQUIRED DOCUMENTS: ${kb.required_documents}`);
   if (kb.age_criteria)       parts.push(`AGE CRITERIA: ${kb.age_criteria}`);
@@ -34,52 +47,110 @@ function formatKB(kb) {
   if (kb.campus_visit_slots) parts.push(`CAMPUS VISIT SLOTS: ${kb.campus_visit_slots}`);
   if (kb.scholarship_info)   parts.push(`SCHOLARSHIP: ${kb.scholarship_info}`);
   if (kb.faqs)               parts.push(`FAQs: ${kb.faqs}`);
-  if (kb.contact_phone)      parts.push(`CONTACT: ${kb.contact_phone}`);
+  if (kb.contact_phone)      parts.push(`CONTACT PHONE: ${kb.contact_phone}`);
   if (kb.contact_email)      parts.push(`EMAIL: ${kb.contact_email}`);
-  if (kb.principal_message)  parts.push(`PRINCIPAL'S MESSAGE: ${kb.principal_message}`);
+  if (kb.principal_message)  parts.push(`PRINCIPAL MESSAGE: ${kb.principal_message}`);
   return parts.join('\n\n');
 }
 
-// ─── Auto-save lead from session ─────────────────────────
+// ─── Save lead to Supabase ────────────────────────────────
 async function saveLead(session, lastMessage) {
   if (!session.phone || session.leadSaved) return;
   try {
-    // Inline scoring to avoid circular require
-    let score = 20; // phone present
-    if (session.parentName) score += 8;
-    if (session.studentName) score += 8;
+    let score = 20;
+    if (session.parentName)    score += 8;
+    if (session.studentName)   score += 8;
     if (session.classInterested) score += 8;
-    if (session.city) score += 4;
-    if (session.timeline === 'within_7_days') score += 30;
+    if (session.city)          score += 4;
+    if (session.timeline === 'within_7_days')   score += 30;
     else if (session.timeline === 'within_30_days') score += 15;
-    if (session.askedFees) score += 10;
-    if (session.askedVisit) score += 10;
-    if (session.askedDocs) score += 5;
+    if (session.askedFees)     score += 10;
+    if (session.askedVisit)    score += 10;
+    if (session.askedDocs)     score += 5;
     score = Math.min(score, 100);
     const category = score >= 80 ? 'Hot' : score >= 50 ? 'Warm' : 'Cold';
-    const leadData = {
-      parent_name: session.parentName || 'Website Visitor',
-      student_name: session.studentName || '',
-      class_interested: session.classInterested || '',
-      phone: session.phone,
-      city: session.city || '',
+
+    await supabase.from('leads').insert([{
+      parent_name:       session.parentName || 'Website Visitor',
+      student_name:      session.studentName || '',
+      class_interested:  session.classInterested || '',
+      phone:             session.phone,
+      city:              session.city || '',
       admission_timeline: session.timeline || '',
-      source: 'Chatbot',
-      last_message: lastMessage || '',
-      lead_score: score,
-      lead_category: category
-    };
-    await supabase.from('leads').insert([leadData]);
+      source:            'Chatbot',
+      last_message:      lastMessage || '',
+      lead_score:        score,
+      lead_category:     category
+    }]);
     session.leadSaved = true;
-    console.log(`✅ Lead auto-saved: ${session.parentName} (${session.phone}) — ${category}`);
+    console.log(`✅ Lead saved: ${session.parentName} (${session.phone}) — ${category} [${score}]`);
   } catch (e) {
     console.error('Lead save error:', e.message);
   }
 }
 
-// ─────────────────────────────────────────
-// POST /api/chat
-// ─────────────────────────────────────────
+// ─── Update existing lead ─────────────────────────────────
+async function updateLead(session, lastMessage) {
+  if (!session.phone || !session.leadSaved) return;
+  try {
+    let score = 20;
+    if (session.parentName)    score += 8;
+    if (session.studentName)   score += 8;
+    if (session.classInterested) score += 8;
+    if (session.city)          score += 4;
+    if (session.timeline === 'within_7_days')   score += 30;
+    else if (session.timeline === 'within_30_days') score += 15;
+    if (session.askedFees)     score += 10;
+    if (session.askedVisit)    score += 10;
+    if (session.askedDocs)     score += 5;
+    score = Math.min(score, 100);
+    const category = score >= 80 ? 'Hot' : score >= 50 ? 'Warm' : 'Cold';
+
+    await supabase.from('leads')
+      .update({ parent_name: session.parentName || 'Website Visitor', student_name: session.studentName || '',
+                class_interested: session.classInterested || '', city: session.city || '',
+                admission_timeline: session.timeline || '', last_message: lastMessage,
+                lead_score: score, lead_category: category })
+      .eq('phone', session.phone)
+      .eq('source', 'Chatbot');
+  } catch (e) { /* silent */ }
+}
+
+// ─── Decide what to naturally ask next ───────────────────
+// Returns null if it's too early or nothing useful to ask
+function getNextQuestion(session, turnCount) {
+  // Turn 1: Never ask for personal info — just answer
+  if (turnCount <= 1) return null;
+
+  // Turn 2: Ask class if not known yet (very natural)
+  if (turnCount === 2 && !session.classInterested) return 'class';
+
+  // Turn 3: Ask student name if class is known
+  if (turnCount === 3 && session.classInterested && !session.studentName) return 'student_name';
+
+  // Turn 3+: Ask parent name if student name known
+  if (turnCount >= 3 && session.studentName && !session.parentName) return 'parent_name';
+
+  // Turn 4+: Ask phone only after meaningful engagement (class + at least one name)
+  if (turnCount >= 4 && session.classInterested && (session.studentName || session.parentName) && !session.phone) return 'phone';
+
+  // Turn 5+: Ask city if all else collected
+  if (turnCount >= 5 && session.phone && !session.city) return 'city';
+
+  return null;
+}
+
+const QUESTION_PROMPTS = {
+  class:        'Kis class mein admission chahiye aapko?',
+  student_name: 'Aur aapke bachche ka naam kya hai?',
+  parent_name:  'Aur aap ka naam kya hai? (Parent/Guardian)',
+  phone:        'Kya aap apna phone number share kar sakte hain? Hamare counsellor aapko personally assist karenge. 😊',
+  city:         'Aap kahan se hain? (City/Area)'
+};
+
+// ─────────────────────────────────────────────────────────
+// POST /api/chat — Main handler
+// ─────────────────────────────────────────────────────────
 router.post('/', async (req, res) => {
   try {
     const { message, userId, language } = req.body;
@@ -87,15 +158,51 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Message cannot be empty' });
 
     const sessionId = userId || 'web-user';
-    if (!sessions[sessionId]) sessions[sessionId] = {};
+    if (!sessions[sessionId]) sessions[sessionId] = { turnCount: 0 };
     const session = sessions[sessionId];
+    session.turnCount = (session.turnCount || 0) + 1;
+    session._ts = Date.now();
 
-    const msg = message.toLowerCase();
+    const msg = message.toLowerCase().trim();
+    const lang = language === 'hi' ? 'Hindi' : language === 'hinglish' ? 'Hinglish' : 'Hinglish';
 
-    // ── 1. Callback trigger detection
-    const isCallback = CALLBACK_TRIGGERS.some(t => msg.includes(t));
-    if (isCallback) {
-      // Save callback request if we have phone
+    // ── STEP 1: Extract info from message passively ───────
+    // Phone number
+    const phoneMatch = message.match(/\b[6-9]\d{9}\b/);
+    if (phoneMatch && !session.phone) {
+      session.phone = phoneMatch[0];
+      await saveLead(session, message);
+    }
+
+    // Class
+    const classMatch = message.match(/\b(nursery|lkg|ukg|pp1|pp2|class\s*\d+|grade\s*\d+|\d{1,2}(?:th|st|nd|rd))\b/i);
+    if (classMatch && !session.classInterested) session.classInterested = classMatch[0];
+
+    // Timeline signals
+    if (msg.match(/\b(7 day|this week|urgent|abhi|jaldi|immediately)\b/)) session.timeline = 'within_7_days';
+    else if (msg.match(/\b(month|30 day|mahine|soon)\b/)) session.timeline = 'within_30_days';
+    else if (msg.match(/\b(next year|next session|agli|later)\b/)) session.timeline = 'next_session';
+
+    // Intent signals
+    if (msg.match(/\b(fee|fees|kitni|charges|cost|tuition)\b/)) session.askedFees = true;
+    if (msg.match(/\b(visit|campus|aana|see school|dekhna)\b/)) session.askedVisit = true;
+    if (msg.match(/\b(document|certificate|marksheet|tc|birth)\b/)) session.askedDocs = true;
+
+    // Name extraction: if last bot asked for student name and this looks like a name
+    const looksLikeName = message.trim().split(/\s+/).length <= 4 && !/\d/.test(message) && message.trim().length > 1;
+    if (looksLikeName) {
+      if (session._lastBotAsk === 'student_name' && !session.studentName) session.studentName = message.trim();
+      if (session._lastBotAsk === 'parent_name' && !session.parentName)   session.parentName  = message.trim();
+      if (session._lastBotAsk === 'city' && !session.city)                session.city        = message.trim();
+      if (session._lastBotAsk === 'class' && !session.classInterested)    session.classInterested = message.trim();
+    }
+
+    // Update lead with new info
+    if (session.leadSaved) await updateLead(session, message);
+
+    // ── STEP 2: Callback trigger ──────────────────────────
+    const wantsCallback = CALLBACK_TRIGGERS.some(t => msg.includes(t));
+    if (wantsCallback) {
       if (session.phone) {
         await supabase.from('callback_requests').insert([{
           parent_name: session.parentName || 'Website Visitor',
@@ -103,143 +210,110 @@ router.post('/', async (req, res) => {
           message: message,
           urgency: 'Urgent'
         }]).catch(() => {});
+        return res.json({
+          success: true,
+          message: `📞 Bilkul! Maine aapki callback request register kar li hai.\n\nHamare admission counsellor jald hi **${session.phone}** pe aapse contact karenge. 🙏\n\nKoi aur sawaal ho toh batayein!`,
+          isCallback: true,
+          timestamp: new Date().toISOString()
+        });
+      } else {
+        session._lastBotAsk = 'phone';
+        return res.json({
+          success: true,
+          message: `📞 Bilkul! Hum aapko callback arrange kar denge.\n\nKya aap apna phone number share kar sakte hain? 😊`,
+          isCallback: false,
+          timestamp: new Date().toISOString()
+        });
       }
-      const callbackReply = language === 'hi'
-        ? '📞 बिल्कुल! मैंने आपकी callback request दर्ज कर ली है। हमारा admission counsellor जल्द ही आपसे संपर्क करेंगे। क्या आप अपना नाम और phone number बता सकते हैं?'
-        : '📞 Bilkul! Maine aapki callback request darj kar li hai. Hamara admission counsellor jald hi aapse contact karega. 😊\n\nKya aap apna naam aur phone number bata sakte hain?';
-      return res.json({ success: true, message: callbackReply, isCallback: true, timestamp: new Date().toISOString() });
     }
 
-    // ── 2. Fetch KB + check admission status
-    let kb = null;
-    try { kb = await fetchKB(); } catch (e) {}
+    // ── STEP 3: Fetch KB ──────────────────────────────────
+    const kb = await fetchKB();
 
-    // ── 3. ADMISSION CLOSED CHECK
+    // ── STEP 4: Admission closed check ───────────────────
     if (kb && kb.admission_open === false) {
       const closedMsg = kb.admission_closed_msg ||
-        'Abhi hamare school mein admission band hai. Agli admission cycle ke liye please school office se contact karein ya apna number chhod dein, hum aapko inform karenge.';
-
-      // Still answer KB questions but prepend closed notice
-      const prompt = `You are an admission assistant for ${kb.school_name || 'our school'}.
+        'Abhi hamare school mein admission band hai. Agli admission cycle ke liye please contact karein.';
+      const prompt = `You are a helpful admission assistant for ${kb.school_name || 'our school'}.
 
 ⚠️ IMPORTANT: Admissions are currently CLOSED.
 
-CLOSED MESSAGE TO ALWAYS START WITH:
+Always start your reply with this exact message:
 "${closedMsg}"
 
-After showing the closed message, you may still answer general questions about the school from the knowledge below. But ALWAYS make it clear admissions are closed.
+After that, you may answer general school questions from the knowledge base. But ALWAYS make it clear admissions are closed.
 
 SCHOOL KNOWLEDGE BASE:
 ${formatKB(kb)}
 
-Parent question: "${message}"
+Parent's question: "${message}"
 
-Reply in ${language === 'hi' ? 'Hindi' : language === 'hinglish' ? 'Hinglish' : 'friendly Hinglish'}. Keep it brief and helpful.`;
-
+Reply in ${lang}. Keep it warm and brief (3-5 lines).`;
       const result = await model.generateContent(prompt);
       return res.json({ success: true, message: result.response.text(), admissionClosed: true, timestamp: new Date().toISOString() });
     }
 
-    // ── 4. Track intent signals for lead scoring
-    if (msg.includes('fee') || msg.includes('fees') || msg.includes('kitni')) session.askedFees = true;
-    if (msg.includes('visit') || msg.includes('campus') || msg.includes('aana')) session.askedVisit = true;
-    if (msg.includes('document') || msg.includes('certificate') || msg.includes('marksheet')) session.askedDocs = true;
+    // ── STEP 5: Decide next natural question ─────────────
+    const nextQ = getNextQuestion(session, session.turnCount);
+    session._lastBotAsk = nextQ;
 
-    // ── 5. Extract lead info from message
-    const phoneMatch = message.match(/\b[6-9]\d{9}\b/);
-    if (phoneMatch && !session.phone) {
-      session.phone = phoneMatch[0];
-      await saveLead(session, message);
-    }
+    // Build session summary for AI context
+    const sessionInfo = [];
+    if (session.classInterested) sessionInfo.push(`Class interested: ${session.classInterested}`);
+    if (session.studentName)     sessionInfo.push(`Student name: ${session.studentName}`);
+    if (session.parentName)      sessionInfo.push(`Parent name: ${session.parentName}`);
+    if (session.phone)           sessionInfo.push(`Phone: ${session.phone} ✅`);
+    if (session.city)            sessionInfo.push(`City: ${session.city}`);
 
-    // Class detection
-    const classMatch = message.match(/\b(nursery|lkg|ukg|class\s*\d+|grade\s*\d+|\d+th|\d+st|\d+nd|\d+rd)\b/i);
-    if (classMatch) session.classInterested = classMatch[0];
+    // ── STEP 6: Generate AI response ─────────────────────
+    const prompt = `You are SchoolMitra AI — the warm, helpful admission assistant for ${kb?.school_name || 'our school'}.
 
-    // Timeline detection
-    if (msg.includes('7 day') || msg.includes('this week') || msg.includes('urgent') || msg.includes('jaldi'))
-      session.timeline = 'within_7_days';
-    else if (msg.includes('month') || msg.includes('30 day') || msg.includes('mahine'))
-      session.timeline = 'within_30_days';
-    else if (msg.includes('next year') || msg.includes('next session') || msg.includes('agli'))
-      session.timeline = 'next_session';
-
-    // ── 6. Build lead capture context
-    const collected = [];
-    if (session.parentName) collected.push('parent_name');
-    if (session.studentName) collected.push('student_name');
-    if (session.phone) collected.push('phone');
-    if (session.classInterested) collected.push('class_interested');
-    if (session.city) collected.push('city');
-
-    const missing = ['parent_name','student_name','phone','class_interested','city'].filter(f => !collected.includes(f));
-    const askNext = missing.length > 0 && !session.phone ? missing[0] : null;
-
-    const askPrompts = {
-      parent_name: 'Aur aapka naam kya hai? (Parent/Guardian name)',
-      student_name: 'Aur aapke bachche ka naam kya hai?',
-      phone: '📱 Kya aap apna phone number share kar sakte hain? Hum aapko admission details bhejenge.',
-      class_interested: 'Kis class mein admission chahiye?',
-      city: 'Aap kahan se hain? (City/Area)'
-    };
-
-    // ── 7. Generate AI response grounded in KB
-    const kbContext = formatKB(kb);
-    const prompt = `You are SchoolMitra AI — the official 24/7 admission assistant for ${kb?.school_name || 'our school'}.
-
-STRICT RULES:
-1. Answer ONLY from the KNOWLEDGE BASE below
-2. If answer not in KB → say: "Is information ke liye main admission counsellor se callback arrange kar sakta hoon. Kya aap apna number denge?"
-3. NEVER make up fees, dates, or policies
-4. Be warm, helpful, Indian school friendly tone
-5. Language: ${language === 'hi' ? 'Hindi only' : language === 'hinglish' ? 'Hinglish (Hindi words in Roman script + English)' : 'friendly Hinglish'}
-6. Keep responses concise (4-6 lines max)
-7. Use 1-2 emojis naturally
+CONVERSATION RULES (STRICT):
+1. ALWAYS answer the parent's question FIRST using the Knowledge Base.
+2. NEVER ask for personal details in the very first response.
+3. Be conversational — like a helpful admission counsellor, NOT a lead form.
+4. After answering, ask ONE natural follow-up question (provided below). Keep it casual.
+5. If the question cannot be answered from the KB, say you'll arrange a callback — but do NOT ask for phone unless it's turn 4+.
+6. NEVER make up fees, dates, or policies not in the KB.
+7. Language: ${lang} — warm, friendly, Indian school tone.
+8. Length: 3-6 lines max. Use 1-2 emojis naturally.
+9. Do NOT start with "I" — start with the answer directly.
 
 KNOWLEDGE BASE:
-${kbContext}
+${formatKB(kb)}
 
-COLLECTED LEAD INFO SO FAR:
-${collected.length > 0 ? collected.map(c => `✅ ${c}`).join(', ') : 'None yet'}
+CONVERSATION CONTEXT (turn ${session.turnCount}):
+${sessionInfo.length > 0 ? sessionInfo.join('\n') : 'Fresh conversation — no details collected yet.'}
 
-NEXT INFO TO COLLECT (ask naturally at end of reply if relevant):
-${askNext ? askPrompts[askNext] : 'All key info collected!'}
+${nextQ ? `FOLLOW-UP TO ASK NATURALLY AT END (blend it in, don't make it feel like a form):
+"${QUESTION_PROMPTS[nextQ]}"` : 'No follow-up needed — just answer helpfully.'}
 
-Parent's question: "${message}"
+Parent's message: "${message}"
 
-Reply:`;
+Your reply:`;
 
     const result = await model.generateContent(prompt);
-    let reply = result.response.text();
-
-    // Append natural lead capture question if needed
-    if (askNext && !session.phone && !reply.toLowerCase().includes('number') && !reply.toLowerCase().includes('naam')) {
-      reply += `\n\n${askPrompts[askNext]}`;
-    }
-
-    // Update session with extracted name if we got a simple name reply
-    if (!session.parentName && message.trim().split(' ').length <= 3 && !/[0-9]/.test(message) &&
-        sessions[sessionId]._lastBotAsk === 'parent_name') {
-      session.parentName = message.trim();
-    }
-    sessions[sessionId]._lastBotAsk = askNext;
+    let reply = result.response.text().trim();
 
     res.json({ success: true, message: reply, timestamp: new Date().toISOString() });
 
   } catch (error) {
-    console.error('Chat route error:', error);
-    res.status(500).json({ success: false, error: 'Internal server error' });
+    console.error('Chat error:', error);
+    res.status(500).json({ success: false, error: 'Server error. Please try again.' });
   }
 });
 
+// ─── Health check ─────────────────────────────────────────
 router.get('/health', (req, res) => {
   res.json({ success: true, message: 'Admission Chat service running ✅' });
 });
 
-// Clean sessions every hour
+// ─── Clean old sessions every hour ───────────────────────
 setInterval(() => {
   const cutoff = Date.now() - 3600000;
-  Object.keys(sessions).forEach(k => { if ((sessions[k]._ts || 0) < cutoff) delete sessions[k]; });
+  Object.keys(sessions).forEach(k => {
+    if ((sessions[k]._ts || 0) < cutoff) delete sessions[k];
+  });
 }, 3600000);
 
 module.exports = router;
