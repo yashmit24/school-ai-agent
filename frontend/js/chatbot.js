@@ -77,6 +77,12 @@ function renderWelcome() {
       <div class="welcome-icon">🏫</div>
       <h2>${t('welcome_title')}</h2>
       <p>${t('welcome_sub')}</p>
+      <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;font-size:0.78rem">
+        <span style="background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.3);color:#48cfad;padding:4px 12px;border-radius:20px">📝 Apply for Admission</span>
+        <span style="background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.3);color:#48cfad;padding:4px 12px;border-radius:20px">🏫 Book Campus Visit</span>
+        <span style="background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.3);color:#48cfad;padding:4px 12px;border-radius:20px">📞 Request Callback</span>
+        <span style="background:rgba(72,207,173,0.1);border:1px solid rgba(72,207,173,0.3);color:#48cfad;padding:4px 12px;border-radius:20px">💰 Fee Information</span>
+      </div>
     </div>
   `;
 }
@@ -84,13 +90,18 @@ function renderWelcome() {
 // ─────────────────────────────────────────
 // RENDER: Append a message bubble
 // ─────────────────────────────────────────
-function appendMessage(text, role) {
+function appendMessage(text, role, mode) {
   // Remove welcome message on first chat
   const welcome = chatMessages.querySelector('.welcome-msg');
   if (welcome) welcome.remove();
 
+  // Remove old form banner if any
+  const oldBanner = chatMessages.querySelector('.form-mode-banner');
+  if (oldBanner && mode !== 'form') oldBanner.remove();
+
   const msgDiv = document.createElement('div');
-  msgDiv.classList.add('message', role);
+  msgDiv.classList.add('message', role === 'bot' ? 'bot-message' : 'user-message', role);
+  if (mode === 'success') msgDiv.classList.add('success-msg');
 
   const avatarIcon = role === 'bot' ? '🤖' : '👤';
   const avatarClass = role === 'bot' ? 'bot-msg-avatar' : 'user-msg-avatar';
@@ -108,6 +119,18 @@ function appendMessage(text, role) {
       <div class="message-time">${getTimeStr()}</div>
     </div>
   `;
+
+  // Add cancel hint during form
+  if (mode === 'form' && !chatMessages.querySelector('.form-mode-banner')) {
+    const banner = document.createElement('div');
+    banner.className = 'form-mode-banner';
+    banner.innerHTML = '📋 Form in progress &nbsp;|&nbsp; Type <b>cancel</b> to stop';
+    chatMessages.appendChild(banner);
+  }
+  if (mode !== 'form') {
+    const b = chatMessages.querySelector('.form-mode-banner');
+    if (b) b.remove();
+  }
 
   chatMessages.appendChild(msgDiv);
   chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -149,8 +172,7 @@ async function sendMessage(text) {
   sendBtn.disabled = true;
   showTyping();
 
-  // Hide suggestions after first message
-  if (suggestionsBar) suggestionsBar.style.display = 'none';
+  // Keep suggestions visible for easy access during conversation
 
   try {
     const response = await fetch(`${API_BASE_URL}/api/chat`, {
@@ -167,9 +189,9 @@ async function sendMessage(text) {
     hideTyping();
 
     if (data.success) {
-      appendMessage(data.message, 'bot');
+      appendMessage(data.message, 'bot', data.mode);
     } else {
-      appendMessage('⚠️ Sorry, I encountered an error. Please try again!', 'bot');
+      appendMessage('⚠️ Sorry, I encountered an error. Please try again!', 'bot', 'normal');
     }
   } catch (error) {
     hideTyping();

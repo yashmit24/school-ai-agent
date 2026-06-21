@@ -196,6 +196,40 @@ body.chatbot-page {
   border-color: var(--primary);
   transform: translateY(-1px);
 }
+/* Primary action chips */
+.suggestion-chip.chip-primary {
+  background: rgba(72,207,173,0.12);
+  border-color: rgba(72,207,173,0.4);
+  color: #48cfad;
+  font-weight: 600;
+}
+.suggestion-chip.chip-primary:hover {
+  background: rgba(72,207,173,0.25);
+  border-color: #48cfad;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(72,207,173,0.2);
+}
+/* Form mode indicator */
+.form-mode-banner {
+  background: linear-gradient(135deg, rgba(72,207,173,0.15), rgba(108,99,255,0.1));
+  border: 1px solid rgba(72,207,173,0.3);
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin: 8px 0;
+  font-size: 0.8rem;
+  color: #48cfad;
+  text-align: center;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+/* Success message style */
+.bot-message.success-msg .message-bubble {
+  background: linear-gradient(135deg, rgba(72,207,173,0.15), rgba(46,213,115,0.1)) !important;
+  border: 1px solid rgba(72,207,173,0.3) !important;
+}
 
 /* --- INPUT BAR --- */
 .chat-input-bar {
