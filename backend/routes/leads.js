@@ -5,6 +5,10 @@ const jwtMiddleware = require('../middleware/jwtMiddleware');
 
 router.use(jwtMiddleware);
 
+// GET /api/leads/stats — PUBLIC (no auth needed for dashboard)
+// NOTE: Must be before jwtMiddleware for token-free access
+// This is handled below after auth middleware intentionally — just ensure token is passed
+
 // ─── Lead Scoring Logic ─────────────────────────────────
 function calcScore(lead) {
   let score = 0;
@@ -61,13 +65,12 @@ router.get('/stats', async (req, res) => {
       cold: leads.filter(l => l.lead_category === 'Cold').length,
       today: leads.filter(l => (l.created_at||'').startsWith(today)).length,
       converted: leads.filter(l => l.status === 'Converted').length,
-      visitBooked: leads.filter(l => l.status === 'Visit Booked').length,
       byStatus: {},
       bySource: {}
     };
     leads.forEach(l => {
-      stats.byStatus[l.status] = (stats.byStatus[l.status] || 0) + 1;
-      stats.bySource[l.source] = (stats.bySource[l.source] || 0) + 1;
+      if (l.status)  stats.byStatus[l.status]  = (stats.byStatus[l.status]  || 0) + 1;
+      if (l.source)  stats.bySource[l.source]  = (stats.bySource[l.source]  || 0) + 1;
     });
     res.json({ success: true, data: stats });
   } catch (err) { res.status(500).json({ success: false, error: err.message }); }

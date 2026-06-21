@@ -857,93 +857,143 @@
   }
 
   // ─── DASHBOARD KPIs ────────────────────────────────
+  let dashRetries = 0;
   async function loadCRMDashboard() {
     try {
-      const [leadsRes, visitsRes, followupsRes, callbacksRes] = await Promise.all([
-        fetch(API+'/api/leads/stats', {headers:hdrs()}),
-        fetch(API+'/api/campus-visits', {headers:hdrs()}),
-        fetch(API+'/api/followups?status=Pending', {headers:hdrs()}),
-        fetch(API+'/api/callbacks?status=Pending', {headers:hdrs()})
-      ]);
-      const leads = await leadsRes.json();
-      const visits = await visitsRes.json();
-      const followups = await followupsRes.json();
-      const callbacks = await callbacksRes.json();
+      // Show loading state
+      ['kpi-total','kpi-hot','kpi-warm','kpi-converted','kpi-today','kpi-visits','kpi-followups','kpi-callbacks']
+        .forEach(id => { const el = document.getElementById(id); if(el) el.textContent = '...'; });
 
+      const token = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+      const h = { 'Content-Type':'application/json', 'Authorization':'Bearer '+token };
+
+      // Fire all requests in parallel
+      const [leadsRes, visitsRes, followupsRes, callbacksRes, allLeadsRes, overdueRes] = await Promise.all([
+        fetch(API+'/api/leads/stats', {headers:h}),
+        fetch(API+'/api/campus-visits', {headers:h}),
+        fetch(API+'/api/followups?status=Pending', {headers:h}),
+        fetch(API+'/api/callbacks?status=Pending', {headers:h}),
+        fetch(API+'/api/leads', {headers:h}),
+        fetch(API+'/api/followups?status=Overdue', {headers:h})
+      ]);
+
+      const [leads, visits, followups, callbacks, allLeads, overdue] = await Promise.all([
+        leadsRes.json(), visitsRes.json(), followupsRes.json(),
+        callbacksRes.json(), allLeadsRes.json(), overdueRes.json()
+      ]);
+
+      dashRetries = 0; // reset on success
+
+      // ── KPI Cards
       if (leads.success) {
         const s = leads.data;
-        document.getElementById('kpi-total').textContent = s.total;
-        document.getElementById('kpi-hot').textContent = s.hot;
-        document.getElementById('kpi-warm').textContent = s.warm;
-        document.getElementById('kpi-converted').textContent = s.converted;
-        document.getElementById('kpi-today').textContent = s.today;
-        // Sidebar badges
+        document.getElementById('kpi-total').textContent     = s.total     || 0;
+        document.getElementById('kpi-hot').textContent       = s.hot       || 0;
+        document.getElementById('kpi-warm').textContent      = s.warm      || 0;
+        document.getElementById('kpi-converted').textContent = s.converted  || 0;
+        document.getElementById('kpi-today').textContent     = s.today     || 0;
+
+        // Hot badge
         const hb = document.getElementById('hotBadge');
-        if (s.hot > 0) { hb.textContent = s.hot; hb.style.display = 'inline-flex'; }
-        // Lead Funnel
+        if (hb && s.hot > 0) { hb.textContent = s.hot; hb.style.display = 'inline-flex'; }
+
+        // ── Lead Funnel
         const funnel = [
-          {label:'New',color:'#6c63ff',val:s.byStatus['New']||0},
-          {label:'Contacted',color:'#48cfad',val:s.byStatus['Contacted']||0},
-          {label:'Visit Booked',color:'#f7c948',val:s.byStatus['Visit Booked']||0},
-          {label:'Applied',color:'#e67e22',val:s.byStatus['Applied']||0},
-          {label:'Converted',color:'#2ecc71',val:s.byStatus['Converted']||0},
+          {label:'New',         color:'#6c63ff', val: s.byStatus['New']||0},
+          {label:'Contacted',   color:'#48cfad', val: s.byStatus['Contacted']||0},
+          {label:'Visit Booked',color:'#f7c948', val: s.byStatus['Visit Booked']||0},
+          {label:'Applied',     color:'#e67e22', val: (s.byStatus['Application Submitted']||0)+(s.byStatus['Applied']||0)},
+          {label:'Converted',   color:'#2ecc71', val: s.byStatus['Converted']||0},
         ];
-        const maxFunnel = Math.max(...funnel.map(f=>f.val), 1);
-        document.getElementById('leadFunnel').innerHTML = funnel.map(f=>`
+        const maxF = Math.max(...funnel.map(f=>f.val), 1);
+        const funnelEl = document.getElementById('leadFunnel');
+        if (funnelEl) funnelEl.innerHTML = funnel.map(f=>`
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
             <div style="width:90px;font-size:0.75rem;color:#9d95ff;text-align:right;">${f.label}</div>
             <div style="flex:1;background:rgba(255,255,255,0.05);border-radius:20px;height:22px;overflow:hidden;">
-              <div style="width:${Math.max((f.val/maxFunnel)*100,4)}%;background:${f.color};height:100%;border-radius:20px;transition:width 0.6s;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;">
+              <div style="width:${Math.max((f.val/maxF)*100,4)}%;background:${f.color};height:100%;border-radius:20px;transition:width 0.8s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;">
                 <span style="font-size:0.7rem;font-weight:700;color:#fff">${f.val}</span>
               </div>
             </div>
           </div>`).join('');
-        // Sources
-        const srcColors = {'Website':'#6c63ff','WhatsApp':'#25d366','Google Ads':'#f7c948','Facebook':'#3b5998','Instagram':'#e74c3c','Referral':'#48cfad','Walk-in':'#e67e22'};
-        document.getElementById('leadSources').innerHTML = Object.entries(s.bySource||{}).map(([src,cnt])=>`
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-            <span style="font-size:0.8rem;color:#e0e0f0;">${src}</span>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <div style="width:60px;background:rgba(255,255,255,0.05);border-radius:20px;height:8px;"><div style="width:${Math.max((cnt/s.total)*100,8)}%;background:${srcColors[src]||'#6c63ff'};height:100%;border-radius:20px;"></div></div>
-              <span style="font-size:0.78rem;font-weight:700;color:${srcColors[src]||'#6c63ff'};min-width:20px;text-align:right;">${cnt}</span>
-            </div>
-          </div>`).join('') || '<p style="color:#9d95ff;font-size:0.8rem;padding:8px 0">No data yet</p>';
+
+        // ── Lead Sources
+        const srcColors = {Website:'#6c63ff',WhatsApp:'#25d366','Google Ads':'#f7c948',Facebook:'#3b5998',
+          Instagram:'#e74c3c',Referral:'#48cfad','Walk-in':'#e67e22',Chatbot:'#9b59b6',
+          'Chatbot Enquiry':'#9b59b6','Admission Form':'#48cfad','Campus Visit Booking':'#f7c948','Callback Request':'#e74c3c'};
+        const srcEl = document.getElementById('leadSources');
+        if (srcEl) srcEl.innerHTML = Object.entries(s.bySource||{}).length
+          ? Object.entries(s.bySource).map(([src,cnt])=>`
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+              <span style="font-size:0.8rem;color:#e0e0f0;">${src}</span>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:60px;background:rgba(255,255,255,0.05);border-radius:20px;height:8px;"><div style="width:${Math.max((cnt/s.total)*100,8)}%;background:${srcColors[src]||'#6c63ff'};height:100%;border-radius:20px;"></div></div>
+                <span style="font-size:0.78rem;font-weight:700;color:${srcColors[src]||'#6c63ff'};min-width:20px;text-align:right;">${cnt}</span>
+              </div>
+            </div>`).join('')
+          : '<p style="color:#9d95ff;font-size:0.8rem;padding:8px 0">No data yet</p>';
       }
+
+      // ── Campus Visits KPI (Confirmed + Pending)
       if (visits.success) {
-        document.getElementById('kpi-visits').textContent = (visits.data||[]).filter(v=>v.status==='Scheduled').length;
+        const vCount = (visits.data||[]).filter(v=>['Confirmed','Pending','Scheduled'].includes(v.status)).length;
+        document.getElementById('kpi-visits').textContent = vCount;
       }
+
+      // ── Follow-ups KPI
       if (followups.success) {
         const pd = (followups.data||[]).length;
         document.getElementById('kpi-followups').textContent = pd;
         const ob = document.getElementById('overdueBadge');
-        if (pd > 0) { ob.textContent = pd; ob.style.display = 'inline-flex'; }
-        // Recent leads
-        const leadsAll = await fetch(API+'/api/leads', {headers:hdrs()}).then(r=>r.json());
-        if (leadsAll.success) {
-          const recent = (leadsAll.data||[]).slice(0,5);
-          document.getElementById('recentLeads').innerHTML = recent.length ? recent.map(l=>`
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
-              <div><div style="font-size:0.82rem;font-weight:600;">${l.parent_name}</div><div style="font-size:0.72rem;color:#9d95ff;">${l.class_interested||'—'} · ${l.source||'—'}</div></div>
-              <span style="font-size:0.7rem;font-weight:700;padding:3px 9px;border-radius:20px;${l.lead_category==='Hot'?'background:rgba(231,76,60,0.2);color:#e74c3c':l.lead_category==='Warm'?'background:rgba(247,201,72,0.2);color:#f7c948':'background:rgba(107,114,128,0.2);color:#9d95ff'}">${l.lead_category==='Hot'?'🔥':l.lead_category==='Warm'?'🌤':'❄'} ${l.lead_category}</span>
-            </div>`).join('') : '<p style="color:#9d95ff;font-size:0.8rem;padding:8px 0">No leads yet. <a href="#" onclick="switchTab(\'leads\')" style="color:#6c63ff;">Add first lead →</a></p>';
-          // Overdue followups
-          const overdue = await fetch(API+'/api/followups?status=Overdue', {headers:hdrs()}).then(r=>r.json());
-          document.getElementById('overdueFollowups').innerHTML = (overdue.data||[]).length ?
-            (overdue.data||[]).slice(0,5).map(f=>`
-              <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
-                <div><div style="font-size:0.82rem;font-weight:600;">${f.lead_name}</div><div style="font-size:0.72rem;color:#9d95ff;">${f.followup_type} · ${f.followup_date}</div></div>
-                <button onclick="markFollowupDone('${f.id}')" style="padding:4px 10px;background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:7px;color:#2ecc71;font-size:0.72rem;cursor:pointer;font-family:inherit;">✓ Done</button>
-              </div>`).join('')
-            : '<p style="color:#2ecc71;font-size:0.8rem;padding:8px 0">✅ No overdue follow-ups!</p>';
-        }
+        if (ob && pd > 0) { ob.textContent = pd; ob.style.display = 'inline-flex'; }
       }
+
+      // ── Callbacks KPI
       if (callbacks.success) {
         const cb = (callbacks.data||[]).length;
         document.getElementById('kpi-callbacks').textContent = cb;
         const cbb = document.getElementById('callbackBadge');
-        if (cb > 0) { cbb.textContent = cb; cbb.style.display = 'inline-flex'; }
+        if (cbb && cb > 0) { cbb.textContent = cb; cbb.style.display = 'inline-flex'; }
       }
-    } catch(e) { console.error('CRM Dashboard error:', e); }
+
+      // ── Recent Leads
+      if (allLeads.success) {
+        const recent = (allLeads.data||[]).slice(0,5);
+        const rlEl = document.getElementById('recentLeads');
+        if (rlEl) rlEl.innerHTML = recent.length ? recent.map(l=>`
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div>
+              <div style="font-size:0.82rem;font-weight:600;">${l.parent_name}</div>
+              <div style="font-size:0.72rem;color:#9d95ff;">${l.class_interested||'—'} &middot; ${l.source||'—'}</div>
+            </div>
+            <span style="font-size:0.7rem;font-weight:700;padding:3px 9px;border-radius:20px;${l.lead_category==='Hot'?'background:rgba(231,76,60,0.2);color:#e74c3c':l.lead_category==='Warm'?'background:rgba(247,201,72,0.2);color:#f7c948':'background:rgba(107,114,128,0.2);color:#9d95ff'}">${l.lead_category==='Hot'?'🔥':l.lead_category==='Warm'?'🌤':'❄'} ${l.lead_category}</span>
+          </div>`).join('')
+          : '<p style="color:#9d95ff;font-size:0.8rem;padding:8px 0">No leads yet. <a href="#" onclick="switchTab(\'leads\')" style="color:#6c63ff;">Add first lead →</a></p>';
+      }
+
+      // ── Overdue Follow-ups
+      if (overdue.success) {
+        const odEl = document.getElementById('overdueFollowups');
+        if (odEl) odEl.innerHTML = (overdue.data||[]).length
+          ? (overdue.data||[]).slice(0,5).map(f=>`
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+              <div><div style="font-size:0.82rem;font-weight:600;">${f.lead_name}</div><div style="font-size:0.72rem;color:#9d95ff;">${f.followup_type||f.type||'—'} &middot; ${f.followup_date||'—'}</div></div>
+              <button onclick="markFollowupDone('${f.id}')" style="padding:4px 10px;background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:7px;color:#2ecc71;font-size:0.72rem;cursor:pointer;font-family:inherit;">✓ Done</button>
+            </div>`).join('')
+          : '<p style="color:#2ecc71;font-size:0.8rem;padding:8px 0">✅ No overdue follow-ups!</p>';
+      }
+
+    } catch(e) {
+      console.error('CRM Dashboard error:', e);
+      // Auto retry up to 3 times with 3s delay
+      if (dashRetries < 3) {
+        dashRetries++;
+        setTimeout(loadCRMDashboard, 3000);
+      } else {
+        ['kpi-total','kpi-hot','kpi-warm','kpi-converted','kpi-today','kpi-visits','kpi-followups','kpi-callbacks']
+          .forEach(id => { const el = document.getElementById(id); if(el) el.textContent = 'Err'; });
+      }
+    }
   }
 
   // ─── LEADS ──────────────────────────────────────────
